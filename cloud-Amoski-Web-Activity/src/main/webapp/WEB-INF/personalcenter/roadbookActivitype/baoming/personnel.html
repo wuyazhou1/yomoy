@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="personnel" v-cloak>
+    <div class="positionBar pl10 pt10 pb10" v-show="appplate">
+        <span class="w24 arrowIcon fl" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">报名人员</span>
+    </div>
+    <ul class="clearfix personalList mt15">
+        <li v-for="(item,index) in personList" class="pb10 pt10">
+            <span class="s_1 mt10 ml12"><img :src="item.img"></span>
+            <span class="s_2 ml15 f15">{{item.text}}</span>
+        </li>
+    </ul>
+<footer-bottom></footer-bottom>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/footer.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var gallery = mui('.mui-slider');
+        gallery.slider({
+            interval:3000//自动轮播周期，若为0则不自动播放，默认为0；
+        });
+    }
+    var app = new Vue({
+        el:'#personnel',
+        data:{
+            personList:[
+                {
+                    img:'../img/personnelImg1.jpg',
+                    text:'许灿',
+                },
+                {
+                    img:'../img/personnelImg2.jpg',
+                    text:'谭牛牛',
+                },
+                {
+                    img:'../img/personnelImg3.jpg',
+                    text:'毛乘引',
+                },
+                {
+                    img:'../img/personnelImg4.jpg',
+                    text:'钱楠楠',
+                },
+                {
+                    img:'../img/personnelImg5.jpg',
+                    text:'郭朔',
+                },
+            ]
+        },
+        mounted(){
+            this.personInfor();
+        },
+        methods:{
+            personInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'fffffffffff').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result && result.length>0)
+                            {
+                            }
+                            resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                })
+            }
+        },
+    })
+</script>
+</body>
+</html>

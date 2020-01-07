@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <title></title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+
+
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+<!--        <link rel="stylesheet" type="text/css" href="css/element-ui.css" />-->
+    <link rel="stylesheet" type="text/css" href="css/webuploader.css" />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link rel="stylesheet" type="text/css" href="css/viewer.css" />
+    <style type="text/css">
+        .viewer-navbar{display: none;}
+
+        .stage li{float:left;display: inline;height:43px;line-height:43px;padding-left:18px;padding-right:18px;margin-right:12px;background:rgba(255,255,255,1);border-radius:5px;border:1px solid rgba(204,213,219,1);text-align:center;}
+         .stage{float: right;display: inline;margin-right: -10px;}
+        .opBtn{
+            width:24px;
+            height:24px;
+            background-color: rgba(0,0,0,0);
+            border: 0px;
+            margin:15px;
+        }
+        .queueList ul{
+            overflow-y: auto;
+            height:100%;
+        }
+    </style>
+</head>
+<body>
+<section class="couenter" id="amoskialbum" v-loading="loading2"
+         element-loading-text="加载中..."
+         element-loading-spinner="el-icon-loading"
+         element-loading-background="rgba(0, 0, 0, 0.1)">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <li><a href="javascript:void(0);" @click="saveUpdateData(1)">保存</a></li>
+            <li><a href="javascript:void(0);" @click="saveUpdateData(2)">发布</a></li>
+        </ul>
+    </div>
+    <header class="clearfix">
+        <h2 class="fl">相册管理</h2>
+        <span class="fr addPic" id="filePicker">+添加照片</span>
+    </header>
+    <div class="dayBox clearfix">
+        <ul class="clearfix DayUl">
+            <li class="active">全部</li>
+            <li v-for="(item,index) in dayData" :value="item.value">{{item.text}}</li>
+        </ul>
+        <div class="uploader" id="galley" >
+            <ul class="filelist clearfix pictures" style="overflow: auto;">
+                <li v-for="(item,index) in filelist" @mouseenter="Mouseshow(index)" @mouseleave="MouseHide(index)">
+                    <div class="originaImg">
+                        <img :data-original="item.originalBig" :src="item.srcpic" :alt="item.showFileName" :title="item.showFileName">
+                        <div class="hoverView" v-show="activeIndex===index">
+                            <p class="Line clearfix">
+                                <button  @click="lookImg(index)" class="eyeButton opBtn" style="background:url('img/eyealumn.png') no-repeat;"></button>
+                                <button  @click="deleteImg(index)" class="deleteButton opBtn" style="background:url('img/detelelumn.png') no-repeat;"></button>
+<!--                                <a href="javascript:void(0);"><img src="img/eyealumn.png"></a>-->
+<!--                                <a href="javascript:void(0);" @click="deleteImg(index)"><img src="img/detelelumn.png"></a>-->
+                            </p>
+                        </div>
+                    </div>
+                    <p class="txt"><span class="Icon" v-show="item.state!=2?true:false" style="background-image: url('img/oval.png');"><!--<img src="img/oval.png">--></span><input @change="updateImgName(item)" type="text" v-model="item.showFileName"></p>
+                    <!--<p class="txt"><input type="text" v-model="item.text"></p>-->
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="dialogWarp" v-show="dialog" style="height:80%;display: none;">
+        <div class="bg"></div>
+        <div id="container" style="height:80%;">
+            <div class="title">
+                <h2>选择图片</h2>
+                <p>只允许上传jpeg、jpg、png格式的图片，上传大小为100KB-20MB <br/>每次最多只能上传200张相片</p>
+            </div>
+            <!--头部，相册选择和格式选择-->
+            <div id="uploader" style="height:50%;">
+                <div class="queueList" style="height:100%;">
+                    <div id="dndArea" class="placeholder">
+                        <p>或将照片拖到这里，单次最多可选200张</p>
+                    </div>
+                </div>
+                <div class="statusBar" style="display:none;">
+                    <div class="progress">
+                        <span class="text">0%</span>
+                        <span class="percentage"></span>
+                    </div><div class="info"></div>
+                    <div class="btns">
+                        <div id="filePicker2"></div><div class="uploadBtn">开始上传</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div role="button" @click="dialogClose()" class="viewer-button2 viewer-close"></div>
+    </div>
+    <el-pagination
+            background
+            layout="prev, pager, next"
+            @current-change="queryImgList"
+            :page-size="pageSize"
+            :current-page="currentPage"
+            :total="currentTotal" class="elPagin" style="text-align: right;">
+    </el-pagination>
+</section>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/webuploader.js"></script>
+<script type="text/javascript" src="js/viewer.js"></script>
+<script type="text/javascript" src="js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="js/element-ui.js"></script>
+<script type="text/javascript" src="js/commFun.js"></script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<script type="text/javascript">
+   window.onload = function () {
+       var li = document.querySelectorAll('.DayUl li');
+       for (var i = 0; i < li.length; i++)
+           li[i].onclick = function () {
+               for (var i = 0; i < li.length; i++) li[i].className = '';
+               this.className='active'
+               currDay = this.value;
+               uploadTime = this.textContent;
+               if(!currDay){
+                   currDay=null;
+                   $("#filePicker").hide();
+               }else{
+                   $("#filePicker").show();
+               }
+               app.queryImgList();
+               window.uploader.options.formData.scheduleId=currDay;
+               window.uploader.options.formData.uploadTime=this.innerText;
+           }
+   }
+</script>
+<script type="text/javascript">
+    var currDay,uploadTime;
+var app = new Vue({
+    el:'#amoskialbum',
+    data:{
+        loading2:false,
+        currentPage: 1,
+        pageSize: 24,
+        currentTotal: 0,
+        dialog:false,
+        viewer:'',
+        activeIndex:'',
+        dayData:[
+            /*{text:'2019/08/01',value:'4'},
+            {text:'2019/08/02',value:'5'},
+            {text:'2019/08/03',value:'6'},
+            {text:'2019/08/04',value:'7'},*/
+        ],
+        updateImgNameList:[],
+        filelist:[],
+        requestUrl:{
+            requestQueryImgListUrl:"/AmoskiUser/ActivityCreate/queryCalendarImagesList",
+            requestdeleteCalendarImagesUrl:"/AmoskiUser/ActivityCreate/deleteCalendarImages",
+            requestupdateCalendarImagesUrl:"/AmoskiUser/ActivityCreate/updateCalendarImages"
+        },
+        basicsId:"",
+
+    },
+    mounted(){
+        let activityStart = new Date(window.top.activityCreateList[0].tbActivityOrdinationEntity.activityStart);
+        let tbActivitySchedule = window.top.activityCreateList[0].tbActivityScheduleEntity;
+        this.basicsId = window.top.activityCreateList[0].tbActivityBasicsEntity.code;
+        for(let i=0;i<tbActivitySchedule.length;i++){
+
+            let year = activityStart.getFullYear();
+            let month = activityStart.getMonth()+1;
+            let date = activityStart.getDate();
+            this.dayData[i]={};
+            this.dayData[i].text=year+"/"+(month<10?"0"+month:month)+"/"+(date<10?"0"+date:date);
+            this.dayData[i].value=tbActivitySchedule[i].id+"";
+            activityStart.setDate(activityStart.getDate()+1);
+        }
+        appObj=this;
+        var obj=parent.document.getElementById("mCustomScrollbarMenu");
+        var height=obj.offsetHeight-100;
+        parent.document.getElementsByTagName("iframe")[0].height=height;
+        //弹出框
+        $(".dialogWarp").height(height);
+        $("#container").height(height*0.78);
+        $("#uploader").height(height*0.78-233);
+        $("#galley .filelist").height(height-$(".clearfix").height()-$(".DayUl").height()-$(".header").height()-$(".layui-tab-title").height()-200);
+
+        var script=document.createElement("script");
+        script.src="js/upload.js";
+        document.body.append(script);
+        this.queryImgList();
+    },
+    methods:{
+        handleClick(row){
+            console.log(row);
+        },
+        updateImgName(item){
+            var bl=true;
+            for(var i=0;i<this.updateImgNameList.length;i++){
+                if(this.updateImgNameList[i].id==item.id){
+                    bl=false;
+                }
+            }
+            if(bl){
+                this.updateImgNameList.push(item);
+            }
+        },
+        saveUpdateData(state){
+            var that=this;
+            if(state==2){//把未发布的照片放入集合更新
+                for(var i=0;i<that.filelist.length;i++){
+                    if(that.filelist[i].state==1){
+                        that.updateImgNameList.push(that.filelist[i]);
+                        that.filelist[i].state=2;
+                    }
+                }
+            }
+            var url=that.requestUrl.requestupdateCalendarImagesUrl;
+            var obj={ActivityCalendarImagesList:JSON.stringify(that.updateImgNameList)};
+            jsonAjax(url,obj,function(res){//成功
+                if(res.code="000"){
+                    that.updateImgNameList=[];//清空保存数据
+                    that.$message({
+                        message: '保存成功',
+                        type: 'success'
+                    });
+                }
+            },function(res){
+
+            })
+        },
+        queryImgList(currPage){//查询列表
+            var that=this;
+            if(!currPage){
+                currPage=1;
+            }
+            that.currentPage=currPage;
+            var obj={
+                //state:that.value,
+                basicsId:this.basicsId,
+                start:currPage,//排序的列号
+                length:that.pageSize,//一页多少条
+                //scheduleId:currDay//线程id
+                uploadTime:uploadTime//拍摄时间
+            };
+            var url=that.requestUrl.requestQueryImgListUrl;
+            jsonAjax(url,obj,function(res){//成功
+                var data=res.data;
+                packageImgData(data);//列表赋值
+                that.filelist=data;
+                that.currentTotal=res.recordsTotal;
+                $("#empDiv").remove();
+                if(data.length==0){//无数据
+                    $("#galley .filelist").append('<div id="empDiv" style="font-size:24px;color:#535355;margin-top:150px;text-align:center;">暂无图片，请上传</div>');
+                }else{
+                    setTimeout(function(){
+                        that.initVewer();
+                    },1200);
+                }
+            },function(res){
+
+            })
+        },
+        /*addalBum(){
+            if(!currDay){
+                alert("请选中一个日期再添加");
+            }
+            var reader=new FileReader();
+            reader.onload=function(e){
+                alert('fdfsdfs');
+            }
+        },*/
+        initVewer(){
+
+            let _this = this;
+            var galley = document.getElementById('galley');
+            if(this.viewer){
+                this.viewer.update();
+                return;
+            }
+            this.viewer = new Viewer(galley, {
+                url: 'data-original',
+                title: function (image) {
+                    return image.alt + ' (' + (this.index + 1) + '/' + this.length + ')';
+                },
+                toolbar: {
+                    oneToOne: true,
+
+                    prev: function() {
+                        _this.viewer.prev(true);
+                    },
+
+                    play: true,
+
+                    next: function() {
+                        _this.viewer.next(true);
+                    },
+                },
+                // show: function (){  // 动态加载图片后，更新实例
+                //     viewer.update();
+                // },
+
+            });
+        },
+        lookImg(index){
+            this.viewer.view(index);
+        },
+        deleteImg(index){//删除当前图片
+            var that=this;
+            var obj={
+                id:that.filelist[index].id
+            };
+            var url=that.requestUrl.requestdeleteCalendarImagesUrl;
+            this.$confirm('此操作将删除该图片, 是否继续?', '提示', {
+                confirmButtonText: '确定',
+                cancelButtonText: '取消',
+                type: 'warning'
+            }).then(() => {
+                jsonAjax(url,obj,function(res){//成功
+                    that.filelist.splice(index,1);
+                },function(res){
+                })
+                this.$message({
+                    type: 'success',
+                    message: '删除成功!'
+                });
+            }).catch(() => {
+                this.$message({
+                    type: 'info',
+                    message: '已取消删除'
+                });
+            });
+
+
+        },
+        Mouseshow(index){//鼠标移入事件
+            this.activeIndex = index;
+        },
+        MouseHide(index){//鼠标移出事件
+            this.activeIndex = !index;
+        },
+        dialogClose(){//关闭弹窗
+            this.dialog = false;
+            //关闭弹出框处理文件
+            var uploader = window.uploader;
+            var files=uploader.getFiles();
+            for(var i=0;i<files.length;i++){
+                var file=files[i];
+                uploader.removeFile(file,true);
+            }
+        }
+    },
+})
+</script>
+<!--<script type="text/javascript" src="js/upload.js"></script>-->
+</body>
+</html>

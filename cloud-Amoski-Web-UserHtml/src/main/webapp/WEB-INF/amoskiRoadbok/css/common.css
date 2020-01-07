@@ -1,0 +1,200 @@
+@charset "UTF-8";
+*{ margin:0px; padding:0px;box-sizing: border-box;;}
+html,body{font-size:14px ; height: 100%;background:#fff;}
+a{ color:#222; text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:none!important}
+a:focus,input:focus,textarea:focus{ outline: none;}
+input{ color: #222;}
+input,button,textarea{-webkit-appearance: none; border-radius: 0px;}
+img,a img{ border:0px;vertical-align: middle;}
+ul{ list-style:none; margin:0px; padding:0px;}
+ul li{ list-style:none;margin:0px; padding:0px;}
+h1{margin:0;padding:0;font-weight: normal;}
+form{ margin:0; padding:0; list-style:none}
+table{ border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;}
+.clearfix{clear: both;}
+.clearfix:after { clear: both; content: "."; display: block; height: 0; visibility: hidden;}
+.clearfix{*zoom:1;}
+
+.fl{float:left;display:inline-block;margin: 0px 6px;}
+.fr{float:right;display:inline-block}
+.dinline{display:inline-block;}
+
+.mt10{margin-top:10px;}
+.mt20{margin-top:20px;}
+.ml5{margin-left:5px;}
+.ml10{margin-left:10px;}
+.ml20{margin-left:20px;}
+.mr10{margin-right:10px;}
+.mr30{margin-right:30px;}
+
+.color33{color:#333;}
+
+.couenter{/*width:1080px;*/width:100%;margin:0 auto;height:100%;overflow:auto;}
+.HeaderCount{background:#fff;margin:30px 0;width:100%;}
+.HeaderCount ul{margin-left:10px;}
+.HeaderCount ul li{float:left;display:inline;margin:0 15px;}
+.HeaderCount ul li.roadname h2{color:#67676F;font-weight:normal;}
+.HeaderCount .CountRight{width:80%;text-align:right;font-size:12px !important;}
+/*.HeaderCount ul li a{color:#222;}*/
+.optionChoice{width:150px !important;margin-left:10px;}
+
+.lh60{line-height:60px;}
+
+.HeaderRoad{background:rgba(36,39,45,0.04);height:60px;}
+.HeaderRoad h1{line-height:60px;margin-left:10px;color:#222;font-size:23px;}
+.el-checkbox-button__inner{padding:10px 25px !important;margin:0 5px  14px!important;border-radius:5px !important;border:1px solid #ccc;}
+.creatRoadBookCont{background:#fff;border:1px solid #ccc;width:100%;}
+.creatRoadBookCont h2{font-size:18px;color:#333;margin:30px 10px;}
+.creatRoadBookCont .inforMain{width:90%;margin:0 auto;}
+.creatRoadBookCont .inforMain .Input{width:60%;}
+.avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  width:100px;
+  height:160px;
+  text-align:center;
+  vertical-align:middle;
+}
+.avatar-uploader .el-upload:hover {
+  border-color: #409EFF;
+}
+.camera{margin-top:65px;}
+.departInput{width:22% !important;float:left;display:inline;margin:0 1%;}
+.inforButton{text-align:center;margin-top:25px;margin-bottom:25px;}
+
+.RouterAisade{padding-left:0 !important;padding-right:0 !important;}
+.RouterAisade h2{border-bottom:2px solid #62B297;line-height:38px;text-align:center;font-size:14px;color:#62B297;font-weight:normal;}
+.RouterAisade ul li .errorIcon{width:12px;height:12px;margin-left:10px;}
+.RouterAisade ul li .elInputRouter{width:100px;float:left;display:inline;height:34px;line-height:34px;text-align:center;}
+.RouterAisade ul li .elInputRouter .el-input__inner{line-height:34px;height:34px;}
+.RouterAisade ul li{line-height:34px;margin-top:20px;}
+.RouterAisade .RouterUl{padding:0 5px;color:#333;}
+.RouterAisade .addrouterButton{border:1px solid #CCD5DB;border-radius:5px;width:170px;height:50px;line-height:50px;text-align:center;background:#fff;font-size:32px;margin-top:15px;color:#9B9B9B;font-weight:normal;margin-left:10px;}
+.RouterAisade .totalTime{line-height:40px;background:#E6E7E7;color:#535355;margin-top:15px;padding-left:5px;}
+.RouterAisade ul li .point{background:url(../img/spot.png) 5px 0 no-repeat;height:14px;}
+.RouterAisade ul li .TimeRouter{background:url(../img/timeIcon.png) 0px 7px no-repeat;padding-left:55px;margin-top:5px;}
+.RouterAisade ul li .loction{background:url(../img/LocatIcon.png) 0px 7px no-repeat;padding-left:55px;}
+
+.center{width:100%;height:100%;display:flex;}
+.eatmanageCount{width:68%;}
+.information{height: calc(100%);flex: 1;padding-right: 30px}
+.eatmanageCount #container #myPageTop{width:100%;height:100%;}
+.amap-container{height:100%;width:100%;}
+
+
+.eatmanageCount{/*background:url(../img/map.png) no-repeat;*/position:relative;width:100%;}
+.eatmanageCount #container{width:100%;position:absolute;left:0;top:0;z-index:1;height:100%;}
+.eatmanageCount #container #myPageTop{position:relative;z-index:9998;height:100%;}
+.eatmanageCount #container ul{position:absolute;bottom:0;z-index:9999;margin:5px 0 0 15px;}
+.eatmanageCount #container ul.navIconList2{position:relative;width:65%;}
+.eatmanageCount .mealList{background:#fff;border-radius:5px;margin:15px 0 20px 15px;display:inline-block;}
+.eatmanageCount .meals{padding:30px;text-align:center;background:#fff;cursor:pointer;}
+.eatmanageCount .mealsForm{padding-left:30px;padding-top:20px;padding-right:20px;}
+.eatmanageCount .saveButton{margin:0 auto;text-align:center;}
+.eldialogWarp{width:40%;margin:0 auto;padding:0 30px;}
+.eldialogWarp .menuname .el-form-item__label{font-size:16px !important;}
+.eldialogWarp .menuname .el-form-item__content{margin-left:50px !important;}
+.dialogTextare textarea{height:300px !important;overflow:auto;}
+.el-dialog{margin:10% auto 0 !important;}
+.eatmanageCount .timgIcon{width:24px;height:24px;margin-left:10px;}
+.eatmanageCount .timgSpan{width:24px;height:24px;display: inline-block;margin-right:5px;}
+.eatmanageCount .elInputform{width:75%;}
+
+.eatmanageCount #container ul{position:absolute;bottom:0;z-index:9999;}
+.eatmanageCount #container ul.navIconList2{position:relative;width:60%;}
+.navigationMoudel .navIconList li{float:left;display:inline;margin-left:20px;}
+.navigationMoudel .navIconList2 li{float:left;display:inline;margin-left:20px;color:#333;}
+.navigationMoudel .navIconList li span:nth-of-type(2){margin-left:8px;}
+.navigationMoudel .navigationCount{height:48px;line-height:48px;box-shadow:0px 7px 64px 0px rgba(0,0,0,0.07);border-radius:6px;background:#fff;margin:20px 20px 0;}
+.navigationMoudel .tipInput{margin-top:20px;width:300px;border-radius:6px;background:#fff;border:none;height:40px;line-height:40px;margin-left:20px;padding-left:15px;}
+.navigationcascader{margin-top:3px;border:none;}
+.navigationcascader input{border:none;}
+.navigationInput input{border:none;}
+
+.addPathpoint .saveButton{width:80%;margin:5% auto 0;}
+.navigationMoudel{position:relative;/*height:100%;*/z-index:9999;}
+.navigationMoudel .navigationCount{height:48px;line-height:48px;box-shadow:0px 7px 64px 0px rgba(0,0,0,0.07);border-radius:6px;background:#fff;margin:20px 20px 0;}
+.navigationMoudel .navTipCount{margin:20px 20px 0;}
+.navigationMoudel .navIconList li{float:left;display:inline;margin-left:20px;}
+.navigationMoudel .navIconList2 li{float:left;display:inline;margin-left:20px;}
+.navigationMoudel .navIconList li span:nth-of-type(2){margin-left:8px;}
+.navigationInput .el-input__inner{border:none;background:url(../img/arrowdown.png) right center no-repeat;width:50%;}
+.navigationcascader .el-input__inner{background:url(../img/arrowdown.png) right center no-repeat;border:none;width:60%;}
+.navigationMoudel .tipInput{margin-top:20px;width:300px;border-radius:6px;background:#fff;border:none;}
+.addPathpoint{border-radius:6px;background:#fff;position:absolute;left:20px;bottom:10px;/*height:400px;*/width:95%;color:#333;z-index:9999;}
+.addPathLeft{width:29%;float:left;display:inline-block;}
+.addPathLeft ul.RouteLi{position:relative !important;}
+.addPathLeft ul li{float:left;display:inline;width:18%;height:48px;margin-left:15px;margin-top:10px;}
+.addPathLeft ul li a{display: inline-block;width:48px;height:48px;}
+.addPathLeft ul li:nth-of-type(1) a{background:url(../img/pointIcon1.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(1) a{background:url(../img/pointIcon1h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(2) a{background:url(../img/pointIcon2.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(2) a{background:url(../img/pointIcon2h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(3) a{background:url(../img/pointIcon3.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(3) a{background:url(../img/pointIcon3h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(4) a{background:url(../img/pointIcon4.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(4) a{background:url(../img/pointIcon4h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(5) a{background:url(../img/pointIcon5.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(5) a{background:url(../img/pointIcon5h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(6) a{background:url(../img/pointIcon6.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(6) a{background:url(../img/pointIcon6h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(7) a{background:url(../img/pointIcon7.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(7) a{background:url(../img/pointIcon7h.png) no-repeat;}
+.addPathLeft ul li:nth-of-type(8) a{background:url(../img/pointIcon8.png) no-repeat;}
+.addPathLeft ul li.active:nth-of-type(8) a{background:url(../img/pointIcon8h.png) no-repeat;}
+.addPathLeft .txt{margin-top:20px;margin-left:25px;}
+
+.addPathRight{float:right;display:inline-block;margin-right: 65px;margin-top:21px;width:15.3%;}
+.addPathRight .avatar-uploader{width:100%;}
+.addPathRight .avatar-uploader .el-upload{width:100% !important;}
+.textareaInput{margin:20px 20px 0;}
+.addPathpoint .saveButton{width:80%;margin:5% auto 0;}
+.RouterUp .avatar-uploader .el-upload{width:188px;height:122px;}
+.RouterUp .avatar-uploader .camera{margin-top:42px;}
+.primaryButton{margin-top:20px;margin-left:20px;text-align:center;}
+.amap-container{overflow:auto !important;}
+.center .infor{width:15%;margin-right:2%;}
+.addday{width:144px;height:48px;background:#62B297;border-radius:5px;margin:30px 0 0 20px !important;text-align:center;font-size:16px;color:#fff;line-height:48px;}
+.schedule li .s_1{width:24px;height:24px;line-height:24px;background:rgba(151,151,151,1);border-radius:6px;opacity:0.5;border:1px solid rgba(151,151,151,1);color:#fff;margin-left:5px;margin-right:5px;}
+.schedule li span{float:left;display: inline;height: 28px;line-height: 28px;color:#333;}
+/*.schedule li .s_5{float:right;display:inline-block;}*/
+.schedule{margin-top:7px;}
+.schedule li{margin:27px 0;}
+.elrowButton{text-align:center;margin-top:20px;}
+.schedule li.active span{color:#62b297;}
+.schedule li span a{color:#62b297;}
+.schedule li.active span.s_1{color:#fff;text-align:center;background:#62b297;}
+.navigationcascader .el-input__inner{background:url(../img/arrowdown.png) right center no-repeat;}
+/*.el-dialog__headerbtn .el-dialog__close{background:url(../img/errorIcon.png) no-repeat;width:12px;height:12px;}*/
+
+.el-steps--simple{line-height:60px !important;padding:0 8% !important;}
+.el-step.is-simple .el-step__icon{vertical-align:middle !important;}
+.el-form-item__content .el-checkbox-group{float:left;display:inline;}
+.el-form-item__label{width:180px !important;}
+
+.tox .tox-statusbar{display:none !important;}
+.tox-notifications-container{display:none !important;}
+.el-table,.el-input__inner{font-size:12px !important;}
+.el-table td, .el-table th{padding:10px 0 !important;}
+.el-table td{padding:5px 0 !important;}
+
+.el-button--text{color:#606266 !important;}
+.el-button--primary{background:#fff !important;border-color:#DCDFE6 !important;color:#606266 !important;}
+.el-button--primary:focus, .el-button--primary:hover{background:#fff !important;border-color:#DCDFE6 !important;}
+.operaTionButton{border:1px solid #DCDFE6 !important;padding:7px !important;margin-left:5px !important;}
+.creatRoadBookSpan{border:1px solid #DCDFE6;background:#fff;color:#606266;text-align:center;padding:0 15px;margin-left:10px;height:40px;line-height:40px;border-radius:5px;display:inline-block;}
+
+.roadNameHeader.el-table th{background:#F6F7F7;line-height:30px;}
+.roadNameHeader.el-table tr td,.roadNameHeader.el-table tr th{text-align:center;color:#535355;}
+.uploadTxt{color:#333;vertical-align:bottom;margin-top:133px;float:left;display:inline;margin-left:10px;}
+
+[v-cloak]{
+  display: none !important;
+}

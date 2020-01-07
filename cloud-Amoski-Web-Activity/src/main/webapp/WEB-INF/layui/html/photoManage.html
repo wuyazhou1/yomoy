@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	  <link rel="stylesheet" href="../css/layui.css?t=1551352891258" media="all">
+	  <script type="text/javascript" src="../jquery.min.js"></script>
+	  <script src="../layui.js?t=1551352891258"></script>
+	  <script src="../commVar.js?t=1551352891258"></script>
+	  <script src="../commFun.js?t=1551352891258"></script>
+	  <style>
+		  .closeBtn {
+			  background-image: url(../images/close.png);
+			  position: relative;
+			  top: 12px;
+			  left: 148px;
+			  width: 22px;
+			  height: 20px;
+			  display:none;
+		  }
+		  .picCloseBtn {
+			  background-image: url(../images/close.png);
+			  position: relative;
+			  top: 12px;
+			  left: 148px;
+			  width: 22px;
+			  height: 20px;
+			  display:none;
+		  }
+	  </style>
+  </head>
+  <body>
+
+  <!--<div style="float:right;margin-top:15px;width:86%;">
+	  <div style="float:left;">
+		  <label class="layui-form-label">创建用户:</label>
+		  <div class="layui-input-block">
+			  <input type="text" id="createUserQuery" name="title" required autocomplete="off" class="layui-input">
+		  </div>
+	  </div>
+	  &lt;!&ndash;<div style="float:left;">
+		  <label class="layui-form-label">创建时间:</label>
+		  <div class="layui-input-block">
+			  <input type="text" id="createTimeQuery" name="title" required autocomplete="off" class="layui-input">
+		  </div>
+	  </div>&ndash;&gt;
+	  <div style="float:left;">
+		  <label class="layui-form-label">状态:</label>
+		  <div class="layui-input-block">
+			  <select id="statusQuery" lay-verify="" style="height: 35px;width: 100px;font-size: 15px;">
+				  <option value="">所有</option>
+				  <option value="1">启用</option>
+				  <option value="0">禁用</option>
+			  </select>
+		  </div>
+	  </div>
+	  <div style="float:left;margin-left:65px;">
+		  <button class="layui-btn layui-btn-normal" id="seachBtn">搜索</button>
+	  </div>
+  </div>
+  <div class="" style="float:right;margin-top:10px;width:87%;">
+	  <table class="layui-hide" id="demo" lay-filter="test" lay-skin="line"></table>
+  </div>
+
+  <script type="text/html" id="toolbarDemo" style="display: none">
+	  <div class="layui-btn-container">
+		  <button class="layui-btn layui-btn-normal" lay-event="add">
+			  <i class="layui-icon">&#xe654;</i>新增
+		  </button>
+		  <button class="layui-btn layui-btn-warm" lay-event="update">
+			  <i class="layui-icon">&#xe642;</i>修改
+		  </button>
+		  <button class="layui-btn layui-btn-danger" lay-event="delete">
+			  <i class="layui-icon">&#xe640;</i>删除
+		  </button>
+	  </div>
+  </script>-->
+
+
+  <div style="position: absolute;right:10px;top:5px;">
+	<!--<div class="layui-btn-group" >
+	  <button class="layui-btn editBtn">编辑</button>
+	</div>
+	<div class="layui-btn-group saveOrCancelGrounp">
+	  <button class="layui-btn saveEdit">保存</button>
+	  &lt;!&ndash;<button class="layui-btn cancelBtn">取消</button>&ndash;&gt;
+	</div>-->
+	  <div class="layui-btn-group">
+		  <button class="layui-btn picEditBtn">编辑</button>
+	  </div>
+	  <div class="layui-btn-group picSaveOrCancelGrounp" style="float:left;margin-left:0px;">
+		  <button class="layui-btn picSaveEdit" style="display: none">保存</button>
+		  <!--<button class="layui-btn picCancelBtn">取消</button>-->
+	  </div>
+   </div>
+  <div id="allImgDiv" style="width:90%;height: 100%;margin-top:-35px;">
+
+  </div>
+  <!--<div  style="position:absolute;top:10px;left:10px;right:0;bottom:0;" id="photoGrounp">-->
+   <!--<div style="background-color:red;width:100%;">
+	   <div class="layui-btn-group">
+		  <button class="layui-btn picEditBtn">编辑</button>
+		</div>
+		<div class="layui-btn-group picSaveOrCancelGrounp" style="display:none;float:left;">
+		  <button class="layui-btn picSaveEdit">保存</button>
+		  &lt;!&ndash;<button class="layui-btn picCancelBtn">取消</button>&ndash;&gt;
+		</div>
+   </div>-->
+
+  <!--供上传图片后查看-->
+<script  type="text/html" id="waterMakerImg" style="display: none;">
+	<div id="waterMakerImgPDiv{{d.id}}" class="layer-photos-demo">
+		<img layer-pid="{{d.id}}" layer-src="/AmoskiActivity/watermarkManage/getImg?imgUrl={{d.imgUrl}}" src="/AmoskiActivity/watermarkManage/getImg?imgUrl={{d.smallImgUrl}}" alt="图片名" height="80px",width="150px">
+	</div>
+</script>
+  </body>
+
+<script>
+	function GetRequest(){
+		var url = location.search; //获取url中"?"符后的字串
+		var theRequest = new Object();
+		if (url.indexOf("?") != -1) {
+			var str = url.substr(1);
+			strs = str.split("&");
+			for(var i = 0; i < strs.length; i ++) {
+				theRequest[strs[i].split("=")[0]]=decodeURI((strs[i].split("=")[1]));
+			}
+		}
+		return theRequest;
+	}
+	$(function(){
+		layui.use(['table', 'layer','upload','flow'], function(){
+			var table = layui.table;
+			var layer=layui.layer;
+			var upload = layui.upload;
+			var flow = layui.flow;
+			var pid=GetRequest("id");
+			var baseUrl="/AmoskiActivity/";
+			var allRequest={
+				queryUserPhotoUrl:baseUrl+"photoManage/queryUserPhoto",//查询用户所有相册
+				updateUserPhotoInfoUrl:baseUrl+"photoManage/updateUserPhotoInfo",//编辑相册（删除）
+				queryUserPicByPhotoIdUrl:baseUrl+"photoManage/queryUserPicByPhotoId",//查询相册所有照片
+				queryAllMemberInfoUrl:baseUrl+"photoManage/queryAllMemberInfo",//查询相册所有照片
+			}
+
+			//事件监听
+			function elementEvt(){
+				var ids="";
+				/*//删除
+				$(document).on("click",".closeBtn",function(){
+					$(this).parent().hide();
+					ids+=$(this).attr("data-id")+",";
+				})
+				//编辑
+				$(document).on("click",".editBtn",function(){
+					$("#photoGrounp .closeBtn").show();
+				});
+				//保存
+				$(document).on("click",".saveEdit",function(){
+					$("#photoGrounp .closeBtn").show();
+					jsonAjax(allRequest.updateUserPhotoInfoUrl,{userId:1,ids:ids},function(res){
+						if(res.code=="0"){
+							alert("删除成功！！！");
+							$("#photoGrounp .closeBtn").hide();
+							ids="";
+						}
+						},function(res){+
+							console.log("request error!!!!");
+						})
+				});
+				//取消
+				$(document).on("click",".cancelBtn",function(){
+					$("#photoGrounp .closeBtn").hide();
+					$("#photoGrounp .closeBtn").parent().show();
+					ids+=$(this).data("id")+",";
+				})*/
+
+
+				//相片删除
+				$(document).on("click",".picCloseBtn",function(){
+					$(this).parent().hide();
+					ids+=$(this).attr("data-id")+",";
+				})
+				//相片编辑
+				$(".picEditBtn").bind("click",function(){
+					$("#allImgDiv .picCloseBtn").show();
+					$(this).hide();
+					$(".picSaveEdit").show();
+				});
+				//相片保存
+				$(".picSaveEdit").bind("click",function(){
+					$("#allImgDiv .picCloseBtn").hide();
+					$(this).hide();
+					$(".picEditBtn").show();
+					if(ids){
+						jsonAjax(allRequest.updateUserPhotoInfoUrl,{userId:pid.id,ids:ids},function(res){
+							if(res.code=="0"){
+								alert("删除成功！！！");
+								$("#allImgDiv .picCloseBtn").hide();
+								ids="";
+							}
+						},function(res){
+							console.log("request error!!!!");
+						})
+					}
+				});
+				//相片取消
+				$(".picCancelBtn").bind("click",function(){
+					$("#allImgDiv .picCloseBtn").hide();
+					$("#allImgDiv .picCloseBtn").parent().show();
+					ids+=$(this).data("id")+",";
+				})
+			}
+			elementEvt();
+			//加载相册
+			function loadPhoto(){
+				flow.load({
+					elem: '#allImgDiv' //指定列表容器
+					//,end:"没有更多了~~~"
+					,isLazyimg:true
+					,done: function(page, next){ //到达临界点（默认滚动触发），触发下一页
+						var limit=30;
+						var requestObj={
+							memberId:pid.id,
+							//photoId:photoId,
+							page:page,
+							limit:limit
+						}
+						jsonAjax(allRequest.queryUserPicByPhotoIdUrl,requestObj,function(res){
+							if(res.code=="0"){
+								var totalPage=Math.ceil(res.data.recordsTotal/limit);
+								next('ggfyu', page<totalPage);
+								var data=res.data.data;
+								var bl=$(".picEditBtn").css("display")=="none";
+								for (var i=0;i<data.length;i++){
+									var dto=data[i];
+									var divElm=document.createElement("div");
+									divElm.setAttribute("id","picMark"+i)
+									divElm.style="float:left;text-align:center;margin-left:20px;width:180px;";
+									divElm.innerHTML='<div class="picCloseBtn" data-id="'+dto.id+'"></div>'+
+											'<img lay-src="/AmoskiActivity/watermarkManage/getImg?imgUrl='+dto.smallUrl+'" layer-src="/AmoskiActivity/watermarkManage/getImg?imgUrl='+dto.imgUrl+'"  height="100px" width="160px">'+
+											'<p>'+dto.smallUrl.substr(dto.smallUrl.lastIndexOf("/")+1)+'</p></div>';
+									$("#allImgDiv").append(divElm);
+									layer.photos({
+										photos: '#picMark'+i
+										,anim: 0 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+									});
+								}
+								if(bl){
+									$("#allImgDiv .picCloseBtn").show();
+								}
+							}
+						},function(res){
+							console.log("request error!!!!");
+						})
+					}
+				});
+				/*jsonAjax(allRequest.queryUserPhotoUrl,{userId:1},function(res){
+					if(res.code=="0"){
+						var data=res.data;
+						for (var i=0;i<data.length;i++){
+							var dto=data[i];
+							var divElm=document.createElement("div");
+							divElm.setAttribute("id","picMark"+i);
+							divElm.style="float:left;text-align:center;";
+							divElm.innerHTML='<div class="closeBtn" data-id="'+dto.id+'"></div>'+
+									'<img lay-src="'+dto.baseUrl+dto.smallUrl+'" height="100px" width="160px">'+
+									'<p>'+dto.photoName+'</p></div>';
+							$("#photoGrounp").append(divElm);
+						}
+					}
+				},function(res){
+					console.log("request error!!!!");
+				})*/
+			}
+			loadPhoto();
+
+			function showTableData(){
+				//树节点点击事件
+				table.render({
+					elem: '#demo'
+					//,height: auto
+					,url: allRequest.queryAllMemberInfoUrl //数据接口
+					,where:{}
+					,parseData:function(res){
+						return {
+							"code": res.code=="10000"?0:res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.recordsTotal, //解析数据长度
+							"data": res.data.data //解析数据列表
+						};
+					}
+					,page: true //开启分页
+					,limit:10//每页条数
+					,cols: [[ //表头
+						{field: 'id', title: 'ID',  sort: true, align:'center'}
+						,{field: 'name', title: '用户昵称',align:'center',hide:true}
+						,{field: 'createTime', title: '创建时间', sort: true,align:'center',
+							templet:function(dt){
+								return dt.createTime?new Date(dt.createTime).format(DATE_FORMAT_YTDHMS):""
+							}
+						}
+						,{field: 'smallImgUrl', title: '头像',align:'center', templet:'#waterMakerImg',event:"showOrginImg",height:100}
+						,{field: 'remake', title: '简介',align:'center',height:100}
+					]]
+					,toolbar:'#toolbarDemo'
+					,defaultToolbar:[]
+					,done:function(res, curr, count){
+						console.log(res);
+						var data=res.data;
+						for(var i=0;i<data.length;i++){
+							showOriginImg(data[i].id);//显示相册图层
+						}
+					}
+				})
+			}
+		});
+	})
+</script>
+</html>

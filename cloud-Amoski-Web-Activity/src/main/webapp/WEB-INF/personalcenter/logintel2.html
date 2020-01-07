@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div id="logintel" class="logintel login">
+    <div class="goarrow" @click="backUrl"><a href="javascript:void(0)"><img src="img/arrow.png" width="100%"  height="100%"></a></div>
+    <h2>登录爱摩老斯基</h2>
+    <div class="logintelconent">
+        <ul>
+            <li><span class="numberfont">+86</span><input type="text" placeholder="请输入手机号" v-model="tel" @keyup="getInputValue" class="numberfont"></li>
+            <li  v-if="eye"><input type="password" placeholder="请输入密码" v-model="pass" @keyup="getInputValue"><span class="icon64"><img src="img/colse_eyes.png" width="100%" height="100%" @click="showPassword()"></span></li>
+            <li  v-else><input type="text" placeholder="请输入密码" v-model="pass" @keyup="getInputValue"><span class="icon64"><img src="img/open_eyes.png" width="100%" height="100%" @click="showPassword()"></span></li>
+        </ul>
+        <p class="quicklogin clearfix">
+            <a href="loginfreepass.html">免密码登录</a>
+            <a href="forgetpassword.html">忘记密码？</a>
+        </p>
+        <p class="error">{{errortip}}</p>
+        <input v-if="btnshow2" type="button" value="登录" class="loginButton  activate"  @click="mobileLogin">
+        <input v-else type="button" value="登录" class="loginButton  notactivate" @click="mobileLogin">
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/axios.min.js"></script>
+<script>
+    axios.defaults.withCredentials=true;
+    var app = new Vue({
+        el: '#logintel',
+        data: {
+            btnshow:false,    //v-show="false" 隐藏
+            newpsd:'',		  //v-model input 数据双向绑定
+            eye:true,         //
+            inputType:'',	  //
+            btnshow2:'',
+            errortip:'',//错误提示
+            tel:'',
+            pass:''
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            showPassword:function(){ /*密码显示 */
+                var _this = this;
+                if (_this.eye) {
+                    _this.eye = false
+                    _this.inputType = 'password'
+                } else {
+                    _this.eye = true
+                    _this.inputType = 'text'
+                }
+            },
+            getInputValue(){
+                let _this = this
+                if(_this.tel.length>=1 || _this.pass.length>=1){
+                    _this.btnshow2 = true;
+                }else{
+                    _this.btnshow2 = false;
+                }
+            },
+
+    urlDeal(url){
+        //解决缓存的转换
+        if (url.indexOf("?") >= 0) {
+            url = url + "&t=" + (new Date()).valueOf();
+        } else {
+            url = url + "?+=" + (new Date()).valueOf();
+        }
+
+        //解决跨域的问题
+        if (url.indexOf("http://") >= 0) {
+            url.replace("?", "&");
+            url = "Proxy?url=" + url;
+        }
+// debugger;
+        return url;
+    },
+            mobileLogin:function(){
+                var _this=this;
+                //手机号验证
+                var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+                //密码验证
+                if (!_this.tel) {
+                    _this.errortip = "请输入手机号";
+                }else if(!myreg.test(_this.tel)){
+                    _this.errortip = '请输入正确手机号';
+                }
+                else if(!_this.pass){
+                    _this.errortip = "请输入密码";
+                } else if(_this.pass.length < 6){
+                    _this.errortip = '密码不能少于6位';
+                }
+                else{
+                    _this.errortip = "";
+                    //axios.post(_this.urlDeal('http://192.168.5.177/AmoskiActivity/memberUser/login'),{
+                    axios.post('http://192.168.5.177/AmoskiActivity/memberUser/login',{
+                        params: {
+                            mobile:_this.tel,
+                            pwd:_this.pass
+                        }
+                    },{
+                        method: 'post',
+                        headers: {'Content-Type': 'application/json;charset=utf-8'}
+                    }).then(function (res) {
+                        //成功获取数据
+                        let resdata = res.data;
+                        if (resdata.code == "0") {
+                            console.log("成功");
+                            window.location.href="person/index.html";
+                        } else {
+                            _this.errortip = resdata.msg;
+                        }
+                    }).catch(function (err){
+                        console.log('失败');
+                        //请求错误
+                        console.log(err);
+                    })
+                }
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

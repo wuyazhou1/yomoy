@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+</head>
+<body>
+<div id="lineroadDetail" class="clearfix">
+    <!--<div class="positionBar pt10 pb10">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38 dblock textAlign">线路详情</span>
+    </div>-->
+    <div class="pathCount pl15 pr15 mt22">
+        <div class="clearfix pt15">
+            <!--<span class="fl mt20"><img src="img/lineIcon1.jpg" width="100%" height="100%"></span>-->
+            <span class="fl mt20 w24"><img :src="'img/ic_point_type'+firstRouteData.routeIcon+'.png'" width="100%" height="100%"></span>
+            <div class="fl ImgTxt ml20">
+                <span class="fl w40 h40 Img"><img :src="firstportraitimg" width="100%" height="100%"></span>
+                <div class="fl Txt ml10" style="width:80%;">
+                    <strong class="f15">{{firstRouteData.routeName}}</strong>
+                    <p class="f12">{{firstRouteData.address}}</p>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix" v-show="firstRouteData.aboutdis>0 || firstRouteData.ridingtime>0">
+            <span class="fl"><img src="img/lineIcon2.jpg" width="100%" height="100%"></span>
+            <div class="fl ml20">
+                <div class="fl ml10 mt22">
+                    <strong class="f15">距离<span v-show="firstRouteData.aboutdis>0">{{firstRouteData.aboutdis/1000}}km</span>；预计<span v-show="firstRouteData.ridingtime>0">{{Math.floor(firstRouteData.ridingtime/60)}}min</span></strong>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix">
+            <!--<span class="fl mt20"><img src="img/lineIcon3.jpg" width="100%" height="100%"></span>-->
+            <span class="fl mt20 w24"><img :src="'img/ic_point_type'+secondRouteData.routeIcon+'.png'" width="100%" height="100%"></span>
+            <div class="fl ImgTxt ml20">
+                <span class="fl w40 h40 Img"><img :src="secondportraitimg" width="100%" height="100%"></span>
+                <div class="fl Txt ml10" style="width:80%;">
+                    <strong class="f15">{{secondRouteData.routeName}}</strong>
+                    <p class="f12">{{secondRouteData.address}}</p>
+                </div>
+            </div>
+        </div>
+        <!--<p class="mt22 lh24 f15" v-html="firstRouteData.linedesc"></p>-->
+        <p class="mt22 lh24 f15" v-html="firstRouteData.lineIntroduction"></p>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#lineroadDetail',
+        data:{
+            firstRouteData:{},
+            secondRouteData:{},
+            firstportraitimg:'',
+            secondportraitimg:'',
+            queryId:'345,346'
+        },
+        mounted(){
+            this.queryId=GetRequest().id;
+            this.roadInfor();
+        },
+        methods:{
+            roadInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        type:'2', // 1.路书简介 2.线路详情 3.途径点详情
+                        id:_this.queryId,//=345,346
+                    }
+                    postData(data,'AmoskiRiding/appRidingGuideManage/queryRouteInfo').then(response =>{
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result)
+                            {
+                                _this.firstRouteData = result.firstRoute;
+                                _this.secondRouteData = result.secondRoute;
+                                _this.firstportraitimg = _this.firstRouteData.imgUrl?API_ROOT+"AmoskiRiding/appRidingGuideManage/getImg?fileUrl="+_this.firstRouteData.imgUrl:_this.firstportraitimg;
+                                _this.secondportraitimg = _this.secondRouteData.imgUrl?API_ROOT+"AmoskiRiding/appRidingGuideManage/getImg?fileUrl="+_this.secondRouteData.imgUrl:_this.secondportraitimg;
+
+                            }
+                            resolve(result)
+                        } else {
+                           // reject('error')
+                        }
+                    }).catch(error => {
+                       // reject(error)
+                    })
+
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

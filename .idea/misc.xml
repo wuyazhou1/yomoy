@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="FrameworkDetectionExcludesConfiguration">
+    <file type="web" url="file://$PROJECT_DIR$/Amoski-Web" />
+  </component>
+  <component name="JavaScriptSettings">
+    <option name="languageLevel" value="ES6" />
+  </component>
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/cloud-discovery/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-gateway/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-User/pom.xml" />
+        <option value="$PROJECT_DIR$/AmoskiUtil/pom.xml" />
+        <option value="$PROJECT_DIR$/Amoski-Util/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-User/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-Web-User/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Web-User/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-Activity/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Activity/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-Web-Activity/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Web-Activity/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Goods/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Riding/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-Goods/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-Riding/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Web-Goods/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Web-Riding/pom.xml" />
+        <option value="$PROJECT_DIR$/cloud-Amoski-Wechat/pom.xml" />
+        <option value="$PROJECT_DIR$/server-Amoski-Wechat/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK" />
+</project>

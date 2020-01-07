@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">设置</span>
+        </p>
+    </div>
+    <ul class="portraitList changename mt15">
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="javascript:void(0)" @click="goaccount()" class="clearfix cursor">
+                <span class="fl f15 mt8">
+                    <span class="namenc">账号管理与绑定</span>
+                </span>
+                <span class="fr">
+                    <span class="w24 displayinlik ml15"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                </span>
+            </a>
+        </li>
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="../person/feedback.html" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">意见反馈</span>
+                </span>
+                <span class="fr">
+                    <span class="w24 displayinlik ml15"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                </span>
+            </a>
+        </li>
+    </ul>
+    <div class="loginButton ml15 mr15 mt36 f15 cursor" @click="quidlanding"><input type="button" value="退出登录" ></div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            desc:'',
+            bindvale:'',
+        },
+        mounted(){
+            let _this = this;
+            let Request = new Object();
+            Request = GetRequest();
+            _this.bindvale = Request.ident;
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            quidlanding(){
+                window.location.href = '../loginregister.html';
+            },
+            goaccount(){
+                window.location.href = 'account.html?bindv='+this.bindvale;
+            }
+        }
+    })
+</script>
+</body>
+</html>

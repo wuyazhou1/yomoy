@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.dtpicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.picker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/ui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+</head>
+<body>
+<div id="vehclebinding" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">车辆绑定</span>
+        </p>
+    </div>
+    <div class="couenter">
+        <ul class="portraitList changename mt15">
+            <li class="clearfix pl15 pr15 pb15 pt15">
+                <span class="fl f15 mt8 displayblock carNamewarp">
+                        <input type="text" placeholder="给爱车取个名字" class="namenc carName" v-model="cName">
+                    </span>
+            </li>
+            <li class="clearfix pl15 pr15 pb15 pt15">
+                <a href="javascript:void(0)" class="clearfix" @click="brandcar">
+                    <span class="fl f15 mt8">
+                        <span class="namenc">品牌系列</span>
+                    </span>
+                    <span class="fr f14">
+                        <span class="toutxt toutxt2" >{{brand}}</span>
+                        <span class="w24 displayinlik ml15"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <div class="photoshopPic" >
+            <label for="takepicture">
+                <input type="file"  value="照相机"  ref="photoImg" id='takepicture' accept="image/*" capture='camera' @change="photoPic('photoImg')">
+                <div class="camera" v-show="!portraitoff"><img src="../img/photoshopPic.png" width="100%" height="100%"></div>
+                <div class="w315 h210 portra"><img :src="portrait" v-show="portraitoff"></div>
+            </label>
+        </div>
+    </div>
+    <p class="error">{{errortip}}</p>
+    <div v-if="edit" class="loginButton ml15 mr15 f15 mt22" @click="vehicelsubedit()"><input type="button"  :disabled="isDisabled" value="确定"></div>
+    <div v-else class="loginButton ml15 mr15 mt36 f15 mt22" @click="vehicelsub()"><input type="button" :disabled="isDisabled2" value="确定"></div>
+<!--    <div class="box" v-show="alertTipscuess">-->
+<!--        <div class="box1">-->
+<!--            <span class="scuessIcon"><img src="../img/scuessIcon.png" width="100%" height="100%"></span>-->
+<!--            <p class="text">{{scuesstext}}</p>-->
+<!--        </div>-->
+<!--    </div>-->
+
+<!--    <div class="box" v-show="alertTiperror">-->
+<!--        <div class="box1">-->
+<!--            <span class="scuessIcon"><img src="../img/errorIcon.png" width="100%" height="100%"></span>-->
+<!--            <p class="text">{{errortext}}</p>-->
+<!--        </div>-->
+<!--    </div>-->
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/mui.dtpicker.js"></script>
+<script src="../js/mui.picker.js"></script>
+<script src="../js/mui.poppicker.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+
+    var app = new Vue({
+        el: '#vehclebinding',
+        data: {
+            isDisabled:false,
+            isDisabled2:false,
+            remnant:0,
+            desc:'',
+            cName:'',//车名称
+            brand:'',//品牌系统
+            bName:'',//车辆品牌名称
+            bTypeName:'',//车辆品牌下型号名称
+            pickerdata:'',//车辆品牌数据
+            cBrandId:'',//车辆型号id
+            portrait:'',//图片路径
+            errortip:'',//错误提示
+            alertTipscuess:false,//成功提示框
+            alertTiperror:false,//失败提示框
+            scuesstext:'绑定成功',
+            errortext:'绑定失败',
+            edit:false,
+            imgUrl:'',
+            id:'',
+            carBrandId:'',
+            portraitoff:false,
+        },
+        created(){
+            //反显编辑
+            let Request = new Object();
+            Request = GetRequest();
+            this.edit = Request.edit;
+            if(this.edit)//判断是不是编辑页面
+            {
+                this.portraitoff = true;
+                this.brand = Request.brandName==true?Request.brandName:''+" "+Request.brandTypeName==true?Request.brandTypeName:'';
+                this.bName = Request.brandName,//车辆品牌名称
+                this.bTypeName = Request.brandTypeName;
+                this.carBrandId = Request.carBrandId;
+                this.cName = Request.carName;
+                this.id = Request.id;
+                this.portrait = API_ROOT+'AmoskiActivity/userCenterManage/getImg?imgUrl='+Request.imgUrl
+            }
+        },
+       mounted(){
+
+       },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            brandcar:function(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'AmoskiActivity/userCenterManage/queryAllVehicleBrandAndType').then(response => {
+                        if (response.code == 0) {
+                            let rspData=response.data;
+                            let resultData=[];
+                            for(let i=0;i<rspData.length;i++){
+                                let dt=rspData[i],childrenList=dt.list;
+                                let obj={
+                                    text:dt.brandName,
+                                    value:dt.id
+                                }
+                                let childrenData=[];
+                                if(childrenList)
+                                {
+                                    for(let j=0;j<childrenList.length;j++){
+                                        let childrenObj={
+                                            text:childrenList[j].name,
+                                            value:childrenList[j].id
+                                        }
+                                        childrenData.push(childrenObj);
+                                    }
+                                    obj.children=childrenData;
+                                }
+                                resultData.push(obj);
+                            }
+                            let picker = new mui.PopPicker({
+                                layer: 2
+                            });
+                            picker.setData(resultData);
+                            picker.show(function(SelectedItem){
+                                console.log(SelectedItem);
+                                _this.brand="";
+                                let arry = [];
+                                let arrynum = [];
+                                SelectedItem.forEach(function(currentValue, index, arr){
+                                    arry.push(arr[index].text);
+                                    arrynum.push(arr[index].value);
+                                    _this.brand = arry.join(" ");
+                                    _this.bName = arry[0];
+                                    _this.bTypeName = arry[1];
+                                    _this.cBrandId = arrynum[1];
+                                })
+                            })
+                            resolve(rspData)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                })
+            },
+            vehicelsub(){
+                let _this = this;
+                _this.isDisabled2 = true;
+                if (!_this.cName) {
+                     _this.errortip = "爱车名称不能为空";
+                    _this.isDisabled2 = false;
+                }else if (!_this.brand) {
+                    _this.errortip = "品牌不能为空";
+                    _this.isDisabled2 = false;
+                }else{
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            carName: _this.cName,//车名称
+                            carImg: _this.imgUrl,//图名称
+                            carBrandId: _this.cBrandId,//车辆型号id
+                            brandName: _this.bName,//车辆品牌名称
+                            brandTypeName: _this.bTypeName//车辆品牌下型号名称
+                        }
+                        postData(data,'AmoskiActivity/userCenterManage/bindSelfVehicle').then(response => {
+                            _this.errortip = "";
+                            let resdata =  response.data;
+                            if (response.code == 0) {
+                                _this.alertTipscuess = true;
+                                scuessTip(_this.scuesstext,_this.alertTipscuess);
+                                _this.isDisabled2 = false;
+                                window.location.href = 'myvehicle.html';
+                            } else{
+                                _this.alertTiperror = true;//绑定失败
+                                errorTip(_this.errortext,_this.alertTiperror);
+                                _this.isDisabled2 = false;
+                                resolve(resdata)
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+                    })
+                }
+
+            },
+            vehicelsubedit(){//编辑
+                let _this = this;
+                _this.isDisabled = true;
+                if (!_this.cName) {
+                    _this.errortip = "爱车名称不能为空";
+                    _this.isDisabled2 = false;
+                }else if (!_this.brand) {
+                    _this.errortip = "品牌不能为空";
+                    _this.isDisabled2 = false;
+                }else {
+                    _this.errortip = "";
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            id: _this.id,
+                            carName: _this.cName,//车名称
+                            carImg: _this.portrait.split('=')[1],//图名称
+                            carBrandId: _this.carBrandId,//车辆型号id
+                            brandName: _this.bName,//车辆品牌名称
+                            brandTypeName: _this.bTypeName//车辆品牌下型号名称
+                        }
+                        postData(data, 'AmoskiActivity/userCenterManage/updateVehicleInfo').then(response => {
+                            if (response.code == 0) {
+                                const result = response.data;
+                                _this.isDisabled = false;
+                                window.location.href = 'myvehicle.html'
+                                resolve(result)
+                            } else {
+                                _this.isDisabled = false;
+                                reject('error')
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+                    })
+                }
+            },
+            photoPic(photoImg){//照相机
+                let that=this;
+                // mui.showLoading("","");
+                let imgFile = that.$refs[photoImg].files[0]
+                console.log(imgFile);
+                let formData=new FormData();//通过formdata上传
+                formData.append('file',imgFile);
+                return new Promise((resolve, reject) => {
+                    postData(formData,'AmoskiActivity/userCenterManage/uploadVehicleFile').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data
+                            if(result){
+                                let imgUrl=result.originaImgPath;
+                                that.portraitoff = true;
+                                that.imgUrl=imgUrl;
+                                that.portrait = API_ROOT+'AmoskiActivity/userCenterManage/getImg?imgUrl='+imgUrl;
+                            }
+                            // mui.hideLoading()
+                            resolve(result)
+                        } else {
+                          //  reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+
+            }
+        }
+    })
+</script>
+</body>
+</html>

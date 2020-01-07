@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script src='../js/tinymce.min.js' referrerpolicy="origin"></script>
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#mytextarea',
+            height: 380,
+            language: "zh_CN",
+            setup:function(editor){
+                editor.on('input', function(){
+                    //活动详情放活动简介里面
+                    window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity['detailsActivities']=tinyMCE.activeEditor.getContent();
+                    //window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[window.top.scheduleIndex].detailsActivities=tinyMCE.activeEditor.getContent();
+                })
+            }
+        });
+    </script>
+</head>
+<body>
+<div id="detailpage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <my-aisde></my-aisde>
+        <div class="information fl">
+            <h2>活动详情</h2>
+            <div >
+                <form method="post" class="activedetail" :disabled="formDisabled" >
+                    <textarea id="mytextarea" v-model="createObjdetail.detailsActivities">Hello, World!</textarea>
+                </form>
+            </div>
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script>
+    var app = new Vue({
+        el: '#detailpage',
+        data: {
+            formDisabled:false,
+            createObjdetail:{},
+
+        },
+        mounted(){
+            this.createObjdetail=window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+        },
+        methods: {
+            // inputChange(node,tab){
+            //     window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[tab]=node.constructor.valueOf();
+            // },
+        }
+    })
+    lookDisabled();//如果是查看需要禁用表单
+</script>
+</body>
+</html>

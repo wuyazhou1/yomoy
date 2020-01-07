@@ -1,0 +1,4 @@
+com\nsc\Amoski\controller\ActivityManageController.class
+com\nsc\Amoski\service\UserManageService.class
+com\nsc\Amoski\service\impl\UserManageServiceImpl.class
+com\nsc\Amoski\controller\IndexJspController.class

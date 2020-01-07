@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <title></title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style>
+        .liActive{
+            color:blue;
+        }
+        .liActive a{
+            color:blue;
+        }
+        .HeaderCount ul li a{/* color:#222; */}
+        .el-button{font-size:12px !important;}
+    </style>
+
+</head>
+<body>
+
+<section class="couenter" id="amoskiMain">
+    <header class="HeaderCount clearfix">
+        <ul class="fl" style="width:20%;margin-left:0;">
+            <li class="roadname"><h2>路书列表</h2></li>
+        </ul>
+        <div class="fr CountRight">
+            <!--<ul>-->
+                <!--&lt;!&ndash;<li v-for="item in stateList1" @click="tabChange(item.val)" :class="{liActive:currState==item.val}"><a href="#">{{item.txt}}</a></li>&ndash;&gt;-->
+            <!--</ul>-->
+            <el-select v-model="currState" placeholder="请选择" class="optionChoice">
+                <el-option
+                        v-for="item in stateList1"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.id">
+                </el-option>
+            </el-select>
+            <el-select v-model="strengthgrade" placeholder="请选择" class="optionChoice">
+                <el-option
+                        v-for="item in strengthgradeList"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.id">
+                </el-option>
+            </el-select>
+            <el-select v-model="scenerygrad" placeholder="请选择" class="optionChoice">
+                <el-option
+                        v-for="item in scenerygradList"
+                        :key="item.name"
+                        :label="item.name"
+                        :value="item.id">
+                </el-option>
+            </el-select>
+            <el-input v-model="input" placeholder="请输入路书名称" class="optionChoice"></el-input>
+            <span class="ml10 dinline"><el-button @click="queryTableData(1)" type="primary">查询</el-button></span>
+            <span class="creatRoadBookSpan"><a href="creatRoadBook.html">创建路书</a></span>
+        </div>
+    </header>
+
+    <el-table
+            :data="tableData"
+            style="width: 100%" class="roadNameHeader">
+        <el-table-column
+                fixed
+                prop="title"
+                label="路书名称"
+                width="280">
+        </el-table-column>
+        <el-table-column
+                prop="ridingtime"
+                label="时长"
+                width="100">
+        </el-table-column>
+        <el-table-column
+                prop="address"
+                label="地点"
+                width="80">
+        </el-table-column>
+        <!--<el-table-column
+                prop="route"
+                label="市区"
+                width="140">
+        </el-table-column>-->
+        <el-table-column
+                prop="startaddr"
+                label="地址"
+                width="240">
+        </el-table-column>
+        <el-table-column
+                prop="routepoint"
+                label="活动线路"
+                width="240">
+        </el-table-column>
+        <el-table-column
+                prop="routepointcount"
+                label="途径点"
+                width="100">
+        </el-table-column>
+        <el-table-column
+                prop="strengthgrade"
+                label="线路等级"
+                width="100">
+        </el-table-column>
+        <el-table-column
+                prop="scenerygrad"
+                label="沿途风景"
+                width="100">
+        </el-table-column>
+        <el-table-column
+                prop="experience"
+                label="经验要求"
+                width="100">
+        </el-table-column>
+        <el-table-column
+                prop="lookcount"
+                label="浏览"
+                width="120">
+        </el-table-column>
+        <el-table-column
+                prop="statusTxt"
+                label="状态"
+                width="100">
+        </el-table-column>
+        <el-table-column
+                fixed="right"
+                label="操作"
+                width="200">
+            <template slot-scope="scope">
+                <!--<el-button @click="handleView()" type="text" size="small">查看</el-button>-->
+                <el-button class="operaTionButton" v-show="scope.row.status!=0" type="text" size="small" @click="handleUpdate(scope.row)">编辑</el-button>
+                <el-button class="operaTionButton" v-show="scope.row.status!=0" type="text" size="small" @click="handleDelete(scope.$index,0)">删除</el-button>
+                <el-button class="operaTionButton" v-show="scope.row.status==0" type="text" size="small" @click="handleDelete(scope.$index)">恢复</el-button>
+            </template>
+        </el-table-column>
+    </el-table>
+    <div class="mt20">
+        <el-pagination
+            background
+            layout="prev, pager, next"
+            @current-change="queryTableData"
+            :page-size="pageSize"
+            :current-page="currentPage"
+            :total="currentTotal" class="mt20">
+        </el-pagination>
+    </div>
+</section>
+
+<script type="text/javascript" src="js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+
+<script type="text/javascript" src="js/element-ui.js"></script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#amoskiMain',
+        data:{
+            stateList1:[{name:"全部",id:""},{name:"草稿",id:1},{name:"已发布",id:2},{name:"回收站",id:0}],
+            currState:"",
+            strengthgradeList: [{
+                id: '',
+                name: '全部'
+            }/*,{
+                value: '1',
+                label: '新手上路'
+            }, {
+                value: '2',
+                label: '进阶之陡'
+            },{
+                value: '3',
+                label: '高手游玩'
+            },{
+                value: '4',
+                label: '大神出没'
+            }*/],
+            scenerygradList: [{
+                id: '',
+                name: '全部'
+            }/*,{
+                value: '1',
+                label: '随性骑行'
+            }, {
+                value: '2',
+                label: '美食美景'
+            },{
+                value: '3',
+                label: '尽情享乐'
+            },{
+                value: '4',
+                label: '极致游玩'
+            }*/],
+            tableData: [],
+            requestUrl:{
+                requestListDataUrl:"/AmoskiRiding/ridingGuideManage/queryGuideList",
+                requestRouteListDataUrl:"/AmoskiRiding/ridingGuideManage/queryRouteList",
+                requestDeleteRoadDataUrl:"/AmoskiRiding/ridingGuideManage/updGuideStatus",
+            },
+            scenerygrad: '',
+            strengthgrade: '',
+            input: '',
+            currentPage: 1,
+            pageSize: 10,
+            currentTotal: 0,
+            /*strengthgradeNum:['新手上路','进阶之徒','高手游玩','大神出没'],
+            scenerygradNum:["随性骑行","美食美景","尽情享乐","极致游玩"],*/
+            askList:[/*'一颗星','二颗星','三颗星','四颗星','五颗星'*/],//经验要求
+
+
+            stateList:['已删除','草稿','已发布'],
+            statedate:'',
+        },
+        mounted(){
+            window.parent.ShowLayerWait();
+            let that = this;
+            var obj=parent.document.getElementById("mCustomScrollbarMenu");
+            var height=obj.offsetHeight-100;
+            parent.document.getElementsByTagName("iframe")[0].height=height;
+
+            queryDict("80014","askList",function(data){
+                for (var i=0;i<data.length;i++){
+                    that.askList.push(data[i]);
+                }
+                queryDict("80012","",function(data){
+                    for (var i=0;i<data.length;i++){
+                        that.strengthgradeList.push(data[i]);
+                    }
+                    queryDict("80013","",function(data){
+                        for (var i=0;i<data.length;i++){
+                            that.scenerygradList.push(data[i]);
+                        }
+                        that.queryTableData();
+                    });//查询字典数据
+                });//查询字典数据
+            });//查询字典数据
+
+
+        },
+        methods:{
+            handleView:function(){
+                window.location.href = 'creatRoadBook.html';
+            },
+            handleUpdate:function(row){
+                window.location.href = 'creatRoadBook.html?id='+row.id;
+            },
+            initCreateObj(){//初始化数据
+
+            },
+            /*tabChange(type){
+                var that=this;
+                that.currState=type;
+                that.queryTableData();
+            },*/
+            queryTableData(currentPage){//查询表格数据
+                let that = this;
+                if(!currentPage){
+                    currentPage=1;
+                }
+                that.currentPage=currentPage;
+                var obj={
+                    status:that.currState,
+                    title:that.input,
+                    page:that.currentPage,
+                    limit:that.pageSize,
+                    strengthgrade: that.strengthgrade,
+                    scenerygrad:that.scenerygrad
+                };
+                axiosSendPost(that.requestUrl.requestListDataUrl,obj,function(res){
+                    var data=res.data.data;//数据
+                    data.forEach(function(currentValue, index, arr){
+                       arr[index].strengthgrade = arr[index].strengthgrade?that.strengthgradeList[arr[index].strengthgrade].name:''//线路等级
+                       arr[index].scenerygrad =arr[index].scenerygrad?that.scenerygradList[arr[index].scenerygrad].name:''//风景等级
+                        arr[index].experience=arr[index].experience?that.askList[arr[index].experience-1].name:''//经验等级
+                        arr[index].statusTxt=arr[index].status?that.stateList[arr[index].status]:''//经验等级
+                        arr[index].address=arr[index].startaddr.split("-")[0];
+                    })
+                   that.tableData=data;//赋值给表格
+                    that.currentTotal=res.data.recordsTotal;
+                    window.parent.ShowLayerClose();
+                },function(res){
+                    window.parent.ShowLayerClose();
+                });
+            },
+            handleEdit(tableObj,bl){//编辑活动
+                let that = this;
+                var obj={
+                    id:tableObj.ID
+                };
+
+            },
+            deleteRow(index, rows) {
+                rows.splice(index, 1);
+            },
+            handleDelete(idx,status){//查询表格数据
+                if(!status&&status!=0){
+                    status=1;
+                }
+                let that = this;
+                let activityObj=that.tableData[idx];
+                var obj={
+                    id:activityObj.id,
+                    status:status
+                };
+                axiosSendPost(that.requestUrl.requestDeleteRoadDataUrl,obj,function(res){
+                    var data;//数据
+                    that.tableData[idx].status=status;
+                    that.tableData[idx].statusTxt=that.stateList[status]//经验等级
+                    //that.tableData.splice(idx,1);
+                },function(res){
+
+                });
+            },
+            creatActivity(){//创建活动
+                var that=this;
+                var obj={
+                    img:"",
+                    txt:"",
+                }
+                that.initCreateObj(obj);
+                window.location.href = '../activity/index.html';
+            },
+        }
+    })
+</script>
+
+
+</body>
+</html>

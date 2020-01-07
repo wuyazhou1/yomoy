@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/login.css" />
+</head>
+<body>
+<div class="logintel login" id="loginforget">
+    <div class="goarrow" @click="backUrl"><a href="javascript:void(0)"><img src="../img/arrow.png" width="100%"  height="100%"></a></div>
+    <div class="infor">
+        <p class="tel numberfont">{{tel}}</p>
+        <p class="message">已发送短信验证码至此号码</p>
+    </div>
+    <div class="logintelconent">
+        <ul>
+            <li  v-show="show" class="numberfont"><input type="text" placeholder="请输入验证码" v-model="verif" @keyup="getInputValue" class="progressW"><span class="progressverification" @click="againcode">重新发送</span></li>
+            <li  v-show="!show" class="numberfont"><input type="text" placeholder="请输入验证码" v-model="verif" @keyup="getInputValue" class="progressW"><span class="progressverification">{{count}} s</span></li>
+        </ul>
+        <p class="error">{{errortip}}</p>
+        <input v-if="btnshow2" type="button" value="下一步" class="loginButton  activate" @click="quickLogin" >
+        <input v-else type="button" value="下一步" class="loginButton  notactivate" @click="quickLogin">
+        <p class="textTip">手机变更后，可用新手机号登陆</p>
+        <div class="box" v-show="alertTipscuess">
+            <div class="box1">
+                <span class="scuessIcon"><img src="../img/scuessIcon.png" width="100%" height="100%"></span>
+                <p class="text">{{ascruess}}</p>
+            </div>
+        </div>
+
+        <div class="box" v-show="alertTiperror">
+            <div class="box1">
+                <span class="scuessIcon"><img src="../img/errorIcon.png" width="100%" height="100%"></span>
+                <p class="text">{{aerror}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    var app = new Vue({
+        el: '#loginforget',
+        data: {
+            btnshow2:false,//按钮状态
+            tel:'',//手机号
+            verif:'',//验证码
+            btnshow:false,    //v-show="false" 隐藏
+            newpsd:'',		  //v-model input 数据双向绑定
+            inputType:'',	  //,
+            pass:'',
+            errortip:'',//错误提示
+            show: true,
+            count: '',
+            alertTipscuess:false,
+            alertTiperror:false,
+            ascruess:'手机变更成功',
+            aerror:'手机变更失败',
+        },
+        mounted () {
+            let _this = this;
+            _this.getCode();//验证码倒计时;
+            _this.tel =  window.sessionStorage.getItem('bindtel');;//本地手机
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            getInputValue(){
+                let _this = this
+                if( _this.verif.length>=1){
+                    _this.btnshow2 = true;
+                }else{
+                    _this.btnshow2 = false;
+                }
+            },
+            getCode(){//获取验证码
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                    this.count = TIME_COUNT;
+                    this.show = false;
+                    this.timer = setInterval(() => {
+                        if (this.count > 0 && this.count <= TIME_COUNT) {
+                            this.count--;
+                        } else {
+                            this.show = true;
+                            clearInterval(this.timer);
+                            this.timer = null;
+                        }
+                    }, 1000)
+                }
+            },
+            againcode:function(){//重新发送验证码
+                let _this = this;
+                _this.getCode();
+                 return new Promise((resolve, reject) => {
+                    const data = {
+                        mobile:_this.tel,
+                        type:'4',
+                    }
+                    postData(data,'AmoskiActivity/memberUser/getMobileCode').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data
+                            if(result){
+                                window.sessionStorage.setItem('bindcode', result);//验证码
+                            }
+                            resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                })
+            },
+            quickLogin:function(){
+                var _this=this;
+                if (!_this.verif) {
+                    _this.errortip = "请输入验证号";
+                }
+                else{
+                    _this.errortip ="";
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            mobile:_this.tel,
+                            validCode:_this.verif,
+                        }
+                        postData(data,'AmoskiActivity/userCenterManage/updBindMobile').then(response => {
+                            if (response.code == 0) {
+                                const result = response.data
+                                _this.alertTipscuess = true;
+                                window.location.href = 'account.html';
+                                resolve(result)
+                            } else {
+                                reject('error')
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+
+                    })
+
+
+
+
+
+                }
+
+
+            }
+        }
+    })
+</script>
+</body>
+</html>

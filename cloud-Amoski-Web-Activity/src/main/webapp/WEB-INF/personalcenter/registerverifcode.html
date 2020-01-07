@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div class="logintel login" id="register">
+    <div class="goarrow" @click="backUrl"><a href="javascript:void(0)"><img src="img/arrow.png" width="100%"  height="100%"></a></div>
+    <div class="infor">
+        <p class="tel numberfont">{{tel}}</p>
+        <p class="message">已发送短信验证码至此号码</p>
+    </div>
+    <div class="logintelconent">
+        <ul>
+            <li  v-show="show" class="numberfont"><input type="text" placeholder="请输入验证码" v-model="verif" @keyup="getInputValue" class="progressW"><span class="progressverification" @click="againcode()">重新发送</span></li>
+            <li  v-show="!show" class="numberfont"><input type="text" placeholder="请输入验证码" v-model="verif" @keyup="getInputValue" class="progressW"><span class="progressverification">{{count}} s</span></li>
+            <li  v-if="eye"><input type="password" placeholder="请输入密码" v-model="pass" @keyup="getInputValue"><span class="icon64"><img src="img/colse_eyes.png" width="100%" height="100%" @click="showPassword()"></span></li>
+            <li  v-else><input type="text" placeholder="请输入密码" v-model="pass"  @click="getInputValue"><span class="icon64"><img src="img/open_eyes.png" width="100%" height="100%" @click="showPassword()"></span></li>
+        </ul>
+        <p class="error">{{errortip}}</p>
+        <input v-if="btnshow2" type="button" value="确定" class="loginButton  activate" @click="verifcode" >
+        <input v-else type="button" value="确定" class="loginButton  notactivate" @click="verifcode">
+        <p class="textTip">密码仅支持数字、英文字母、下划线或者横线</p>
+        <div class="box" v-show="alertTipscuess">
+            <div class="box1">
+                <span class="scuessIcon"><img src="img/scuessIcon.png" width="100%" height="100%"></span>
+                <p class="text">注册成功，欢迎加入爱摩老斯基</p>
+            </div>
+        </div>
+
+        <div class="box" v-show="alertTiperror">
+            <div class="box1">
+                <span class="scuessIcon"><img src="img/errorIcon.png" width="100%" height="100%"></span>
+                <p class="text">注册失败，请重新输入</p>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script>
+    var app = new Vue({
+        el: '#register',
+        data: {
+            btnshow:false,    //v-show="false" 隐藏
+            newpsd:'',		  //v-model input 数据双向绑定
+            eye:true,         //
+            inputType:'',	  //
+            btnshow2:false,//按钮状态
+            verif:'',//验证码
+            verif2:'',//本地验证码
+            pass:'',
+            errortip:'',//错误提示
+            show: true,
+            count: '',
+            tel:'',
+            alertTipscuess:false,//成功提示框
+            alertTiperror:false,//失败提示框
+        },
+        mounted () {
+            let _this = this;
+            _this.getCode();//验证码倒计时;
+            _this.tel =  window.sessionStorage.getItem('tel');//本地手机
+            _this.verif2 =  window.sessionStorage.getItem('yzcode');//本地验证码
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            showPassword:function(){ /*密码显示 */
+                var _this = this;
+                if (_this.eye) {
+                    _this.eye = false
+                    _this.inputType = 'password'
+                } else {
+                    _this.eye = true
+                    _this.inputType = 'text'
+                }
+            },
+            getInputValue(){
+                let _this = this
+                if(_this.verif.length>=1 || _this.pass.length>=1){
+                    _this.btnshow2 = true;
+                }else{
+                    _this.btnshow2 = false;
+                }
+            },
+            getCode(){//获取验证码
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                    this.count = TIME_COUNT;
+                    this.show = false;
+                    this.timer = setInterval(() => {
+                        if (this.count > 0 && this.count <= TIME_COUNT) {
+                            this.count--;
+                        } else {
+                            this.show = true;
+                            clearInterval(this.timer);
+                            this.timer = null;
+                        }
+                    }, 1000)
+                }
+            },
+            againcode:function(){//重新发送验证码
+                let _this = this;
+                _this.getCode();
+
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        mobile:_this.tel,
+                        type:1
+                    }
+                    postData(data,'AmoskiActivity/memberUser/getMobileCode').then(response => {
+                        const result = response.data
+                        if (response.code == 0) {
+                            _this.alertTipscuess = true;
+                            scuessTip(_this.scuesstext,_this.alertTipscuess);
+                            if(result){
+                                window.sessionStorage.setItem('yzcode', result);//验证码
+                            }
+                            resolve(result)
+                        } else if(response.code == 20005){
+                            _this.alertTiperror = true;//绑定失败
+                            errorTip(response.msg,_this.alertTiperror);
+                        } else {
+                            _this.alertTiperror = true;//绑定失败
+                            errorTip(_this.errortext,_this.alertTiperror);
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+
+
+                // axiosSendPost('AmoskiActivity/memberUser/getMobileCode',{
+                //     mobile:_this.tel,
+                //     type:1
+                // },function (res){
+                //     //成功获取数据
+                //     let resdata = res.data;
+                //     if (resdata.code == "0") {
+                //         window.sessionStorage.setItem('yzcode', resdata.data);//验证码
+                //     } else {
+                //         _this.errortip = resdata.msg;
+                //     }
+                // },
+                //     function (err) {
+                //         //请求失败
+                //         _this.errortip = err;
+                //         console.log(err);
+                //     }
+                // )
+
+
+
+            },
+            verifcode:function(){
+                var _this=this;
+                //手机号验证
+                if (!_this.verif) {
+                    _this.errortip = "请输入验证号";
+                }
+                else if(!_this.pass){
+                    _this.errortip = "请输入密码";
+                } else if(_this.pass.length < 6){
+                    _this.errortip = '密码不能少于6位';
+                }
+                else{
+                    _this.errortip ="";
+
+                    // axiosSendPost('/AmoskiActivity/memberUser/register',{
+                    //     mobile:_this.tel,
+                    //     type:1,
+                    //     pwd:_this.pass,
+                    //     validCode:_this.verif,
+                    // }, function (res){
+                    //     //成功获取数据
+                    //     let resdata = res.data;
+                    //     if (resdata.code == "0") {
+                    //         _this.alertTipscuess = true;
+                    //         setTimeout(function () {
+                    //             _this.alertTipscuess = false;
+                    //             window.location.href="person/index.html";
+                    //         }, 2000)
+                    //     } else {
+                    //         _this.errortip = resdata.msg;
+                    //         _this.alertTiperror = true;
+                    //         setTimeout(function () {
+                    //             _this.alertTiperror = false;
+                    //         }, 2000)
+                    //     }
+                    // },function (err) {
+                    //     //请求失败
+                    //     _this.errortip = err;
+                    //     console.log(err);
+                    // })
+
+
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            mobile:_this.tel,
+                            type:1,
+                            pwd:_this.pass,
+                            validCode:_this.verif,
+                        }
+                        postData(data,'AmoskiActivity/memberUser/register').then(response => {
+                            if (response.code == 0) {
+                                _this.alertTipscuess = true;
+                                setTimeout(function () {
+                                    _this.alertTipscuess = false;
+                                    window.location.href="person/index.html";
+                                }, 2000)
+                                resolve(result)
+                            } else {
+                              //  _this.errortip = response.msg;
+                                _this.alertTiperror = true;
+                                setTimeout(function () {
+                                    _this.alertTiperror = false;
+                                }, 2000)
+                               // reject('error')
+                            }
+                        }).catch(error => {
+                            //reject(error)
+                        })
+
+                    })
+
+                 }
+            }
+        }
+    })
+</script>
+</body>
+</html>

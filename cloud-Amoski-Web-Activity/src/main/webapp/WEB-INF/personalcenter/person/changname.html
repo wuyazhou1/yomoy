@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">更改昵称</span>
+            <span class="wtxt mr15 f15" @click="nameSubmit">完成</span>
+        </p>
+    </div>
+    <ul class="portraitList changename mt15">
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="#" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">昵称</span>
+                    <input class="typename" type="text" v-model="name" placeholder="" id="name" >
+                </span>
+                <span class="fr">
+                    <span class="w24 displayinlik ml15"><img src="../img/errorIcon1.png" width="100%" height="100%"></span>
+                </span>
+            </a>
+        </li>
+    </ul>
+    <p class="error">{{errortip}}</p>
+    <p class="smTip ml15 mt15 f12">最长8个中文或16个英文</p>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            errortip:'',//错误提示
+            desc:'',
+            name:'',
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            nameSubmit(){
+                console.log('fdsfsdfsdfsfs');
+                 let _this = this;
+                 if(_this.name)
+                 {
+                      window.sessionStorage.setItem('nickname',_this.name);//昵称
+                      window.location.href="personaldata.html";
+                 } else{
+                   _this.errortip = "请输入昵称"
+                 }
+            }
+        }
+    })
+</script>
+</body>
+</html>

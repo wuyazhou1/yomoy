@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+
+
+</head>
+<body>
+<div id="regisInfor" class="couenter fl" style="width: 100%;">
+    <div class="center clearfix">
+        <div class="reginfor fl" style="width: 100%;margin: 1% 1% 0%;">
+            <div class="clearfix">
+                <h2 class="fl">活动列表</h2>
+                <div class="fr sideManage">
+                    <el-select v-model="value" placeholder="全部" class="elSelect">
+                        <el-option
+                                v-for="item in options"
+                                :key="item.value"
+                                :label="item.label"
+                                :value="item.value">
+                        </el-option>
+                    </el-select>
+                    <el-input v-model="input" placeholder="请输入活动名称" class="elSelect"></el-input>
+                    <el-button class="searchbutton el-icon-search" @click="queryTableData" size="small">搜索</el-button>
+                    <el-button class="searchbutton" size="small" style="width:12% !important;" @click="creatActivity">创建活动 </el-button>
+                </div>
+            </div>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%" class="RegtableData">
+
+                <el-table-column
+                        prop="title"
+                        label="活动名称"
+                        style="width: 103%;"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        prop="start"
+                        label="开始时间"
+                        style="width: 103%;"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        prop="end"
+                        label="结束时间"
+                        style="width: 103%;"
+                        width="100"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="eact"
+                        label="餐"
+                        style="width: 103%;"
+                        width="100"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="shu"
+                        label="宿"
+                        style="width: 103%;"
+                        width="80"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="state"
+                        label="活动状态"
+                        style="width: 103%;"
+                        width="120"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="pathPoint"
+                        width="120"
+                        :show-overflow-tooltip="true"
+                        style="width: 103%;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"
+                        label="活动线路">
+                </el-table-column>
+                <el-table-column
+                        prop="nature"
+                        style="width: 103%;"
+                        width="80"
+                        label="活动性质">
+                </el-table-column>
+<!--                <el-table-column
+                        prop="classification"
+                        style="width: 103%;"
+                        width="80"
+                        label="活动分类">
+                </el-table-column>-->
+                <el-table-column
+                        prop="amountMoney"
+                        label="报名人数"
+                        style="width: 103%;"
+                        width="80"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="operation"
+                        style="width: 103%;"
+                        label="操作"  >
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.row,true)">查看</el-button>
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.row,false)">编辑</el-button>
+                        <el-button
+                                size="mini"
+                                @click="updateRelease(scope.row,true)">发布</el-button>
+                        <el-button
+                                size="mini"
+                                @click="">签到</el-button>
+                        <el-button
+                                size="mini"
+                                @click="signUpOnClick(scope.row,false)">报名</el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleDelete(scope.row,false)">删除</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    @current-change="queryTableData"
+                    :page-size="pageSize"
+                    :current-page="currentPage"
+                    :total="currentTotal" class="mt20">
+            </el-pagination>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<!--<script type="text/javascript" src="../js/comon.js"></script>-->
+<script>
+    var thisNode;
+    var app = new Vue({
+        el: '#regisInfor',
+        data: {
+            currentPage: 1,
+            typeList:[],
+            pageSize: 10,
+            currentTotal: 0,
+            input:'',
+            imageUrl: '',
+            isCollapse: true,
+            requestUrl:{
+                requestListDataUrl:"/AmoskiUser/ActivityCreate/QueryActivityList",
+                requestSingActivityDataUrl:"/AmoskiUser/ActivityCreate/QueryActivity",
+                requestDeleteActivityDataUrl:"/AmoskiUser/ActivityCreate/deleteActivityList",
+            },
+            options: [{
+                value: '',
+                label: '全部'
+            },{
+                value: '1',
+                label: '草稿'
+            },{
+                value: '2',
+                label: '已发布'
+            },{
+                value: '3',
+                label: '已失效'
+            },{
+                value: '4',
+                label: '删除'
+            }],
+            value: '',
+            value2: '',
+            tableData: []
+        },
+        mounted(){
+            window.parent.ShowLayerWait();
+            queryDict("10","typeList");
+            thisNode = this;
+            setTimeout(function(){
+                thisNode.queryTableData();
+            },500);
+        },
+        methods: {
+            initCreateObj(obj,bl){
+                /*obj = [{"tbActivityScheduleEntity":[{"daysStatistics":"1","id":289,"basicsId":"159","orgCode":null,"placeDeparture":"哈尔滨市","destination":"哈尔滨市","introduce":"<p>D2/07-18<br>酒店——世界欢乐城——大巡游——酒店<br>介绍：<br><br>对我们而言，<br>骑行就是生活的艺术，<br>是呈现给自己内心，<br>去一个陌生的世界，<br>去一个无人的荒野，<br>放弃所有，重新感受一无所有的自由。<br><br>用餐包含：中午自助午餐、晚上自助晚餐<br>住宿地点：松北万达宜必思酒店<br><br>D2日程安排<br>10:00 世界欢乐城会场签到<br>11:00 主舞台开幕仪式<br>12:00 自助午餐<br>13:00 平等街区发布会<br>14:00 哈雷戴维森新车发布会<br>14:45 摇滚派对<br>17:00 GMMA拳台活动<br>18:00 自助晚餐<br>19:30——24:00 摇滚音乐、参观集市、泳池party、杜卡迪特技、观看拳赛、自助美食、丰富的场地活动<br><br>D2线路安排<br>酒店——世界欢乐城——大巡游——酒店</p>","createName":null,"createData":null,"updateName":null,"updateDate":null,"activityCalendarImagesEntity":[],"tbActivityTimeHistoryEntity":[{"id":760,"basicsId":"159","scheduleId":"289","startTime":"10:00:00","stopTime":null,"introduceType":",游玩","introduce":"世界欢乐城会场签到","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":761,"basicsId":"159","scheduleId":"289","startTime":"12:00:00","stopTime":null,"introduceType":",午餐","introduce":"自助午餐","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":762,"basicsId":"159","scheduleId":"289","startTime":"14:45:00","stopTime":null,"introduceType":",游玩","introduce":"摇滚派对","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":763,"basicsId":"159","scheduleId":"289","startTime":"18:00:00","stopTime":null,"introduceType":",晚餐","introduce":"自助午餐","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":764,"basicsId":"159","scheduleId":"289","startTime":"19:30:00","stopTime":"23:00:00","introduceType":",游玩","introduce":"摇滚音乐、参观集市、泳池party、杜卡迪特技、观看拳赛、自助美食","createName":null,"createData":null,"updateName":null,"updateDate":null}],"tbActivityRouteEntity":[{"address":"科技二街1111号8号楼","id":687,"basicsId":"159","scheduleId":"289","orgCode":null,"orderId":"0","pathPointType":null,"pathPointName":"宜必思酒店(哈尔滨松北万达店)","describe":null,"distance":"86km","timeRequired":"84min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2745,"basicsId":"159","routeId":"687","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2746,"basicsId":"159","routeId":"687","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2747,"basicsId":"159","routeId":"687","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2748,"basicsId":"159","routeId":"687","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.79912","xaxis":"126.502976","xAxis":"126.502976","yAxis":"45.79912"},{"address":"松北大道西侧冰雪大世界附近","id":688,"basicsId":"159","scheduleId":"289","orgCode":null,"orderId":"1","pathPointType":null,"pathPointName":"哈尔滨冰雪大世界售票处","describe":null,"distance":"9km","timeRequired":"19min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2749,"basicsId":"159","routeId":"688","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2750,"basicsId":"159","routeId":"688","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2751,"basicsId":"159","routeId":"688","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2752,"basicsId":"159","routeId":"688","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.778497","xaxis":"126.563487","xAxis":"126.563487","yAxis":"45.778497"},{"address":"科技二街1111号8号楼","id":689,"basicsId":"159","scheduleId":"289","orgCode":null,"orderId":"2","pathPointType":null,"pathPointName":"宜必思酒店(哈尔滨松北万达店)","describe":null,"distance":"172km","timeRequired":"168min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2753,"basicsId":"159","routeId":"689","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2754,"basicsId":"159","routeId":"689","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2755,"basicsId":"159","routeId":"689","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2756,"basicsId":"159","routeId":"689","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.79912","xaxis":"126.502976","xAxis":"126.502976","yAxis":"45.79912"}],"tbActivityHotelEntity":{"id":265,"basicsId":"159","orgCode":null,"scheduleId":"289","hotelName":"松北万达宜必思酒店","hotelPolicy":null,"contacts":null,"contactsTel":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbHotelRestaurantImageEntity":[{"id":1057,"type":"1","basicsId":"159","relationId":"265","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"tbActivityHotelRoomEntity":[{"id":265,"hotelId":"265","hotelType":null,"basicsId":"159","orgCode":null,"numberCount":null,"price":null,"facilities":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRoomImageEntity":[]}],"yaxis":null,"xaxis":null},"tbHotelRestaurantEntity":[{"updateName":null,"updateDate":null,"id":793,"basicsId":"159","scheduleId":"289","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1058,"type":"2","basicsId":"159","relationId":"793","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":794,"basicsId":"159","scheduleId":"289","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1059,"type":"2","basicsId":"159","relationId":"794","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":795,"basicsId":"159","scheduleId":"289","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1060,"type":"2","basicsId":"159","relationId":"795","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]}]},{"daysStatistics":"0","id":288,"basicsId":"159","orgCode":null,"placeDeparture":"哈尔滨市","destination":"哈尔滨市","introduce":"<p>D1/07-17<br>机场——松北万达宜必思酒店<br>介绍：<br>2019（第三届）哈尔滨滚雷骑行节如约而至，这里可以放空一切，也许在这48小时中的某一个瞬间，你会顿悟，人生本无意义，重要的是你如何去感受骑行中的点滴。<br><br>用餐包含：——<br>住宿地点：松北万达宜必思酒店<br>D1日程安排<br>09:00——17:00  报名签到<br>D1线路安排<br>（各航班）全国——哈尔滨</p><style>\n@font-face{\nfont-family:\"Times New Roman\";\n}\n\n@font-face{\nfont-family:\"宋体\";\n}\n\n@font-face{\nfont-family:\"Calibri\";\n}\n\np.MsoNormal{\nmso-style-name:正文;\nmso-style-parent:\"\";\nmargin:0pt;\nmargin-bottom:.0001pt;\nmso-pagination:none;\ntext-align:justify;\ntext-justify:inter-ideograph;\nfont-family:Calibri;\nmso-fareast-font-family:宋体;\nmso-bidi-font-family:'Times New Roman';\nfont-size:10.5000pt;\nmso-font-kerning:1.0000pt;\n}\n\np.p{\nmso-style-name:\"普通\\(网站\\)\";\nmargin-top:5.0000pt;\nmargin-right:0.0000pt;\nmargin-bottom:5.0000pt;\nmargin-left:0.0000pt;\nmso-margin-top-alt:auto;\nmso-margin-bottom-alt:auto;\nmso-pagination:none;\ntext-align:left;\nfont-family:Calibri;\nmso-fareast-font-family:宋体;\nmso-bidi-font-family:'Times New Roman';\nfont-size:12.0000pt;\n}\n\nspan.msoIns{\nmso-style-type:export-only;\nmso-style-name:\"\";\ntext-decoration:underline;\ntext-underline:single;\ncolor:blue;\n}\n\nspan.msoDel{\nmso-style-type:export-only;\nmso-style-name:\"\";\ntext-decoration:line-through;\ncolor:red;\n}\n@page{mso-page-border-surround-header:no;\n\tmso-page-border-surround-footer:no;}@page Section0{\n}\ndiv.Section0{page:Section0;}</style>","createName":null,"createData":null,"updateName":null,"updateDate":null,"activityCalendarImagesEntity":[],"tbActivityTimeHistoryEntity":[{"id":759,"basicsId":"159","scheduleId":"288","startTime":"09:00:00","stopTime":"17:00:00","introduceType":null,"introduce":"报名签到","createName":null,"createData":null,"updateName":null,"updateDate":null}],"tbActivityRouteEntity":[{"address":"迎宾一路","id":685,"basicsId":"159","scheduleId":"288","orgCode":null,"orderId":"0","pathPointType":null,"pathPointName":"哈尔滨太平国际机场","describe":null,"distance":"36km","timeRequired":"33min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2738,"basicsId":"159","routeId":"685","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2739,"basicsId":"159","routeId":"685","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2740,"basicsId":"159","routeId":"685","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2737,"basicsId":"159","routeId":"685","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.625043","xaxis":"126.252262","xAxis":"126.252262","yAxis":"45.625043"},{"address":"科技二街1111号8号楼","id":686,"basicsId":"159","scheduleId":"288","orgCode":null,"orderId":"1","pathPointType":null,"pathPointName":"宜必思酒店(哈尔滨松北万达店)","describe":null,"distance":"172km","timeRequired":"169min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2741,"basicsId":"159","routeId":"686","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2742,"basicsId":"159","routeId":"686","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2743,"basicsId":"159","routeId":"686","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2744,"basicsId":"159","routeId":"686","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.79912","xaxis":"126.502976","xAxis":"126.502976","yAxis":"45.79912"}],"tbActivityHotelEntity":{"id":264,"basicsId":"159","orgCode":null,"scheduleId":"288","hotelName":"松北万达宜必思酒店","hotelPolicy":null,"contacts":null,"contactsTel":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbHotelRestaurantImageEntity":[{"id":1053,"type":"1","basicsId":"159","relationId":"264","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"tbActivityHotelRoomEntity":[{"id":264,"hotelId":"264","hotelType":null,"basicsId":"159","orgCode":null,"numberCount":null,"price":null,"facilities":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRoomImageEntity":[]}],"yaxis":null,"xaxis":null},"tbHotelRestaurantEntity":[{"updateName":null,"updateDate":null,"id":791,"basicsId":"159","scheduleId":"288","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1055,"type":"2","basicsId":"159","relationId":"791","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":792,"basicsId":"159","scheduleId":"288","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1056,"type":"2","basicsId":"159","relationId":"792","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":790,"basicsId":"159","scheduleId":"288","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1054,"type":"2","basicsId":"159","relationId":"790","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]}]},{"daysStatistics":"2","id":290,"basicsId":"159","orgCode":null,"placeDeparture":"哈尔滨市","destination":"哈尔滨市","introduce":"<p>D3/07-19<br>D3:酒店——龙鸿山庄——酒店<br><br>介绍：<br><br>在中国北部，在每一年的7月18/19日，是我们纪念 “为自由，绝不妥协”的日子。这个故事的核心关于男人与摩托车、情侣、家庭、在路上的旅行者、或者是执迷不悔的小众艺术创作者，在这里，无论你是谁，都可以展示自我，这也是滚雷骑行节真正疯狂和丰富之处。<br><br>用餐包含：中午自助午餐、自助晚餐<br>住宿地点：松北万达宜必思酒店<br><br>D3日程安排<br>11:00 摇滚演出、参观集市、舞台环节<br>11:30 严晗银饰发布会<br>11:40 直升机飞行表演环节<br>12:00 自助午餐<br>13:30 滚雷巡游<br>16:30 自助晚餐<br>17:30 北京松散定制发布会<br>17:45 哈雷周边抽奖环节<br>18:00——24:00 场地活动、房车露营、印第安马试驾、摇滚演出、泳池party、丰富的场地活动<br>D3线路安排<br>酒店——龙鸿山庄——酒店</p>","createName":null,"createData":null,"updateName":null,"updateDate":null,"activityCalendarImagesEntity":[],"tbActivityTimeHistoryEntity":[{"id":765,"basicsId":"159","scheduleId":"290","startTime":"11:00:00","stopTime":null,"introduceType":null,"introduce":"摇滚演出、参观集市、舞台环节","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":766,"basicsId":"159","scheduleId":"290","startTime":"12:00:00","stopTime":null,"introduceType":",午餐","introduce":"自助午餐","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":767,"basicsId":"159","scheduleId":"290","startTime":"13:30:00","stopTime":null,"introduceType":",游玩","introduce":"滚雷巡游","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":768,"basicsId":"159","scheduleId":"290","startTime":"16:30:00","stopTime":null,"introduceType":",晚餐,晚餐","introduce":"自助晚餐","createName":null,"createData":null,"updateName":null,"updateDate":null},{"id":769,"basicsId":"159","scheduleId":"290","startTime":"18:00:00","stopTime":"23:00:00","introduceType":",游玩","introduce":"场地活动、房车露营、印第安马试驾、摇滚演出、泳池party","createName":null,"createData":null,"updateName":null,"updateDate":null}],"tbActivityRouteEntity":[{"address":"科技二街1111号8号楼","id":690,"basicsId":"159","scheduleId":"290","orgCode":null,"orderId":"0","pathPointType":null,"pathPointName":"宜必思酒店(哈尔滨松北万达店)","describe":null,"distance":"86km","timeRequired":"84min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2757,"basicsId":"159","routeId":"690","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2758,"basicsId":"159","routeId":"690","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2759,"basicsId":"159","routeId":"690","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2760,"basicsId":"159","routeId":"690","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.79912","xaxis":"126.502976","xAxis":"126.502976","yAxis":"45.79912"},{"address":"金龙山镇于店村砖庙子屯北山","id":691,"basicsId":"159","scheduleId":"290","orgCode":null,"orderId":"1","pathPointType":null,"pathPointName":"龙鸿山庄","describe":null,"distance":"86km","timeRequired":"84min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2761,"basicsId":"159","routeId":"691","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2762,"basicsId":"159","routeId":"691","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2763,"basicsId":"159","routeId":"691","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2764,"basicsId":"159","routeId":"691","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.492388","xaxis":"127.252216","xAxis":"127.252216","yAxis":"45.492388"},{"address":"科技二街1111号8号楼","id":692,"basicsId":"159","scheduleId":"290","orgCode":null,"orderId":"2","pathPointType":null,"pathPointName":"宜必思酒店(哈尔滨松北万达店)","describe":null,"distance":"172km","timeRequired":"169min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2765,"basicsId":"159","routeId":"692","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2766,"basicsId":"159","routeId":"692","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2767,"basicsId":"159","routeId":"692","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2768,"basicsId":"159","routeId":"692","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.79912","xaxis":"126.502976","xAxis":"126.502976","yAxis":"45.79912"}],"tbActivityHotelEntity":{"id":266,"basicsId":"159","orgCode":null,"scheduleId":"290","hotelName":"松北万达宜必思酒店","hotelPolicy":null,"contacts":null,"contactsTel":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbHotelRestaurantImageEntity":[{"id":1061,"type":"1","basicsId":"159","relationId":"266","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"tbActivityHotelRoomEntity":[{"id":266,"hotelId":"266","hotelType":null,"basicsId":"159","orgCode":null,"numberCount":null,"price":null,"facilities":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRoomImageEntity":[]}],"yaxis":null,"xaxis":null},"tbHotelRestaurantEntity":[{"updateName":null,"updateDate":null,"id":796,"basicsId":"159","scheduleId":"290","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1062,"type":"2","basicsId":"159","relationId":"796","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":797,"basicsId":"159","scheduleId":"290","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1063,"type":"2","basicsId":"159","relationId":"797","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":798,"basicsId":"159","scheduleId":"290","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1064,"type":"2","basicsId":"159","relationId":"798","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]}]},{"daysStatistics":"3","id":291,"basicsId":"159","orgCode":null,"placeDeparture":"哈尔滨市","destination":"哈尔滨市","introduce":"<p>D4/07-20<br>酒店——返程</p>","createName":null,"createData":null,"updateName":null,"updateDate":null,"activityCalendarImagesEntity":[],"tbActivityTimeHistoryEntity":[],"tbActivityRouteEntity":[{"address":"科技二街1111号8号楼","id":693,"basicsId":"159","scheduleId":"291","orgCode":null,"orderId":"0","pathPointType":null,"pathPointName":"宜必思酒店(哈尔滨松北万达店)","describe":null,"distance":"86km","timeRequired":"84min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2769,"basicsId":"159","routeId":"693","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2770,"basicsId":"159","routeId":"693","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2771,"basicsId":"159","routeId":"693","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2772,"basicsId":"159","routeId":"693","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.79912","xaxis":"126.502976","xAxis":"126.502976","yAxis":"45.79912"},{"address":"迎宾一路","id":694,"basicsId":"159","scheduleId":"291","orgCode":null,"orderId":"1","pathPointType":null,"pathPointName":"哈尔滨太平国际机场","describe":null,"distance":"172km","timeRequired":"169min","createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRouteImageEntity":[{"id":2773,"basicsId":"159","routeId":"694","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2774,"basicsId":"159","routeId":"694","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2775,"basicsId":"159","routeId":"694","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null},{"id":2776,"basicsId":"159","routeId":"694","orgCode":null,"projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"yaxis":"45.625043","xaxis":"126.252262","xAxis":"126.252262","yAxis":"45.625043"}],"tbActivityHotelEntity":{"id":267,"basicsId":"159","orgCode":null,"scheduleId":"291","hotelName":"松北万达宜必思酒店","hotelPolicy":null,"contacts":null,"contactsTel":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbHotelRestaurantImageEntity":[{"id":1065,"type":"1","basicsId":"159","relationId":"267","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}],"tbActivityHotelRoomEntity":[{"id":267,"hotelId":"267","hotelType":null,"basicsId":"159","orgCode":null,"numberCount":null,"price":null,"facilities":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityRoomImageEntity":[]}],"yaxis":null,"xaxis":null},"tbHotelRestaurantEntity":[{"updateName":null,"updateDate":null,"id":799,"basicsId":"159","scheduleId":"291","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1066,"type":"2","basicsId":"159","relationId":"799","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":800,"basicsId":"159","scheduleId":"291","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1067,"type":"2","basicsId":"159","relationId":"800","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]},{"updateName":null,"updateDate":null,"id":801,"basicsId":"159","scheduleId":"291","orderId":null,"restaurantName":null,"characteristic":null,"price":null,"tableNumber":null,"sum":null,"contacts":null,"contactsTel":null,"menu":null,"createName":null,"createData":null,"tbHotelRestaurantImageEntity":[{"id":1068,"type":"2","basicsId":"159","relationId":"801","projectUrl":null,"filePathUrl":null,"fileNameUrl":null}]}]}],"tbActivityBasicsEntity":{"id":159,"code":"89","orgCode":"0","currentTraffic":null,"dailyVisits":null,"totalVisits":31,"type":null,"title":"2019哈尔滨滚雷骑行节","nature":"5","state":1,"describe":"什么是正确的路\n没有人知道\n我们还没看过的世界\n大到无法想象\n朝着自己内心的方向\n那就是滚雷骑行节的目的地\n機車、文創、復古、藝術，是今年滚雷骑行节的主题\n精彩 等你来探","notice":null,"createName":null,"createData":null,"updateName":null,"updateDate":null,"tbActivityBillImageEntity":[{"id":217,"orgCode":null,"type":"2","basicsId":"159","projectUrl":"AmoskiUser","filePathUrl":"/ActivityCreate/getFile","fileNameUrl":"/home/uploadFile/images/createActivity/2019/09/27/23/fileNameUrldf5a9888ea3343858b77612973e0b244.jpg"},{"id":216,"orgCode":null,"type":"1","basicsId":"159","projectUrl":"AmoskiUser","filePathUrl":"/ActivityCreate/getFile","fileNameUrl":"/home/uploadFile/images/createActivity/2019/09/27/5/fileNameUrl0f915224a9954ad5aa2349832462cc69.jpg"}],"tbCtivityInvoiceEntity":[{"id":155,"basicsId":"159","nameInvoice":null,"ticketPrice":null,"numberCount":null,"describe":null,"createName":null,"createData":null,"updateName":null,"updateDate":null}],"tbActivityRefundSettings":[{"id":"983","basicsId":"159","closingDay":"1","serviceCharge":"0"},{"id":"984","basicsId":"159","closingDay":"30","serviceCharge":"0"},{"id":"985","basicsId":"159","closingDay":"10","serviceCharge":"0"},{"id":"982","basicsId":"159","closingDay":"3","serviceCharge":"0"}]},"tbActivitySynopsisEntity":{"id":153,"basicsId":"159","type":"摄影,休闲","destination":"黑龙江省,哈尔滨市,","pathPoint":"机场（哈尔滨太平国际机场）——世界欢乐城——大巡游——龙鸿山庄","activityIntensity":"0","equipmentRequirements":"0","detailsActivities":"<p>大型美式生活露营展区<br><br>龙鸿山庄将于活动当天在主会场搭建大型美式生活露营展区，同时，龙鸿旗下德国埃文海姆·洛德蒙特 德福全系房车车型、美国户外GOOD RV品牌参加滚雷活动，全国车友将在龙鸿展区体验到美式田园生活，在音乐中诠释纯粹的旅居文化。<br><br>滚雷音乐节<br><br>EBK在2018年由说唱歌手贝利创建，小人物乐队因哈雷摩托车相聚结缘，怀揣着音乐梦而组建乐队！音乐风格深受美国的一些老牌乐队影响，形成了自己独特风格的流行摇滚乐路线，他们自诩不与贪婪的人相对，不为薄情寡义的人流泪，这世上嘲笑我的人很多，你只是其中一个，小人物的拳头时刻紧握着，这就是我的角色。他们将在现场为大家带来充满机车韵味的摇滚音乐。东北老牌地下说唱歌手MC和尚，在滚雷现场将带来最新风格的作品。还有张澄，新生代rapper，早早就接触了HIPHOP文化，是哈尔滨最强hiphop舞团retina crew的成员！单曲作品：《knowledge》《young blood》《real killer》《hardcore back》，都会亲临滚雷音乐节，为大家纵情演唱。<br><br>复古集市<br><br>超过50家复古集市将出现在2019（第三届）哈尔滨滚雷骑行节现场，ChinoLocoBrand 创始人Choco是Mongols MC Thailand（蒙古帮）的正式Support! 也是Bangkok KingStarFamily的首位正式華人成員！2019.7.18.19他的品牌将首发亮相滚雷骑行节 Bandana Get u soul!  C/S ，台湾的顶级手工缝制摩托皮件、内蒙古的美式复古杂货铺、A NAIL TATTOO 纹身脏辫，你都可以在复古集市中找到你偏爱的随身物品，然后，狠狠拿下。</p>","createName":null,"createData":null,"updateName":null,"updateDate":null},"tbActivityOrdinationEntity":{"id":153,"basicsId":"159","orgCode":null,"mandatoryField":"真实姓名,电话","scopeRegistration":"个人","collectionPlace":"中国黑龙江省哈尔滨市","collectionTime":"2019-07-17 12:00:00","activityStart":"2019-07-17 12:00:00","activityStop":"2019-07-20 12:00:00","activityEnd":"2019-07-10 12:00:00","numberLimitation":null,"showNumber":"不显示","createName":null,"createData":null,"updateName":null,"updateDate":null}}];
+                obj = obj[0];*/
+                //初始化活动里面的对象
+                obj.tbActivityBasicsEntity=obj.tbActivityBasicsEntity?obj.tbActivityBasicsEntity:new TbActivityBasicsEntity();//活动基础表
+                obj.tbActivitySynopsisEntity=obj.tbActivitySynopsisEntity?obj.tbActivitySynopsisEntity:new TbActivitySynopsisEntity();//活动简介表
+                obj.tbActivityOrdinationEntity=obj.tbActivityOrdinationEntity?obj.tbActivityOrdinationEntity:new TbActivityOrdinationEntity();//活动报名规则表
+                obj.tbActivityScheduleEntity=obj.tbActivityScheduleEntity?obj.tbActivityScheduleEntity:[new TbActivityScheduleEntity()];//活动日程安排表
+                if(obj.tbActivityBasicsEntity.tbActivityRefundSettings==null||obj.tbActivityBasicsEntity.tbActivityRefundSettings.length<4){
+                    obj.tbActivityBasicsEntity.tbActivityRefundSettings=[new TbActivityRefundSettingsEntity(null,obj.tbActivityBasicsEntity.code,"30","0"),new TbActivityRefundSettingsEntity(null,obj.tbActivityBasicsEntity.code,"10","0"),new TbActivityRefundSettingsEntity(null,obj.tbActivityBasicsEntity.code,"3","0"),new TbActivityRefundSettingsEntity(null,obj.tbActivityBasicsEntity.code,"1","0")];
+                }
+
+                for(let i=0;i<obj.tbActivityScheduleEntity.length;i++){
+                    let objRoute=obj.tbActivityScheduleEntity[i].tbActivityRouteEntity;
+                    for(let j=0;j<objRoute.length;j++){
+                        if(objRoute[j].xaxis!=null&&objRoute[j].xaxis!=""){
+                            objRoute[j].xAxis=objRoute[j].xaxis
+                        }
+                        if(objRoute[j].yaxis!=null&&objRoute[j].yaxis!=""){
+                            objRoute[j].yAxis=objRoute[j].yaxis
+                        }
+                    }
+                }
+                //默认一个日程
+                //obj.tbActivityScheduleEntity[0].id="1";
+                //obj.tbActivityScheduleEntity[0].placeDeparture="凤凰城";
+                //obj.tbActivityScheduleEntity[0].destination="衡阳";
+                //obj.tbActivityBasicsEntity.title='';
+
+                window.top.activityIndex="0";
+                var activityCreateList = [];
+                activityCreateList.push(obj);
+                window.top.activityCreateList=activityCreateList;
+                window.top.activityCreate=obj;
+                window.top.lookActivity=bl==true?true:false;
+            },
+            updateRelease(node,bool){
+                var obj={
+                    id:node.ID
+                };
+                axiosSendPost("/AmoskiUser/ActivityCreate/updateReleaseActivity",obj,function(res){
+                    thisNode.queryTableData();
+                   // alert("修改成功！");
+                    window.parent.Msg("1","发布成功！");
+                },function(res){
+
+                });
+            },
+            queryTableData(curPage){//查询表格数据
+                let that = this;
+                if(curPage!=null&&curPage!=""){
+                    that.currentPage=curPage;
+                }
+                if(that.currentPage==null){
+                    that.currentPage=1;
+                }
+                var obj={
+                    state:that.value,
+                    title:that.input,
+                    start:that.currentPage,
+                    length:that.pageSize,
+                };
+                console.log(obj);
+                axiosSendPost(that.requestUrl.requestListDataUrl,obj,function(res){
+                    var data=res.data;//数据
+                    console.log(data);
+                    for(let i=0;i<data.length;i++){
+                        /*let time = new Date(data[i].start);
+                        //time.setHours(time.getHours()-13);
+                        data[i].start=time.toLocaleString();
+
+                        time = new Date(data[i].end);
+                        //time.setHours(time.getHours()-13);
+                        data[i].end=time.toLocaleString();*/
+
+                        data[i].eact=data[i].eact.split("0").length==4?"-":data[i].eact;
+                        try {
+                            if(data[i].nature != null && data[i].nature != ''
+                                &&(app.typeList[data[i].nature].id+"")==data[i].nature){
+                                data[i].nature=app.typeList[data[i].nature].name;
+                            }
+                        } catch (e) {
+                            console.error(e);
+                        }
+                        switch (data[i].state) {
+                            case "1":
+                                data[i].state="保存";//活动状态1(保存，草稿)，2发布，3已失效
+                                break;
+                            case "2":
+                                data[i].state="发布";
+                                break;
+                            case "3":
+                                data[i].state="已失效";
+                                break;
+                            case "4":
+                                data[i].state="删除";
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    that.tableData=data;//赋值给表格
+                    console.log(data);
+                    that.currentTotal=res.recordsTotal;
+                    setTimeout(function(){
+                        window.parent["adjustmentIframe2"](
+                            (window.outerHeight+(app.tableData.length*62) + 300)+"px"
+                            ,"100%");
+                    },500);
+                    window.parent.ShowLayerClose();
+                },function(res){
+                    window.parent.ShowLayerClose();
+                });
+            },
+            handleEdit(tableObj,bl){//编辑活动
+                let that = this;
+                var obj={
+                    id:tableObj.ID
+                };
+                window.top.createActivityBool=false;
+                axiosSendPost(that.requestUrl.requestSingActivityDataUrl,obj,function(res){
+                    var data=res;//数据
+                    that.initCreateObj(data,bl);
+                    window.location.href = '../activity/index.html';
+                },function(res){
+
+                });
+            },
+            handleDelete(tableObj,bl){//查询表格数据
+                let that = this;
+                var obj={
+                    id:tableObj.ID
+                };
+                axiosSendPost(that.requestUrl.requestDeleteActivityDataUrl,obj,function(res){
+                    var data;//数据
+                    //that.tableData.splice(idx,1);
+                    that.queryTableData();
+                },function(res){
+
+                });
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            signUpOnClick(tableObj,bl){
+                let that = this;
+                var obj={
+                    id:tableObj.ID
+                };
+                window.top.createActivityBool=false;
+                axiosSendPost(that.requestUrl.requestSingActivityDataUrl,obj,function(res){
+                    var data=res;//数据
+                    that.initCreateObj(data,bl);
+                    window.location.href = '../registrationManage/index.html';
+                },function(res){
+
+                });
+            },
+            creatActivity(){//创建活动
+                var that=this;
+                var obj={
+                    img:"",
+                    txt:"",
+                }
+                that.initCreateObj(obj);
+                window.top.createActivityBool=true;
+                window.location.href = '../activity/index.html';
+            },
+        }
+    })
+</script>
+
+</body>
+</html>

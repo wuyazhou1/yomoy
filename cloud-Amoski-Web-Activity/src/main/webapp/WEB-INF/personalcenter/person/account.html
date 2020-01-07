@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/ui.min.css" />
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">账号管理和绑定</span>
+        </p>
+    </div>
+    <p class="wechatland ml15 mt15">你已使用微信登录</p>
+    <div>
+        <ul class="portraitList accountlist mt15">
+            <li class="clearfix pl15 pr15 pb15 pt15">
+                 <span class="fl f15 mt8">
+                    <span class="namenc fl">手机号</span>
+                    <span v-if="tel" class="ml20 numberfont fl">{{tel}}</span>
+                    <span v-else class="fl ml20"><a href="javascript:void(0)" class="bindtelC" ref="bindph" @click="bindp('bindph')">点击绑定手机</a></span>
+                </span>
+                <span v-if="tel" class="passbtn f12  fr"><a href="changepass.html" class="clearfix">修改密码</a></span>
+                <span v-else class="passbtn f12  fr"><a href="javascript:void(0)" ref="bindph" @click="bindp('bindph')" class="clearfix">点击绑定手机</a></span>
+            </li>
+        </ul>
+        <p v-if="tel" class="changeNButton mt16 ml15">点击此处<a href="javascript:void(0);"  ref="changep" @click="changep('changep')">更换手机号</a></p>
+        <p v-else class="changeNButton mt16 ml15">点击此处<a href="javascript:void(0);" ref="bindph" @click="bindp('bindph')">绑定手机</a></p>
+    </div>
+    <p class="bindingtxt ml15 f12">第三方账号绑定</p>
+    <ul class="portraitList accountlist mt15">
+        <li class="clearfix pl15 pr15 pb15 pt15">
+             <span class="fl f15 mt8">
+                <span class="namenc">微信</span>
+            </span>
+            <div class="mui-switch fr" :class="{'mui-active':bindvale==1?true:false}" id="mySwitch" @click="switchoff">
+                <div class="mui-switch-handle"></div>
+            </div>
+        </li>
+    </ul>
+</div>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            desc:'',
+            tel:'',
+            bindvale:'',
+        },
+        mounted(){
+            let _this = this;
+            _this.tel =  window.sessionStorage.getItem('tel');;//本地手机
+            let Request = new Object();
+            Request = GetRequest();
+            _this.bindvale = Request.bindv;
+            console.log(_this.bindvale);
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            switchoff(){
+                mui('.mui-switch')['switch']()
+            },
+            bindp(bindph){//绑定手机
+                window.location.href = 'bindmobile.html?bindvale='+bindph;
+            },
+            changep(changep){
+                window.location.href = 'bindmobile.html?bindvale='+changep;
+            }
+        }
+    })
+</script>
+</body>
+</html>

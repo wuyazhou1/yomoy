@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mescroll.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/zoomify.css" />
+    <style type="text/css">
+    .mescroll{
+        width:100%;
+        position:absolute;
+        top: 0px;
+        bottom: 0;
+        height: 100%; /*如设置bottom:50px,则需height:auto才能生效*/
+        background:#F7F7FF;
+    }
+    .upwarp-nodata{display:none !important;}
+    .mescroll-upwarp{
+        opacity: 0!important;
+        min-height: 30px;
+        padding: 15px 0;
+        text-align: center;
+    }
+    .btnWidth {
+        position: fixed;
+        bottom: 7px;
+        width: 100%;
+    }
+
+    . li{
+        width:44%;
+    }
+    .albumwarp .but li{
+        width:44%;
+    }
+.EmpImg{width:100%;height:6.2rem;}
+
+    body {-webkit-touch-callout:none;/*系统默认菜单被禁用*/-webkit-user-select:none;/*webkit浏览器*/-khtml-user-select:none;/*早起浏览器*/-moz-user-select:none;/*火狐浏览器*/-ms-user-select:none;/*IE浏览器*/user-select:none;/*用户是否能够选中文本*/}
+    </style>
+</head>
+<body>
+<!--<div class="publicHeader" id="myalbumwarp" style="height:110%;">-->
+    <!--<div class="header" id="scrollDiv">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl()" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">我的相册</span>
+            <span class="ml15 fr w24 mr12">
+                <a href="javascript:;" @click="downBtnFun" class="w24">
+                    <img src="../img/down.png" width="100%" height="100%">
+                </a>
+            </span>
+        </p>
+    </div>-->
+<div id="myalbumwarp" >
+    <div class="header" id="scrollDiv" style="position: fixed;top: 0; width: 100%;z-index: 999;display: none;">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl()" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">{{Title}}</span>
+            <!-- 下载按钮隐藏-->
+            <!--<span class="ml15 fr w24 mr12">-->
+                <!--<a href="javascript:;" @click="downBtnFun" class="w24">-->
+                    <!--<img src="../img/down.png" width="100%" height="100%">-->
+                <!--</a>-->
+            <!--</span>-->
+            <!-- 分享按钮-->
+            <span class="ml15 fr w24 mr12" v-show="shareButton">
+                <a href="javascript:;" @click="shareBtnFun" class="w24">
+                    <img src="../img/shareIcon.png" width="100%" height="100%">
+                </a>
+            </span>
+        </p>
+    </div>
+    <div id="mescroll" class="clearfix albumwarp mescroll">
+            <div id="demo-test-gallery" class="demo-gallery" style="margin-top: 1.5rem;">
+                <div style="width: 100%;height:100%;z-index: 99;" v-show='activityDisay'>
+                    <!--<img src="../img/activityImg.jpg" width="100%">-->
+                    <img src="" width="100%">
+                </div>
+                <div v-show="dataNull" class="f18" style="color:#666;margin-top:30%;text-align:center;display: none;">
+                   <div class="EmpImg"><img src="../img/emp.png" width="100%" height="100%"></div>
+                    <p style="margin-top:3%;" style="color:#8f8f949e;font-size:18px;">暂无活动图片</p>
+                </div>
+                <ul class="albumList clearfix"  v-for="(tab,idx) in newalbumList" style="height: 110%;">
+                    <li class="title color6f ml15"><h2 class="f12  ml15 pb8 color6f" style="font-size: 0.37rem;padding-top: 8px;margin-left: 0.1rem;">{{tab.uploadTime}}</h2></li>
+                    <li v-for="(item,index) in tab.data"  :key="item"  :id="item.id">
+                        <a href="javascript:void(0);" class="example">
+                            <!--<label :for="item.id"  @change.self="newcheck(index, item)" >
+                                <input v-show="butshow" type="checkbox" id="checkmodel" v-model="item.check" :class="{Icon:Iconscess,Iconcheck:item.check}"/>
+                            </label>-->
+                            <!--<img @click.self="ViewBigPic(event,index,item)" :src="item.filePathUrl" width="100%" height="100%">-->
+                            <img  :src="item.filePathUrl" class="img-rounded" width="100%" height="100%">
+                            <input v-show="butshow" @change.self="newcheck(event,index, item)" @touchstart.stop="" v-model="item.check" type="checkbox" id="checkmodel" :class="[{Icon:Iconscess}]"/>
+                        </a>
+                    </li>
+                    <!--<li>
+                        <ul class="but" v-show="buttonshow">
+                            <li @click="canelPic()"><button type="button" class="mui-btn mui-btn-primary mui-btn-delete">取消</button></li>
+                            <li @click="removePic(newalbumList)"><button type="button" class="mui-btn mui-btn-primary mui-btn-delete">删除</button></li>
+                        </ul>
+                    </li>-->
+                </ul>
+            </div>
+        </div>
+    <ul class="btnWidth ButtonContainer but" v-show="buttonshow" >
+                <li @touchstart.stop="savePicture()"><a href="javascript:void(0);">存到本地</a></li>
+                <li class="ml15" @touchstart.stop="saveActivityPic()"><a href="javascript:void(0);">收藏到相册</a></li>
+            </ul>
+
+</div>
+<!--<script src="http://www.jq22.com/jquery/1.11.1/jquery.min.js"></script>-->
+<script src="../js/vue2.min.js"></script>
+<script src="../js/jquery.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/mescroll.min.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/zoomify.js"></script>
+<script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+<script type="text/javascript">
+var app = new Vue({
+    el: '#myalbumwarp',
+    data:{
+        dataNull:false,
+        remnant:0,
+        desc:'',
+        CheckedStaue:false,
+        albummList:[],
+        newalbumList:[
+            // {
+            //     createTime: "2019-07-17",
+            //     data:[
+            //         {
+            //             baseUrl: "../img/Img1.jpg",
+            //             createTime: "2019-07-17",
+            //             createUser: "13762170967",
+            //             id: 682,
+            //             imgType: 1,
+            //             imgUrl: "../img/Img1.jpg",
+            //             memberId: 111,
+            //             photoId: null,
+            //             smallUrl: "../img/Img1.jpg",
+            //             status: "1",
+            //         },
+            //         {
+            //             baseUrl: "../img/Img1.jpg",
+            //             createTime: "2019-07-17",
+            //             createUser: "13762170967",
+            //             id: 681,
+            //             imgType: 1,
+            //             imgUrl: "../img/Img1.jpg",
+            //             memberId: 111,
+            //             photoId: null,
+            //             smallUrl: "../img/Img1.jpg",
+            //             status: "1",
+            //         }
+            //     ]
+            // }
+            ],
+        Iconscess:false,
+        //Iconcheck:false,
+        idarry:[],
+        butshow:false,
+        buttonshow:false,
+        checkList:[],//选中的图片列表
+        currindex:[],
+        isApp:false,
+        ObjectData:{},
+        Title:'锡林郭勒草原重机骑行节',
+        Id:'',
+        activityDisay:false,//
+        Title:'',
+        basicsId:'',
+        shareButton:true,//默认分享按钮显示
+        goprev:true,
+    },
+    mounted(){
+        let _this = this;
+        let Request = new Object();
+        Request = GetRequest();
+        _this.Id = Request.id;
+        _this.Title = Request.platform;
+        if(this.Title == 'wx')
+        {
+            this.shareButton = false;
+        }else{
+            this.shareButton = true;
+        }
+
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i)=="micromessenger"){
+            this.goprev = false;
+        }
+
+        _this.queryActivityImgList(
+            {   num: 1, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
+                size: 16, //每页数据条数,默认10
+                basicsId:_this.Id,
+            });
+
+        _this.initData();
+        // _this.share();
+
+        _this.activityDisay = Request.activity;
+        if(Request.TitleTxt)
+        {
+            _this.Title = Request.TitleTxt;
+        }else{
+            _this.Title = '锡林郭勒草原重机骑行节';
+        }
+    },
+    methods:{
+        initData(){
+            var that=this;
+            var isWx=that.is_weixn();
+            if(isWx){
+                if(isWx!=1){//app 内
+                    $("#demo-test-gallery").css("margin-top","0px");
+                    that.isApp=true;
+                    that.longPress();//初始化长按事件
+                    var paramObj=GetRequest();
+                    var appToken=paramObj.appToken;//获取token
+                    sessionStorage.setItem('appToken',appToken);
+                }else{
+                    $("#scrollDiv").show();
+                    //that.headerShow=true;//显示头部
+                }
+            }else{//其他
+                //_this.queryActivityImgList();
+                $("#scrollDiv").show();
+                //that.headerShow=true;//显示头部
+            }
+            that.initmescroll();
+            //that.queryActivityImgList();
+        },
+        initmescroll(){//初始化下拉
+            let _this = this;
+            mescroll = new MeScroll("mescroll", { //第一个参数"mescroll"对应上面布局结构div的id (1.3.5版本支持传入dom对象)
+                down: {
+                    use:false,
+                    callback: _this.queryActivityImgList //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+                },
+                up: {
+                    callback:  _this.queryActivityImgList, //上拉加载的回调
+                    page: {
+                        num: 1, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
+                        size: 16 //每页数据条数,默认10
+                    },
+                    htmlNodata: '<p class="upwarp-nodata" style="height: 0px;">-- END --</p>',
+                }
+            });
+        },
+        is_weixn(){//1.微信 2.安卓 3.ios 0.其他
+            var ua = navigator.userAgent.toLowerCase();
+            if(ua.match(/MicroMessenger/i)=="micromessenger"){
+                return 1;
+            } else {
+                // alert('在浏览器中打开的');
+                var u = navigator.userAgent;
+                var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                var paramObj=GetRequest();
+                var appToken=paramObj.appToken;//获取token
+                var sessionId=appToken;
+                if(!sessionId){
+                    sessionId=sessionStorage.getItem('appToken');
+                }else if(isAndroid&&sessionId&&sessionId!="undefined"){
+                    return 2;
+                }else if(isiOS&&sessionId&&sessionId!="undefined"){
+                    return 3;
+                }
+                return 0;
+            }
+        },
+        downBtnFun(){
+            if(!this.isApp){
+                window.location.href="index.html";
+            }else{
+                if(this.buttonshow){
+                    this.canelPic();
+                }else{
+                    this.drag();
+                }
+
+            }
+        },
+        backUrl(){
+            window.history.go(-1)
+        },
+        descInput(){
+            let _this = this;
+            let textVal = _this.desc.length;
+            _this.remnant = textVal;
+        },
+        drag(item,index){
+            let _this = this;
+            //_this.Iconcheck = false;
+            /*setTimeout(function(){
+                _this.Iconscess = true;
+                _this.butshow = true;
+                _this.buttonshow = true;
+            },200);*/
+            _this.Iconscess = true;
+            _this.butshow = true;
+            _this.buttonshow = true;
+        },
+        newcheck(event,index,item){
+            let _this = this;
+            /*_this.Iconcheck = index;
+            console.log(_this.Iconcheck);
+            _this.buttonshow = true;*/
+            this.isCheckedBtn(event,item);
+            if(item.check){
+                if(_this.idarry.indexOf(item.id) == -1)
+                {
+                    _this.idarry.push(item.id);;
+                    _this.checkList.push(item);
+                    //_this.currindex.push(index);
+                }
+            }else{
+                let num = _this.idarry.indexOf(item.id);
+                _this.idarry.splice(num,1)
+                _this.checkList.splice(num,1)
+               //_this.currindex.splice(num,1);
+            }
+        },
+
+        removePic(item){
+            let _this = this;
+            mui.confirm('您确定要删除此照片？','提示',['取消','删除'],function(e){
+                if(e.index == 0)
+                {
+                    let _this = this;
+                    item.check = false;
+                    item.forEach(function (cur,index,arry) {
+                        arry[index].data.forEach(function(c,i,a){
+                            a[i].check = false;
+                            a[i].createTime = false;
+                        })
+                    })
+                }
+                if(e.index == 1)
+                {
+                    var a = _this.newalbumList[0].data;
+                    var b = _this.idarry;
+                    let idsarry = [];
+                    for(index in a){
+                        if(b.indexOf(a[index]["id"]) != -1)//如果a里面有b里面的id;
+                        {
+                            idsarry.push(index);
+                        }
+                    }
+                    let i=0;
+                    idsarry.forEach(function(cur,index,array){
+                        a.splice(parseInt(cur)-i,1);
+                        i++;
+                    })
+                    // _this.newalbumList = a;
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            ids: b.join(',')
+                        }
+                        postData(data,'AmoskiActivity/userCenterManage/removePic').then(response => {
+                            if (response.code == 0) {
+                                const result = response.data
+                                if(result == 'null' || result == 0)
+                                {
+                                    _this.buttonshow = false;
+                                }
+                                resolve(result)
+                            } else {
+                                //  reject('error')
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+                    })
+                }
+            },'div')
+        },
+        longPress(){//长按事件
+           let _this = this;
+           var time = 0;//初始化起始时间
+
+            $(document).on("touchstart",".albumList img",function (e) {
+                e.stopPropagation();
+                time = setTimeout(function(){
+                    _this.drag();
+                }, 1000); //这里设置长按响应时间
+            })
+
+            $(document).on("touchend",".albumList img",function (e) {
+                e.stopPropagation();
+                clearTimeout(time);
+            })
+            //按钮阻止事件冒泡
+           /* $(document).on("touchstart",".ButtonContainer",function (e) {
+                e.stopPropagation();
+            })*/
+            /*this.$refs.albumListWarp.addEventListener('touchstart',function (e) {
+                e.stopPropagation();
+                time = setTimeout(function(){
+                    _this.drag();
+                }, 500); //这里设置长按响应时间
+            })
+
+            this.$refs.albumListWarp.addEventListener('touchend',function (e) {
+                e.stopPropagation();
+                clearTimeout(time);
+            })*/
+
+        },
+        canelPic(){
+           let _this = this;
+           let newalbumData =  _this.newalbumList[0].data;
+            newalbumData.forEach(function(val,index,array){
+                array[index].check = false;
+            })
+            $(".Iconcheck").removeClass("Iconcheck");
+            _this.butshow = false;
+            _this.buttonshow = false;
+        },
+        queryActivityImgList(page){//获取所有图片列表
+            let _this = this;
+            return new Promise((resolve, reject) => {
+                const data = {
+                    page:page.num,
+                    limit:page.size,
+                    basicsId:_this.Id,
+                };
+                postData(data,'AmoskiActivity/memberUser/queryActivityImg').then(response => {
+                    if (response.code == 0) {
+                        mescroll.endSuccess(response.data.data.length); //无参. 注意结束下拉刷新是无参的
+                        const result = response.data.data;
+                        _this.basicsId = result[0].basicsId;
+                        console.log(result[0].basicsId);
+                        if(result&&result.length>0)
+                        {
+                            _this.dataNull = false;
+                            let ArrayData = _this.newalbumList;
+                            //let _this.ObjectData = {};
+                            for(let i=0;i<result.length;i++)
+                            {
+                                var item=result[i];
+                                let Imgpath = result[i].filePath.replace(baseFileUrl,"")+"/"+result[i].fileNameUrl;
+                                var sessionId=sessionStorage.getItem('appToken');
+                                if(!sessionId||sessionId=='undefined'){
+                                    sessionId="activeImg";
+                                }
+                                var baseUrl=API_ROOT+"AmoskiActivity/userCenterManage/getImg?appToken="+sessionId+"&imgUrl="+Imgpath;
+                                result[i].filePathUrl=baseUrl;
+                                result[i].uploadTime = result[i].uploadTime?result[i].uploadTime.split(" ")[0]:''; //getFmtTime(result[i].uploadTime);//时间格式转化
+                                if(!_this.ObjectData[result[i].uploadTime])
+                                {
+                                    ArrayData.push({
+                                        uploadTime:result[i].uploadTime,
+                                        data:[result[i]]
+                                    })
+                                    _this.ObjectData[result[i].uploadTime] = result[i].uploadTime
+                                }else{
+                                    for(let b=0;b<ArrayData.length;b++)
+                                    {
+                                        if(ArrayData[b].uploadTime == result[i].uploadTime ){
+                                            ArrayData[b].data.push(result[i]);
+                                        }
+                                    }
+                                }
+                            }
+                            _this.newalbumList = ArrayData;
+                            _this.$nextTick(function(){
+                                $('.example img').zoomify();
+                            })
+                        }else{
+                            if(page.num==1){
+                                _this.dataNull = true;
+                            }
+                        }
+                        resolve(result)
+                    } else {
+                       // reject('error')
+                    }
+                }).catch(error => {
+                  //  reject(error)
+                })
+            })
+        },
+        saveActivityPic:function(){//收藏到相册
+            var that=this;
+            if(that.idarry.length>0){
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        ids:that.idarry.join(),
+                    }
+                    postData(data,'AmoskiActivity/userCenterManage/saveActivityPicToUserPic').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data;
+                            mui.toast('收藏成功',{ duration:'long', type:'div' })
+                            /*that.$message({
+                                message: '收藏成功',
+                                type: 'success'
+                            });*/
+                            //resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                })
+            }else{
+                mui.toast('请选择',{ duration:'long', type:'div' })
+                /*that.$message({
+                    message: '请选择',
+                    type: 'warning'
+                });*/
+            }
+        },
+        savePicture(){
+            if(this.idarry.length==0){
+                mui.toast('请选择',{ duration:'long', type:'div' })
+                /*that.$message({
+                    message: '请选择',
+                    type: 'warning'
+                });*/
+                return;
+            }
+            /*var picurl= $("#picurl").attr("src");
+            this.saveUrl(picurl);*/
+            var list=this.checkList;
+            var fileNameUrl="";
+            for(var i=0;i<list.length;i++){
+                fileNameUrl+=","+list[i].filePath+"/"+list[i].fileNameUrl;
+            }
+            this.downFlie('/AmoskiActivity/userCenterManage/activityImgDown?fileNameUrl='+fileNameUrl.substr(1)+"&appToken="+sessionStorage.getItem('appToken'));
+        },
+        downFlie(filePath){//下载文件
+            //window.open(filePath);
+            /*var elA=document.createElement("a");
+            elA.setAttribute("href",filePath);
+            elA.setAttribute("download","image.zip");
+            elA.style.display="none";
+            document.getElementsByTagName("body")[0].appendChild(elA);
+            elA.click();*/
+            window.location.href=filePath;
+        },
+        ViewBigPic(event,index,item){
+            if(this.is_weixn()<=1){
+                window.location.href = 'index.html';
+                return;
+            }
+
+            if(event.target.tagName.toLowerCase() === 'img')
+            {
+                if(this.butshow){
+                    item.check=!item.check;
+                    this.newcheck(event,index,item);
+                }else{
+                    let Imgpath = item.filePath.replace(baseFileUrl,"")+"/"+item.fileNameUrl;
+                    window.location.href = 'http://amoski.com?imgUrl='+Imgpath+'&fileName='+item.showFileName;
+                    //window.location.href = 'pictureBig.html?ImgUrl='+encodeURIComponent(Imgpath)+'&fileName='+encodeURI(item.fileNameUrl);
+                }
+            }
+        },
+        isCheckedBtn(event,item){
+            if(item.check){
+                event.currentTarget.parentNode.getElementsByTagName("input")[0].className="Icon Iconcheck";
+            }else{
+                event.currentTarget.parentNode.getElementsByTagName("input")[0].className="Icon";
+            }
+        },
+		share(){
+            let _this = this;
+            axiosSendPost('AmoskiActivity/userCenterManage/userShareConfig',{url:location.href.split("#")[0]}, function (res) {
+                //成功获取数据
+                let resdata = res.data;
+                if (resdata.code == "0"){
+                    console.log(resdata.data);
+                    wx.config({
+                        debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                        appId: resdata.data.appId, // 必填，公众号的唯一标识
+                        timestamp: resdata.data.timestamp, // 必填，生成签名的时间戳
+                        nonceStr: resdata.data.nonceStr, // 必填，生成签名的随机串
+                        signature: resdata.data.signature,// 必填，签名
+                        jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', 'onMenuShareWeibo',
+                            'onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareQZone'] // 必填，需要使用的JS接口列表
+                    });
+
+                    wx.ready(function () {
+                        wx.checkJsApi({
+                            jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', 'onMenuShareWeibo',
+                                'onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareQZone'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                            success: function(res) {
+                                // 以键值对的形式返回，可用的api值true，不可用为false
+                                // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                                //var paramObj=_this.shareFriend();
+                                var paramDescObj=_this.shareFriend(true);
+                                //var checkResult=typeof res.checkResult=='object'?res.checkResult:JSON.parse(res.checkResult);
+                                if(wx.onMenuShareAppMessage&&wx.onMenuShareQQ){//自定义“分享给朋友”及“分享到QQ”按钮的分享内容（1.4.0）
+                                    //获取“分享给朋友”按钮点击状态及自定义分享内容接口（即将废弃）
+                                    wx.onMenuShareAppMessage(paramDescObj);
+                                    //获取“分享到QQ”按钮点击状态及自定义分享内容接口（即将废弃）
+                                    wx.onMenuShareQQ(paramDescObj);
+                                } else {
+                                    wx.updateAppMessageShareData(paramDescObj);
+                                }
+                                if(wx.onMenuShareTimeline&&wx.onMenuShareQZone){//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
+                                    //获取“分享到朋友圈”按钮点击状态及自定义分享内容接口（即将废弃）
+                                    wx.onMenuShareTimeline(paramDescObj)
+                                    //获取“分享到QQ空间”按钮点击状态及自定义分享内容接口（即将废弃）
+                                    wx.onMenuShareQZone(paramDescObj);
+                                } else {
+                                    wx.updateTimelineShareData(paramDescObj);
+                                }
+                                if(wx.onMenuShareWeibo){//获取“分享到腾讯微博”按钮点击状态及自定义分享内容接口
+                                    wx.onMenuShareWeibo(paramDescObj)
+                                }
+                            },error:function(res){
+                                // alert("checkJsApi  errorMSG:"+JSON.stringify(res));
+                            }
+                        });
+                        wx.error(function(res){
+                            // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+                            // alert("errorMSG:"+JSON.stringify(res));
+                        });
+                    });
+                } else {
+                    that.errortip =  resdata.msg;
+                }
+            }, function (err){
+                //请求失败
+                _this.errortip = err;
+            })
+
+        },
+        /**
+         * sucCallback 分享成功回调
+         * canCelCallBack 分享失败回调
+         * appendDesc 是否添加描述
+         **/
+        shareFriend(appendDesc,sucCallback,canCelCallBack){
+            console.log(">>>>>>>>>>>>info");
+            var sucFun,cancelFun;
+            if(sucCallback&&typeof sucCallback == 'function'){
+                sucFun=sucCallback;
+            }else{
+                sucFun=function(){
+                    // 用户确认分享后执行的回调函数 默认
+                    //alert("分享成功");
+                    mui.toast('分享成功',{ duration:'long', type:'div' })
+                }
+            }
+            if(canCelCallBack&&typeof canCelCallBack == 'function'){
+                cancelFun=canCelCallBack;
+            }else{
+                cancelFun=function(){
+                    // 用户取消分享后执行的回调函数 默认
+                    //alert("取消成功");
+                    mui.toast('取消成功',{ duration:'long', type:'div' })
+                }
+            }
+            var obj={
+                title: '锡林郭勒千里风景大道重机穿越骑行节精彩相册', // 分享标题
+                link: baseUrl+'AmoskiWebActivity/personalcenter/album/shopalbum.html', // 分享链接,将当前登录用户转为puid,以便于发展下线
+                imgUrl: baseUrl+'AmoskiWebActivity/personalcenter/img/share.jpg', // 分享图标
+                desc:baseUrl+'AmoskiWebActivity/personalcenter/album/shopalbum.html',
+                success: sucFun,
+                cancel: cancelFun
+            }
+            if(appendDesc){
+                //obj.desc= this.desc;
+            }
+            console.log(obj);
+            return obj;
+        },
+        shareBtnFun(){
+            window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/album/shopalbum.html?id='+this.Id+'&TitleTxt='+this.Title+'&ImgUrl=AmoskiActivity/appRidingGuideManage/getActivityImages?code='+this.Id+'&platform=wx';
+        }
+    }
+})
+
+document.oncontextmenu=function(e){
+    e.preventDefault();
+};
+window.ontouchstart = function(e) {
+    app.canelPic();
+    //e.preventDefault();
+};
+</script>
+</body>
+</html>

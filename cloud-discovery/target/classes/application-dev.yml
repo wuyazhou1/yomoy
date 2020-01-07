@@ -1,0 +1,36 @@
+spring:
+ profiles:
+  active: dev
+ application:
+  name: discovery
+ boot:
+  admin:
+   context-path: /admin
+ http:
+  multipart:
+   max-file-size: 100Mb
+   max-request-size: 100Mb
+  encoding:
+   force: true
+   charset: UTF-8
+   enabled: true
+server:
+ port: 8761 #指定该Eureke实例的端口
+ tomcat:
+  uri-encoding: UTF-8
+eureka:
+ instance:
+  preferIpAddress: true
+  hostname: localhost # 指定Eureke该实例的主机名
+ client:
+  registerWithEureka: false
+  fetchRegistry: false
+  serviceUrl:
+   defaultZone: http://localhost:8761/eureka/
+   #defaultZone: http://192.168.5.155:8761/eureka/
+  server:
+   enableSelfPreservation: false
+   evictionIntervalTimerInMs: 3600000
+#logging:
+# level: all
+# config: classpath:logback-boot.xml

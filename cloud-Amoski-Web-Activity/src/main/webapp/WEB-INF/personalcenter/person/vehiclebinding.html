@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.dtpicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.picker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/ui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+</head>
+<body>
+<div id="vehclebinding" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">车辆绑定</span>
+        </p>
+    </div>
+    <div class="couenter">
+        <ul class="portraitList changename mt15">
+            <li class="clearfix pl15 pr15 pb15 pt15">
+                <span class="fl f15 mt8 displayblock carNamewarp">
+                        <input type="text" placeholder="给爱车取个名字" class="namenc carName">
+                    </span>
+            </li>
+            <li class="clearfix pl15 pr15 pb15 pt15">
+                <a href="javascript:void(0)" class="clearfix" @click="brandcar">
+                    <span class="fl f15 mt8">
+                        <span class="namenc">品牌系列</span>
+                    </span>
+                    <span class="fr">
+                        <span class="w24 displayinlik ml15"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                    </span>
+                </a>
+            </li>
+        </ul>
+        <div class="bindimgPic"><img src="../img/bindingImg.png" width="100%" height="100%"></div>
+    </div>
+    <div class="loginButton ml15 mr15 mt36 f15" @click="vehicbind"><input type="button" value="确定"></div>
+
+    <div class="box" v-show="alertTipscuess">
+        <div class="box1">
+            <span class="scuessIcon"><img src="../img/scuessIcon.png" width="100%" height="100%"></span>
+            <p class="text">注册成功，欢迎加入爱摩老斯基</p>
+        </div>
+    </div>
+
+    <div class="box" v-show="alertTiperror">
+        <div class="box1">
+            <span class="scuessIcon"><img src="../img/errorIcon.png" width="100%" height="100%"></span>
+            <p class="text">注册失败，请重新输入</p>
+        </div>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/mui.dtpicker.js"></script>
+<script src="../js/mui.picker.js"></script>
+<script src="../js/mui.poppicker.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#vehclebinding',
+        data: {
+            remnant:0,
+            desc:'',
+            alertTipscuess:false,//成功提示框
+            alertTiperror:false,//失败提示框
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            brandcar(){
+                let picker = new mui.PopPicker({
+                    layer: 2
+                });
+                picker.setData([{
+                    value: '110000',
+                    text: '贝纳利',
+                    children: [{
+                        value: "110101",
+                        text: "公路滑翔"
+                    }]
+                }, {
+                    value: '120000',
+                    text: '哈雷戴维森',
+                    children: [{
+                        value: "120101",
+                        text: "街车"
+                    }, {
+                        value: "120102",
+                        text: "街车2"
+                    }, {
+                        value: "120104",
+                        text: "宝马"
+                    }
+                    ]
+                }])
+                picker.show(function(SelectedItem) {
+                    console.log(SelectedItem);
+                })
+            },
+            vehicbind(){
+                let _this = this;
+                _this.alertTipscuess = true;
+                _this.alertTiperror = true;
+            }
+        }
+    })
+</script>
+</body>
+</html>

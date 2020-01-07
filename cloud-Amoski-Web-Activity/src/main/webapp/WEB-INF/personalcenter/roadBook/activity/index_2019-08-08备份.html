@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/swiper.min.css"/>
+</head>
+<style>
+    html, body{
+        position: relative;
+        height: 100%;
+    }
+    body {
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color:#000;
+        margin: 0;
+        padding: 0;
+    }
+    .swiper-container ,.swiper-wrapper,.swiper-slide{
+        width: 100%;
+        height: 100%;
+    }
+    .swiper-container2{width:100%;overflow:hidden;}
+</style>
+<body>
+<section id="activityWarp">
+    <!-- Swiper -->
+    <div class="swiper-container">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide active">
+                <div class="Module_1">
+                    <div class="pictureBig">
+                        <img src="../img/pictureBig.jpg" width="100%" height="100%" alt="" title="" @click="activithGo()">
+                    </div>
+                    <h2 class="f30 mt22 ml15 mr15 color97 textAlign"><strong>锡林郭勒千里草原风景大道重机穿越骑行节</strong></h2>
+                    <span class="displayblock f15 mt15 ml15 mr15 textAlign">优摩游为您定制的路书</span>
+                    <div class="btnSlideUp"><i class="icon-navigateup"></i>向上滑动浏览</div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="swiper-container2">
+                    <div class="swiper-wrapper">
+                        <div class="swiper-slide blue-slide">
+                            <div class="tripViewMap"><img src="../img/tripViewMapImg1.jpg"  alt="" title="" width="100%" height="100%"></div>
+                        </div>
+                        <div class="swiper-slide red-slide">
+                            <div class="tripViewMap"><img src="../img/tripViewMapImg2.jpg" alt="" title="" width="100%" height="100%"></div>
+                        </div>
+                        <div class="swiper-slide orange-slide">
+                            <div class="tripViewMap"><img src="../img/tripViewMapImg3.jpg" alt="" title="" width="100%" height="100%"></div>
+                        </div>
+                        <div class="swiper-slide orange-slide">
+                            <div class="tripViewMap"><img src="../img/tripViewMapImg4.jpg" alt="" title="" width="100%" height="100%"></div>
+                        </div>
+                    </div>
+                    <div class="swiper-pagination swiper-pagination2" style="position:relative">
+                        <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide 1"></span>
+                        <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide 2"></span>
+                        <span class="swiper-pagination-bullet" tabindex="0" role="button" aria-label="Go to slide 3"></span>
+                        <span class="swiper-pagination-bullet swiper-pagination-bullet-active" tabindex="0" role="button" aria-label="Go to slide 4"></span>
+                    </div>
+                </div>
+                <ul class="tripDay">
+                    <li class="clearfix" Indexarr="4">
+                        <a href="#">
+                            <span class="day fl f20">D1</span>
+                            <div class="cities fl">
+                                <span class="city">机场</span>
+                                <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                <span>蒙古利亚酒店</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="clearfix mt10" Indexarr="5">
+                        <a href="#">
+                            <span class="day fl f20">D2</span>
+                            <div class="cities fl">
+                            <span class="city">酒店</span>
+                            <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                            <span>贝子庙</span>
+                            <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                            <span>灰腾锡勒</span>
+                            <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                            <span>九曲湾</span>
+                            <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                            <span>凤凰马场</span>
+                            <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                            <span>酒店</span>
+                        </div>
+                        </a>
+                    </li>
+                    <li class="clearfix mt10" Indexarr="6">
+                        <a href="#">
+                            <span class="day fl f20">D3</span>
+                            <div class="cities fl">
+                                <span class="city">酒店</span>
+                                <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                <span>阿尔善</span>
+                                <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                <span>东乌珠穆沁旗</span>
+                                <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                <span>乌里雅斯太</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li class="clearfix mt10" Indexarr="7">
+                        <a href="#">
+                            <span class="day fl f20">D4</span>
+                            <div class="cities fl">
+                                <span class="city">东乌珠穆沁旗</span>
+                                <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                <span>珠恩嘎达布其口岸</span>
+                                <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                <span>国门国碑</span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="swiper-slide">
+                <div class="ml15 about mr15 mt20">
+                    <h2 class="f22 mt10 color97 mt30"><strong>关于这次骑行节</strong></h2>
+                    <p>用车轮丈量国土</p>
+                    <p>用骑行缩短距离</p>
+                    <p>美丽的锡林郭勒大草原</p>
+                    <p>广邀天下重机英雄</p>
+                    <p>纵情千里草原</p>
+                    <p>驰骋风景大道</p>
+                    <p>重机飞驰 骑士出征</p>
+                    <p>金戈铁马，让我们沉醉在蒙古人民的豪气云天</p>
+                    <p>长调悠远，让我们迷醉在民族文化的源远流长</p>
+                    <p>盛夏时节醉美的草原沃土</p>
+                    <p>量身定制、潜心打造的民族文化体验之旅</p>
+                    <strong class="displayblock mt36 f15 pb10">住宿安排：</strong>
+                    <p class="lh24">两晚蒙古利亚大酒店,其位于新老城区交界处的锡林湖湖心岛，道路畅通。西邻蒙元文化博物馆，南邻锡林浩特市植物园，北邻锡林浩特市图书馆，环境优美，空气清新。酒店内外设计装修致力于传承蒙元文化、独具匠心。一梁一柱，一帛一画，无不包含蒙古元素，尽显蒙元气质。酒店服务设施先进，功能齐全，是锡林浩特市最 大的集住宿、餐饮、会议、文化礼仪为一体的蒙元文化主题酒店。</p>
+                    <div class="w375 h281 mt20"><img src="../img/Img1.jpg" @click="activithGo()" width="100%" height="100%" alt="" title="" class="mt10"></div>
+                    <strong class="displayblock mt36 f15">餐饮特色：</strong>
+                    <p class="lh24">诈马宴是蒙古族特有的庆典宴飨整牛席或整羊席。诈马，蒙语是指退掉毛的整畜，意思是把牛、羊家畜宰杀后，用热水退毛，去掉内脏，烤制或煮制上席。</p>
+                    <div class="w375 h281 mt20"><img src="../img/Img2.jpg" @click="activithGo()"  alt="" title="" width="100%" height="100%" class="mt10"></div>
+                    <strong class="displayblock mt36 f15">行程亮点：</strong>
+                    <div class="w375 h180 mt20"><img src="../img/Img3.jpg" @click="activithGo()"  alt=""  title="" width="100%" height="100%"></div>
+                    <strong class="displayblock f15 mt20">锡林郭勒千里草原风景大道</strong>
+                    <p class="lh24">
+                        该线路途径御马苑、贡宝拉格草原、石条山、浑善达克沙地，再抵达“中国马都”锡林浩特，随后往东北经东乌珠穆沁旗抵达电影《狼图腾》故事发生地、外景拍摄地—乌拉盖，每一站都堪称草原游牧之魂。
+                    </p>
+                   <div class="w375 h250 mt10"><img src="../img/Img4.jpg" @click="activithGo()" alt="" title="" width="100%" height="100%"></div>
+                    <strong class="displayblock f15 mt20">开幕式现场</strong>
+                    <p class="lh24">喇嘛祈福国泰民安、风调雨顺;哈达敬献最尊贵的客人;长号吹起 战鼓雷鸣;黑、白、黄三色马队夹道护航;直升机编队拉起彩烟护送“国旗”低空飞行;</p>
+                    <p class="lh24">用“史上最强的陆空一体”巡游阵容;向祖国70周年华诞献礼</p>
+                    <div class="w375 h217 mt20"><img src="../img/Img5.jpg"  @click="activithGo()" alt="" title="" width="100%" height="100%"></div>
+                    <strong class="displayblock f15 mt20">那达慕体验</strong>
+                    <p class="lh24">骑马、射箭、摔跤、领略马背民族风采</p>
+                    <div class="w375 mt20"><img src="../img/Img6.jpg" @click="activithGo()"  alt="" title="" width="100%" height="100%"></div>
+                    <strong class="displayblock f15 mt20">贝子庙祭敖包</strong>
+                    <p class="lh24">贝子庙，蒙古语名“班智达葛根庙”，汉名“崇善寺”。是内蒙古四大庙宇之一，始建于清乾隆八年（1743年），历经七代活佛精修而成，贝子庙是藏传佛教圣地。它的规模，历来被称为锡林郭勒盟地区第一大寺，是锡林郭勒盟佛教文化的一大宝库，享有“北国名刹”声誉。祭敖包是蒙古民族隆重的祭祀活动，也是蒙古族最为隆重热烈的祭祀活动，活动当天前往贝子庙祭敖包，邀请喇嘛祈福，祈祷国泰民安、风调雨顺、出行平安。</p>
+                    <div class="w375 mt20"><img src="../img/Img7.jpg" @click="activithGo()"></div>
+                    <p class="lh24">民族歌舞晚会/篝火晚会、民俗表演、盛装马术<br/>感受草原激情与豪放</p>
+                    <div class="w375 mt20"><img src="../img/Img8.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                    <p class="lh24">根据地大乐队参与过中国数十次音乐节，是中国深圳的一支老牌摇滚乐队，连续举办过十一届音乐节，被誉为文化风向标、最具有情怀的音乐节。</p>
+                    <div class="w375 mt20"><img src="../img/Img9.jpg"  @click="activithGo()" width="100%" height="100%"></div>
+                    <p class="lh24">乌兰牧骑，蒙语原意为“红色的嫩芽”，意为红色文化工作队，活跃于农村牧区间。1957年诞生在内蒙古自治区锡林郭勒盟苏尼特右旗。始终坚持不懈地全心全意为农牧民服务，被农牧民亲切地称为“玛奈（我们的）乌兰牧骑”，乌兰牧骑队员则被唤作“玛奈呼和德（我们的孩子）”。</p>
+                    <div class="w375 mt20"><img src="../img/Img10.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                    <p class="lh24">中国在中蒙边境1046号界碑处，历史上称为“蒙马处”，是中蒙两国边民世代友好的通商要道和重要枢纽。本次活动，将首次组织重机车队护送“环中国边境骑行接力车”前往界碑、国门献礼互动。</p>
+                    <div class="w375 mt20"><img src="../img/Img11.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                    <strong class="displayblock f15 mt20">闭幕式</strong>
+                    <p class="lh24">中蒙摩旅合作开启，为所有参加本次活动的骑士颁发珠恩嘎达布其镇“荣誉居民”称号。见证历史时刻，奏响重机新征程。</p>
+                    <div class="w375 mt20"><img src="../img/Img12.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                    <strong class="displayblock f15 mt20">跨境摩旅体验</strong>
+                    <p class="lh24 pb20">跨境摩旅体验周将组织20台越野拉力摩托车队进入蒙古国骑行，国内的摩托车爱好者将与蒙古国的车手交流、互动。一路上大漠戈壁，蓝天白云，牛羊点点，秀美的蒙古风光，纯正的蒙古国美食，深厚的蒙古国文化，都将展现在你眼前。</p>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <h2 class="f22 mt30 ml15 mr15 color97"><strong>行程安排</strong></h2>
+                <div class="arrangementSubHeader ml15 mr15 f15 mt20"><span class="subTitle">酒店安排</span></div>
+                <ul class="schedulingList mt36 ml15 mr15">
+                    <li class="mt15" v-for="(item,index) in schedulingList">
+                       <p class="clearfix title">
+                           <strong class="fl color97 f15 pl15">{{item.day}}</strong>
+                           <strong class="fl ml15 f15">{{item.city}}</strong>
+                       </p>
+                        <div class="Txt pt10 pb10 pl15 pr15">
+                           <p><span class="jiuDIcon"><img :src="item.jiuDIcon"/></span><span class="ml15 f12">{{item.jiuDiTxt}}</span></p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div class="swiper-slide">
+                <div class="w375"><img src="../img/dayImg1.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                <div class="ml15 mr15">
+                    <p class="mt15"><strong class="f28 color97">D1</strong><span class="color67 f18">/08-01</span></p>
+                    <p class="f18 color61 mt15"><span>机场</span><i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i><span>蒙古利亚酒店</span></p>
+                    <div class="mt20 borderBottom pb20 swiperplh">
+                        <p class="f15 color67 lh24">献哈达，下马酒<br/>
+                            骑士云集<br/>
+                            集结于全国最负盛名的四大草原之一，<br/>
+                            领略草原民俗文化，<br/>
+                            天地辽阔，视野宽广<br/>
+                            领略“一马平川”，<br/>
+                            “天苍苍，野茫茫，风吹草低见牛羊”<br/>
+                            的草原风光</p>
+                    </div>
+                    <div class="mt20 borderBottom pb20 swiperplh">
+                        <p class="f15 color67">用餐包含： -      -      晚宴</p>
+                        <p class="f15 color67">预计骑行： -</p>
+                        <p class="f15 color67">住宿地点：蒙古利亚大酒店</p>
+                    </div>
+                    <div class="mt36 f18 mr15">
+                        <h3 class="color97 f15">D1 日程安排</h3>
+                        <ul class="dayarrange">
+                            <li class="mt15 color67 f15"><span>09:00 - 17:00</span><strong>报到</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png" width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>16:00 - 17:00</span><strong>骑行官会议</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>18:30 - 21:00</span><strong>欢迎晚宴</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt36 f18 mr15">
+                        <h3 class="color97 f15">D1 线路安排</h3>
+                        <ul class="routeArrange ml15">
+                            <li class="mt15">
+                                <div class="hangB">
+                                    <h4 class="pl15 pt10 pb10 f12 color67">各航班</h4>
+                                    <div class="clearfix  routeList pt10 pb10">
+                                    <div class="fl Whole">
+                                        <p>09:00</p>
+                                        <p class="mt5 f12">全国</p>
+                                    </div>
+                                    <div class="fl flgImg mt15">
+                                        <img src="../img/flg.jpg" width="100%" height="100%">
+                                    </div>
+                                    <div class="fl City">
+                                        <p>17:00</p>
+                                        <p class="mt5 f12">锡林浩特市</p>
+                                    </div>
+                                    <span class="flgIcon"><img src="../img/flgIcon1.png" width="100%" height="100%"></span>
+                                </div>
+                                </div>
+                            </li>
+                            <li class="mt22 clearfix">
+                                <div class="clearfix">
+                                    <span class="carIcon fl"><img src="../img/BicycleIcon.png" width="100%" height="100%"></span>
+                                    <strong class="f12 displayinlik fwnormal ml15 mt5 color38">接机</strong>
+                                    <span class="f12 ml10 mt5 color67">距离12.4km;</span>
+                                    <span class="f12 ml10 mt5 color67">预计16min</span>
+                                </div>
+                            </li>
+                            <li class="mt15">
+                                <div class="clearfix  routeList pb10 pt10 pl15 pr15 hangB">
+                                    <span class="HotalImg fl"><img src="../img/TouteImg1.jpg" @click="activithGo()" width="100%" height="100%"></span>
+                                    <div class="fr Hotel">
+                                        <span class="displayblock f15 color38">蒙古利亚大酒店</span>
+                                        <p class="f12 mt5 color67">锡林浩特 经济开发区腾图国际广场6号01011</p>
+                                    </div>
+                                    <span class="flgIcon"><img src="../img/flgIcon2.png" width="100%" height="100%"></span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="w375"><img src="../img/dayImg2.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                <div class="ml15 mr15">
+                    <p class="mt15"><strong class="f30 color97">D2</strong><span class="color67 f18">/08-02</span></p>
+                    <p class="f18 color61 mt15">
+                        <span>酒店</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>贝子庙</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>灰腾锡勒</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>九曲湾</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>凤凰马场</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>酒店</span>
+                    </p>
+                    <div class="mt20 borderBottom pb20 swiperplh">
+                        <p class="f15 color67 lh24">喇嘛祈福国泰民安、风调雨顺</p>
+                        <p class="f15 color67 lh24">哈达敬献最尊贵的客人</p>
+                        <p class="f15 color67 lh24">长号吹起 战鼓雷鸣</p>
+                        <p class="f15 color67 lh24">黑、白、黄三色马队夹道护航</p>
+                        <p class="f15 color67 lh24">直升机编队拉起彩烟护送“国旗”低空飞行</p>
+                        <p class="f15 color67 lh24">用“史上最强的陆空一体”巡游阵容</p>
+                        <p class="f15 color67 lh24">向祖国70周年华诞献礼</p>
+                    </div>
+                    <div class="mt15 borderBottom pb20 swiperplh">
+                        <p class="f15 color67">用餐包含：早    中    晚</p>
+                        <p class="f15 color67">预计骑行： -</p>
+                        <p class="f15 color67">住宿地点：蒙古利亚大酒店</p>
+                    </div>
+                    <div class="mt36 f18">
+                        <h3 class="color97 f15">D2 日程安排</h3>
+                        <ul class="dayarrange">
+                            <li class="mt15 color67 f15"><span>07:30 - 08:00</span><strong>集结</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png" width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>08:00 - 08:20</span><strong>出发</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>08:20 - 09:00</span><strong>祭敖包</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>09:00 - 09:30</span><strong>开幕式</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>09:30 - 11:00</span><strong>锡林浩特市大巡游</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>11:00 - 12:00</span><strong>灰腾锡勒天然植物园</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>12:00 - 13:00</span><strong>骑行</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>13:00 - 15:30</span><strong>午餐休息</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>15:30 - 16:00</span><strong>骑行</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>16:00 - 18:00</span><strong>凤凰马场</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>18:00 - 18:40</span><strong>骑行返程</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>19:30 - 22:00</span><strong>自助晚餐</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt36 f18 mr15">
+                        <h3 class="color97">D2 线路安排</h3>
+                        <ul class="routeArrange ml15">
+                            <li class="mt15" v-for="(item,index) in dayTwo">
+                                <div class="clearfix  routeList pb10 pt10 pl15 pr15 hangB">
+                                    <span class="HotalImg fl"><img :src="item.img"  @click="activithGo()" width="100%" height="100%"></span>
+                                    <div class="fr Hotel">
+                                        <span class="displayblock f15 color38">{{item.hotalTitle}}</span>
+                                        <p class="f12 mt5 color67">{{item.hotalTxt}}</p>
+                                    </div>
+                                    <span class="flgIcon"><img :src="item.flgIcon" width="100%" height="100%"></span>
+                                </div>
+                                <div class="mt10 clearfix">
+                                    <span class="carIcon fl" v-show="item.bicycleIcon"><img :src="item.bicycleIcon" width="100%" height="100%"></span>
+                                    <span class="f12 ml10 mt5 color67" v-show="item.distance">{{item.distance}}</span>
+                                    <span class="f12 ml10 mt5 color67" v-show="item.estimate">{{item.estimate}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="w375"><img src="../img/dayImg3.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                <div class="ml15 mr15">
+                    <p class="mt15"><strong class="f30 color97">D3</strong><span class="color67 f18">/08-03</span></p>
+                    <p class="f18 color61 mt15">
+                        <span>酒店</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>阿尔善</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>东乌珠穆沁旗</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>乌里雅斯太</span>
+                    </p>
+                    <div class="mt15 borderBottom pb20 swiperplh">
+                        <p class="f15 color67">用餐包含：早    中    晚</p>
+                        <p class="f15 color67">预计骑行： 286.3km    5h</p>
+                        <p class="f15 color67">住宿地点：金泽宾馆 / 阿音沁宾馆  /  恒硕宾馆</p>
+                    </div>
+                    <div class="mt36 f18">
+                        <h3 class="color97 f15">D3 日程安排</h3>
+                        <ul class="dayarrange">
+                            <li class="mt15 color67 f15"><span>07:30 - 08:00</span><strong>骑士、嘉宾集合</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png" width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>08:00 - 12:30</span><strong>草原穿越</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>12:30 - 13:00</span><strong>抵达东乌旗入住酒店</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>13:00 - 16:00</span><strong>午餐休息</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>16:00 - 18:00</span><strong>那达慕体验</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>18:00 - 22:30</span><strong>极马力草原星空音乐节</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>23:00 - </span><strong>摆渡车</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt36 f18 mr15">
+                        <h3 class="color97">D3 线路安排</h3>
+                        <ul class="routeArrange ml15">
+                            <li class="mt15" v-for="(item,index) in dayThree">
+                                <div class="clearfix  routeList pb10 pt10 pl15 pr15 hangB">
+                                    <span class="HotalImg fl"><img :src="item.img" width="100%" @click="activithGo()" height="100%"></span>
+                                    <div class="fr Hotel">
+                                        <span class="displayblock f15 color38">{{item.hotalTitle}}</span>
+                                        <p class="f12 mt5 color67">{{item.hotalTxt}}</p>
+                                    </div>
+                                    <span class="flgIcon"><img :src="item.flgIcon" width="100%" height="100%"></span>
+                                </div>
+                                <div class="mt10 clearfix">
+                                    <span class="carIcon fl" v-show="item.bicycleIcon"><img :src="item.bicycleIcon" width="100%" height="100%"></span>
+                                    <span class="f12 ml10 mt5 color67" v-show="item.distance">{{item.distance}}</span>
+                                    <span class="f12 ml10 mt5 color67" v-show="item.estimate">{{item.estimate}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="swiper-slide">
+                <div class="w375"><img src="../img/dayImg4.jpg" @click="activithGo()" width="100%" height="100%"></div>
+                <div class="ml15 mr15">
+                    <p class="mt15"><strong class="f30 color97">D4</strong><span class="color67 f18">/08-04</span></p>
+                    <p class="f18 color61 mt15">
+                        <span>东乌珠穆沁旗</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>珠恩嘎达布其口岸</span>
+                        <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                        <span>国门国碑</span>
+                    </p>
+                    <div class="mt15 borderBottom pb20 swiperplh">
+                        <p class="f15 color67">用餐包含：早    中     -</p>
+                        <p class="f15 color67">预计骑行：65.1km   1h</p>
+                        <p class="f15 color67">住宿地点： -</p>
+                    </div>
+                    <div class="mt36 f18">
+                        <h3 class="color97 f15">D4 日程安排</h3>
+                        <ul class="dayarrange">
+                            <li class="mt15 color67 f15"><span>09:00 - 09:30</span><strong>集结</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png" width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>09:30 - 11:00</span><strong>骑行</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>11:00 - 12:00</span><strong>仪式</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>12:00 - 14:00</span><strong>闭幕式</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                            <li class="mt15 color67 f15"><span>14:00 -</span><strong>活动结束</strong>
+<!--                                <i class="fr mr15 wh14"><img src="../img/personarrow.png"  width="100%" height="100%" alt="" title=""></i>-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="mt36 f18 mr15">
+                        <h3 class="color97">D4 线路安排</h3>
+                        <ul class="routeArrange ml15">
+                            <li class="mt15" v-for="(item,index) in dayFour">
+                                <div class="clearfix  routeList pb10 pt10 pl15 pr15 hangB">
+                                    <span class="HotalImg fl"><img :src="item.img" @click="activithGo()" width="100%" height="100%"></span>
+                                    <div class="fr Hotel">
+                                        <span class="displayblock f15 color38">{{item.hotalTitle}}</span>
+                                        <p class="f12 mt5 color67">{{item.hotalTxt}}</p>
+                                    </div>
+                                    <span class="flgIcon"><img :src="item.flgIcon" width="100%" height="100%"></span>
+                                </div>
+                                <div class="mt10 clearfix">
+                                    <span class="carIcon fl" v-show="item.bicycleIcon"><img :src="item.bicycleIcon" width="100%" height="100%"></span>
+                                    <span class="f12 ml10 mt5 color67" v-show="item.distance">{{item.distance}}</span>
+                                    <span class="f12 ml10 mt5 color67" v-show="item.estimate">{{item.estimate}}</span>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="routeArrange ml15">
+                            <li class="mt15">
+                                <div class="hangB">
+                                    <h4 class="pl15 pt10 pb10 f12 color67">各航班</h4>
+                                    <div class="clearfix routeList pt10 pb10">
+                                    <div class="fl Whole">
+                                        <p>18:00</p>
+                                        <p class="mt5 f12">锡林浩特市</p>
+                                    </div>
+                                    <div class="fl flgImg mt15">
+                                        <img src="../img/flg.jpg" width="100%" height="100%">
+                                    </div>
+                                    <div class="fl City">
+                                        <p>24:00</p>
+                                        <p class="mt5 f12">全国</p>
+                                    </div>
+                                    <span class="flgIcon"><img src="../img/flgIcon1.png" width="100%" height="100%"></span>
+                                </div>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination"> </div>
+        <div class="transitIndicator">
+        </div>
+    </div>
+    <div class="tripMenuWrap" v-show="tripMenuWrapshow">
+        <div class="greyBg"></div>
+        <div class="tripMenu f15">
+            <div class="mb19">选择查看的页面及日程安排</div>
+            <div class="gap10">
+                <div class="row chTig clearfix f15 mt10 tabs">
+                    <a href="#" class="btnPage active">
+                        <i class="tos-icon icon-roadbook icon"></i>
+                        <span class="title">路书封面</span>
+                    </a>
+                    <a href="#" class="btnPage">
+                        <i class="tos-icon icon-route icon"></i>
+                        <span class="title">行程路线</span>
+                    </a>
+                    <a href="#" class="btnPage mb19">
+                        <i class="tos-icon icon-talk icon"></i>
+                        <span class="title">关于这次旅行</span>
+                    </a>
+                    <a href="#" class="btnPage mb19">
+                        <i class="tos-icon icon-document icon"></i>
+                        <span class="title">行程安排</span>
+                    </a>
+<!--                    <p class="mt22 mb19">-->
+<!--                        <span class="f15 displayblock">日程安排</span>-->
+<!--                    </p>-->
+                    <a href="#" class="btnPage">D1</a>
+                    <a href="#" class="btnPage">D2</a>
+                    <a href="#" class="btnPage">D3</a>
+                    <a href="#" class="btnPage">D4</a>
+                </div>
+            </div>
+            <div class="gap10">
+                <div class="row">
+                    <div class="col-md-12 mt22">
+                        <div class="btnBorderGreen btnBlock pb10 pt10" @click="activithGo()">活动相册</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ctrlBtn Rectangle" @click="showCarBtn()" v-show="RectBtn">
+        <img src="../img/Rectangle.png" alt="" title="" width="100%" height="100%">
+    </div>
+    <div class="ctrlBtn" @click="closeCatrlBtn()" v-show="closeBtn">
+        <img src="../img/colsectrl.png" alt="" title="" width="100%" height="100%">
+    </div>
+</section>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/swiper.min.js"></script>
+<script src="../js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#activityWarp',
+        data:{
+            tripMenuWrapshow:false,
+            RectBtn:true,
+            closeBtn:false,
+            dayTwo:[
+                {
+                    img:'../img/TouteImg1.jpg',
+                    hotalTitle:'蒙古利亚大酒店',
+                    hotalTxt:'锡林浩特 经济开发区腾图国际广场6号01011',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离4.0km；',//距离
+                    estimate:'预计9min',//预计
+                },
+                {
+                    img:'../img/TouteImg2.jpg',
+                    hotalTitle:'贝子庙',
+                    hotalTxt:'锡林浩特市贝子庙',
+                    flgIcon:'../img/flgIcon3.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离58.1km；',//距离
+                    estimate:'预计59min',//预计
+                },
+                {
+                    img:'../img/TouteImg3.jpg',
+                    hotalTitle:'灰腾锡勒天然植物园',
+                    hotalTxt:'207国道灰腾锡勒天然植物园内',
+                    flgIcon:'../img/flgIcon4.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离21.6km；',//距离
+                    estimate:'预计26min',//预计
+                },
+                {
+                    img:'../img/TouteImg4.jpg',
+                    hotalTitle:'锡林九曲',
+                    hotalTxt:'锡林浩特市锡张高速东侧九曲弯景区内',
+                    flgIcon:'../img/flgIcon4.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离47.4km；',//距离
+                    estimate:'预计37min',//预计
+                },
+                {
+                    img:'../img/TouteImg5.jpg',
+                    hotalTitle:'凤凰马场',
+                    hotalTxt:'盟锡林浩特市G207(锡海线)',
+                    flgIcon:'../img/flgIcon4.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离16.4km；',//距离
+                    estimate:'预计16min',//预计
+                },
+                {
+                    img:'../img/TouteImg6.jpg',
+                    hotalTitle:'蒙古利亚大酒店',
+                    hotalTxt:'锡林浩特 经济开发区腾图国际广场6号01011',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'',//自行车图标
+                    distance:'',//距离
+                    estimate:'',//预计
+                }
+            ],
+            dayThree:[
+                {
+                    img:'../img/dayThreeImg1.jpg',
+                    hotalTitle:'蒙古利亚大酒店',
+                    hotalTxt:'锡林浩特 经济开发区腾图国际广场6号01011',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离249.5km；',//距离
+                    estimate:'预计02:26:00',//预计
+                },
+                {
+                    img:'../img/dayThreeImg2.jpg',
+                    hotalTitle:'东乌珠穆沁旗',
+                    hotalTxt:'',
+                    flgIcon:'../img/flgIcon3.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离28km；',//距离
+                    estimate:'预计28min',//预计
+                },
+                {
+                    img:'../img/dayThreeImg3.jpg',
+                    hotalTitle:'乌里雅斯太牧人之家',
+                    hotalTxt:'锡林浩特 经济开发区腾图国际广场6号01011',
+                    flgIcon:'../img/flgIcon4.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离29.8km；',//距离
+                    estimate:'预计38min',//预计
+                },
+                {
+                    img:'../img/dayThreeImg4.jpg',
+                    hotalTitle:'金泽宾馆 / 阿音沁宾馆  /  恒硕宾馆',
+                    hotalTxt:'锡林浩特 经济开发区腾图国际广场6号01011',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'',//自行车图标
+                    distance:'',//距离
+                    estimate:'',//预计
+                },
+            ],
+            dayFour:[
+                {
+                    img:'../img/dayfourImg1.jpg',
+                    hotalTitle:'金泽宾馆 / 阿音沁宾馆  /  恒硕宾馆',
+                    hotalTxt:'东乌珠穆沁旗',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离21.6 km；',//距离
+                    estimate:'预计26min',//预计
+                },
+                {
+                    img:'../img/dayfourImg2.jpg',
+                    hotalTitle:'集结',
+                    hotalTxt:'东乌珠穆沁旗法制广场',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离67.2km；',//距离
+                    estimate:'预计01:23:00',//预计
+                },
+                {
+                    img:'../img/dayfourImg3.jpg',
+                    hotalTitle:'珠恩嘎达布其边境小镇',
+                    hotalTxt:'204省道附近',
+                    flgIcon:'../img/flgIcon2.png',//定位图标
+                    bicycleIcon:'../img/BicycleIcon.png',//自行车图标
+                    distance:'距离21.6km；',//距离
+                    estimate:'预计26min',//预计
+                }
+            ],
+            schedulingList:[
+                {
+                    day:'D1 - D2',
+                    city:'锡林浩特市',
+                    jiuDIcon:'../img/jiuDIcon1.jpg',
+                    jiuDiTxt:'蒙古利亚大酒店'
+                },
+                {
+                    day:'D2 - D3',
+                    city:'锡林浩特市',
+                    jiuDIcon:'../img/jiuDIcon1.jpg',
+                    jiuDiTxt:'蒙古利亚大酒店'
+                },
+                {
+                    day:'D3 - D4',
+                    city:'东乌珠穆沁旗',
+                    jiuDIcon:'../img/jiuDIcon1.jpg',
+                    jiuDiTxt:'金泽宾馆 / 阿音沁宾馆  /  恒硕宾馆'
+                }
+            ],
+        },
+        computed: {
+        },
+        mounted() {
+            let _this = this;
+            var tabsSwiper = new Swiper('.swiper-container', {
+                direction: 'vertical',
+                on: {
+                    slideChangeTransitionStart: function() {
+                        $(".tabs .active").removeClass('active');
+                        $(".tabs a").eq(this.activeIndex).addClass('active');
+                    }
+                }
+            });
+            var startScroll, touchStart, touchCurrent;
+            tabsSwiper.slides.on('touchstart', function (e) {
+                startScroll = this.scrollTop;
+                touchStart = e.targetTouches[0].pageY;
+            }, true);
+            tabsSwiper.slides.on('touchmove', function (e) {
+                touchCurrent = e.targetTouches[0].pageY;
+                var touchesDiff = touchCurrent - touchStart;
+                var slide = this;
+                var onlyScrolling =
+                    ( slide.scrollHeight > slide.offsetHeight ) &&
+                    (
+                        ( touchesDiff < 0 && startScroll === 0 ) ||
+                        ( touchesDiff > 0 && startScroll === ( slide.scrollHeight - slide.offsetHeight ) ) ||
+                        ( startScroll > 0 && startScroll < ( slide.scrollHeight - slide.offsetHeight ) )
+                    );
+                if (onlyScrolling) {
+                    e.stopPropagation();
+                }
+            }, true);
+            $(".tabs a").on('click', function(e) {
+                e.preventDefault()
+                $(".tabs .active").removeClass('active')
+                $(this).addClass('active')
+                tabsSwiper.slideTo($(this).index())
+                _this.tripMenuWrapshow = false;
+                _this.closeBtn = false;
+                _this.RectBtn = true;
+            })
+
+            $(".tripDay li").on('click', function(e) {
+                e.preventDefault()
+                $(".tripDay li.active").removeClass('active')
+                $(this).addClass('active')
+                console.log($(this).attr('Indexarr'))
+               // tabsSwiper.slideTo($(this).index())
+                tabsSwiper.slideTo($(this).attr('Indexarr'))
+            })
+
+        },
+        methods:{
+            showCarBtn(){
+                this.tripMenuWrapshow = true;
+                this.RectBtn = false;
+                this.closeBtn = true;
+            },
+            closeCatrlBtn(){
+                this.tripMenuWrapshow = false;
+                this.RectBtn = true;
+                this.closeBtn = false;
+            },
+            activithGo(){
+                window.location.href = 'http://yomoy.com.cn/AmoskiWebActivity/personalcenter/album/shopalbum.html';
+            }
+        }
+    })
+</script>
+<script>
+var mySwiper2 = new Swiper('.swiper-container2',{
+    autoplay : true,
+    pagination: {
+        el: '.swiper-pagination2',
+        clickable: true,
+    },
+
+})
+</script>
+</body>
+</html>

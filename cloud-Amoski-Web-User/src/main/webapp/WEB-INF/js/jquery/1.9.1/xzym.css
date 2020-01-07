@@ -1,0 +1,200 @@
+@charset "utf-8";
+/* CSS Document */
+
+.xzym_cxtj{width:100%;padding-top:2px;margin-left:2px;height:auto;overflow:hidden;}
+.xzym_cxtj_top{
+    background: #5ca1dc none repeat scroll 0 0;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 700;
+    height: 35px;
+    padding-top: 5px;
+    text-align: center;
+    width: 100%;
+}
+@charset "utf-8";
+/* CSS Document */
+body{font-family: "Microsoft YaHei","微软雅黑","黑体",Arial;font-size:13px;}
+/*内容收起 start*/
+div, form, input, textarea, p, ul, li, dl, dt, dd, h1, table, h2 {
+    margin: 0;
+    padding: 0;
+}
+input {
+    font-size: 100%;
+    vertical-align: middle;
+}
+img {
+    vertical-align: top;
+}
+em, i {
+    font-style: normal;
+}
+
+hr {
+    border-color: #2d2f34 -moz-use-text-color #474954;
+    border-style: dashed none;
+    border-width: 1px 0 1px medium;
+    height: 0;
+}
+a {
+    color: #666;
+    text-decoration: none;
+}
+.clearfix {
+}
+.clearfix::before, .clearfix::after {
+    content: "";
+    display: table;
+}
+.clearfix::after {
+    clear: both;
+}
+.content {
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+.content .wrapper {
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+}
+.content .main .year {
+    position: relative;
+    z-index: 100;
+}
+.content .main .year h2 a {
+    color: #428bca;
+}
+.content .main .year h2 a:hover {
+	color:#2a6496;
+}
+.content .main .year h2 i {
+    border-color: #ffc333 transparent transparent;
+    border-style: solid;
+    border-width: 10px;
+    display: block;
+    height: 0;
+    position: relative;
+    transform-origin: 6px 3px 0;
+    transition: all 0.5s ease 0s;
+    width: 0;
+	float:right;
+	margin-right:20px;
+}
+.content .main .year .list {
+    overflow: hidden;
+    position: relative;
+    transition: height 1s cubic-bezier(0.025, 0.025, 0, 1.115) 0s, opacity 1s ease 0s;
+	/*border:1px solid #4cc0c1;*/
+	padding-bottom:18px;
+}
+.content .wrapper:first-child .main .year.close h2 i {
+    transform: rotate(-90deg);
+}
+.content .wrapper:first-child .main .year.close .list {
+    height: 0 !important;
+    opacity: 0;
+}
+/*内容收起 end*/
+.xzym_cxtj_xzBd{height:auto; background: #fff none repeat scroll 0 0;border:1px solid #5ca1dc;margin-right: 2px;}
+.xzym_cxtj_xz{height:20px;text-align: left;font-size:14px;font-weight:300;padding-top:5px;padding-bottom:5px;background:#5ca1dc;color:#fff;}
+.xzym_cxtj_xz p{background: rgba(0, 0, 0, 0) url("../image/ss.png") no-repeat scroll 10px center;padding-left: 30px;}
+.xzym_cxtj_xz00{text-align: left;font-size:13px;text-align:center;padding-top:10px;padding-bottom:10px;}
+.xzym_cxtj_xz00 label{margin-right:10px;}
+.xzym_cxtj_xz00 input{ cursor:pointer;}
+
+.sh_result_con_line {color: #333;font-size: 13px;height: 14px;text-align: center;width: 920px;}
+.sh_result_con_line i{border-color: #5ca1dc transparent transparent;border-style: solid;border-width: 18px;position:absolute;float:left;margin-left:-56px;margin-top:22px;background:url(../image/jt03_5.png) no-repeat;}
+.sh_result_con_lineTitle {background: rgba(0, 0, 0, 0) url("../image/jt03_5.png") no-repeat scroll center center;color: #fff;margin: 22px auto 0 390px;position: absolute;text-align: center;width: 140px;}
+
+.xzym_cxtj_xz01{}
+.xzym_cxtj_xz01 table{}
+.xzym_cxtj_xz01 table tr{height:40px;}
+.xzym_cxtj_xz01 table td{}
+.td_title{min-width: 77px;text-align:right;height:32px;line-height:25px;}
+.td_input{}
+.td_input input{border:1px solid #ccc;height:26px;padding:0 6px;  line-height: 1.42857;width: 125px;}
+.td_input select{border:1px solid #ccc;height:26px;padding:0 6px;  line-height: 1.42857;width:99%;min-width:130px}
+.td_input input:focus,.td_input select:focus{border-color: #5ca1dc;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);outline: 0 none;}
+a img{border:none;}
+.jt{width:940px;height:2px;text-align:center;}
+.jt p{display:block;position:absolute;z-index:100;margin-top:-19px;margin-left:458px;color:#fff;}
+.jt:hover{background:#f7f7f7;box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(102, 175, 233, 0.6);}
+.jt .active img{/*transform: rotate(-180deg);*/margin-top:-21px;border-bottom:1px solid #fff;position: relative;z-index: 100;}
+.jt img{border-top: 1px solid #fff;margin-top: -2px;position: relative;z-index: 100;}
+.panel_hide{display:none;}
+.btn {background: #5ca1dc none repeat scroll 0 0;border: medium none;color: white;cursor: pointer;font-weight: bold;height: 31px;line-height: 30px;margin-right: 10px;width: 99px;}
+/* .btn:hover{color:#189a9b;}
+.btn:hover{color:#189a9b;} */
+.btn:focus{color:white;}
+.btn:hover{color:white;}
+.search:hover{background:#197ed4;}
+.reset:hover{background:#f93838;}
+.export:hover{background:#e9a502;}
+
+.xzym_cxtj_bottom{width:100%;height:auto; overflow:hidden;margin-top:-10px;}
+.xzym_cxtj_nn{margin:0px auto;height:auto; overflow:hidden;}
+.r{background:#ffc333;float:right;margin-right:20px;}
+.l{margin-left:20px;}
+.middle_btn{background:#ff7878;}
+.form_table tbody td, .form_table thead th{white-space: nowrap; border: 1px solid #e8e8e8;}
+.form_div{overflow:auto;}
+
+/*组合查询*/
+.search_h_outer{ background: #fff none repeat;border: 1px solid #a2a2a2;border-radius: 3px;margin-left:10px;margin-right:10px;}
+.tab_nav{ height: 36px;margin-bottom: -1px;}
+.tab_nav_01{height:26px;}
+.tab_nav li.tab_nav_cur, .tab_nav li:hover {background: #fff;}
+.tab_nav li {background: #4cc0c1 none repeat;border-top: 1px solid #4cc0c1;border-left: 1px solid #4cc0c1;border-right: 1px solid #4cc0c1;border-radius: 3px 3px 0 0;font-size: 14px;font-weight: bold;height: 35px;line-height: 35px;min-width: 72px;position: relative;text-align: center;float: left; margin-right: 3px;}
+.tab_nav li ul{display:none;min-width:800px; position:absolute;}
+.ejlb00{margin-left:3px;}
+.ejlb01{margin-left:-80px;}
+.ejlb02{margin-left:-175px;}
+.ejlb03{margin-left:-299px;}
+.ejlb04{margin-left:-409px;}
+.ejlb05{margin-left:-546px;}
+.ejlb06{margin-left:-655px;}
+.ejlb07{margin-left:-764px;}
+.tab_nav li ul li{float:left;background:#fff;}
+.tab_nav li ul li.on{background:#4cc0c1;}
+.tab_nav li ul li.on a{color:#fff;}
+.tab_nav_01 li{font-size: 13px;font-weight: bold;height: 20px;line-height: 20px;min-width: 62px;background: #4cc0c1 none repeat;border-top: 1px solid #4cc0c1;border-left: 1px solid #4cc0c1;border-right: 1px solid #4cc0c1;border-bottom: 1px solid #4cc0c1;}
+.tab_nav li a {color: #fff;display: block;padding: 0 6px;}
+.tab_nav li.tab_nav_cur a, .tab_nav li:hover a {color: #373737;}
+.tab_nav li.tab_nav_cur_hui{background: #eee;}
+.tab_nav li.tab_nav_cur_hui a, .tab_nav li.tab_nav_cur_hui:hover{color:#fff;background:#c2c4c4;}
+.search_h_result{border-radius: 0 0 3px 3px;}
+.search_h_result_01{border: 1px solid #4cc0c1;background: #fff none repeat;border-radius: 0 0 3px 3px;padding: 15px 20px;}
+.slideTxtBox ul{display:none;}
+.form_div_div{display:none;}
+.form_table{border-collapse: collapse;border-spacing: 0;width:100%;}
+.form_table thead th{background: #5ca1dc none repeat scroll 0 0;color: #fff;font-size: 14px;height: 38px;text-align: center;font-style: normal;font-weight: normal;}
+.form_table tbody td{color: #676767;font-size: 12px;height: 36px;padding: 0 5px;text-align: center;border-bottom: 1px solid #e8e8e8;}
+.form_table > tbody > tr:nth-of-type(2n) {background-color: #f9f9f9;}
+.form_table > tbody > tr:nth-of-type(2n+1) {background-color: #fff;}
+.bloc{display:block;}
+
+/*组合查询 新增样式 start*/
+.pt10{padding-top:10px !important;}
+.tmt20{margin-top:20px !important;}
+.table_area_tit{background: #eee none repeat;border-bottom: 1px solid #dadada;color: #373737;font-size: 14px;height: 35px;line-height: 35px;padding-left: 10px;}
+.input_group_merge{ background: url(../image/input_group_merge.png) no-repeat;color: #fff;font-size: 12px;height: 22px;line-height: 22px;padding-left: 22px;width: 30px;float:right; margin-right: 10px !important; margin-top: 6px !important;}
+.input_group_line{ background: #dadada none repeat;float: right;height: 20px;margin: 8px 10px;width: 1px;}
+.input_group_search{background: url("../image/input_group_search.png") no-repeat;color: #fff;font-size: 12px;height: 22px;line-height: 22px;padding-left: 20px;width: 55px;margin-top: 6px !important;float:right;}
+a:hover{color:#2a6496;}
+.table_area_pa{padding-top: 10px;}
+/*组合查询 新增样式 end*/
+
+.inputTable{
+	width:96%;
+	    max-width: 1000px;
+}
+.td_title{
+	width:100px;
+}
+
+.td_input input{
+	margin-bottom: 0px;
+}

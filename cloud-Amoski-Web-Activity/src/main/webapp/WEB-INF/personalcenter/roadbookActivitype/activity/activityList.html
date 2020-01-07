@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/acitvity.css"/>
+    <script src="../js/vue2.min.js"></script>
+    <script src="../js/loading.js"></script>
+</head>
+<body>
+<section id="orderIndex" v-cloak>
+    <div class="headerFixed clearfix">
+        <div class="positionBar pt10 pb10" v-show="appplate">
+            <span v-if="nativeApp" class="w24 arrowIcon fl ml10"  onclick="backUrl('roadbookActivitype/activity/activityList.html')">
+                <a href="javascript:void(0);">
+                    <img src="../img/arrowLeft.png" alt="" title="" >
+                </a>
+            </span>
+            <span class="enrollees f18 color38">活动</span>
+        </div>
+        <ul class="ActivitynavTab f15 clearfix">
+            <li :class="activeClass == index?'cur':''"  v-for="(item,index) in ActivityTab" @click="ActivityList(index)"><a href="#">{{item.txt}}</a></li>
+        </ul>
+    </div>
+    <div class="publicAcitity AcitityCount acitityCur">
+        <ul style="margin-top:4.5rem;">
+            <li  class="mt15" v-for="(item,index) in useData" @click="godetail(item.code,item.activityEnd,item.title)">
+                <div class="Img clearfix">
+                    <img class="ActivityImg" :src="API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+item.fileNameUrl" alt="" title="">
+                    <div class="clearfix AcitityOut">
+                        <!--<div class="AcitityInner clearfix"  v-show="nowDay<item.activityStop && item.invertedTime>0">-->
+                        <!--v-show="nowDay>item.activityStop == false"-->
+                        <div class="AcitityInner clearfix"  v-show="nowDay>item.activityStop == false && item.invertedTime !== 0 ">
+                            <div class="mr10" >
+                                <p class="textAlign pt5 f10">离活动开始剩：</p>
+                                <p class="textAlign f16"><span>{{item.invertedTime}}</span></span></p>
+                                <p class="textAlign pb10 f10 dsySpan">
+                                    <span>DAY</span>
+                                    <span>HOU</span>
+                                    <span>MIN</span>
+                                    <span>SEC</span>
+                                </p>
+                            </div>
+                        </div>
+                        <!--活动已开始-->
+                        <div class="AcitityInner clearfix"  v-show="nowDay >= item.activityStart && nowDay <= item.activityStop">
+                            <div class="mr10"  >
+                                <p class="textAlign f16"><span>活动已开始</span></span></p>
+                            </div>
+                        </div>
+
+                        <!--报名已结束-->
+                        <div class="AcitityInner clearfix" v-show="nowDay > item.activityStop">
+                            <div class="mr10">
+                                <p class="textAlign f16"><span>活动已结束</span></span></p>
+                            </div>
+                        </div>
+
+                        <p class="clearfix mt10 textAlign colorff">
+                            <span><i class="eyesIcon ml10 mr10 fsnor"><!--<img src="../img/eyesIcon.png" alt="" title="">-->阅读</i><strong>{{item.totalVisits}}</strong></span>
+                            <span class="ml16 mr10"><i class="fsnor">报名</i><strong>{{item.signCount}}</strong></span>
+                        </p>
+                    </div>
+                </div>
+                <div class="AcitityTxt">
+                    <strong class="color4a f16">
+                        <!--<span class="day f12 mr10">{{Number(item.day)+1}}天</span>-->
+                        {{item.title}}
+                    </strong>
+                    <p class="colora4 mt6">{{item.pathPoint}}</p>
+                    <p class="colora4 mt6">
+                        <span>开始：{{getFmtTime(item.activityStart)}}</span>
+                        <span>结束：{{getFmtTime(item.activityStop)}}</span>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="/AmoskiWebActivity/personalcenter/roadbookActivitype/js/native.js"></script>
+<script type="text/javascript">
+    var nodeApp;
+    var app = new Vue({
+        el:'#orderIndex',
+        data:{
+            nativeApp:true,
+            activeClass:0,
+            ActivityTab:[
+                {
+                    txt:'热门',
+                },
+                {
+                    txt:'周边',
+                },
+            ],
+            useData:[],//最终数据存放到此变量
+            over: false, // 是否已结束
+            leftTimeString: '',
+            endTime: '', // 截止时间 时间格式: 2019/01/01 00:00:00, 用 - 连接会有兼容性问题(IE: ???), ememem... ios 也会有, 当然也可以用时间戳
+            interval: 1000, // 默认时间间隔
+            nowDay : new Date().getTime(),
+            Typeapp:'',
+        },
+        created () {
+        },
+        mounted(){
+            this.ActivityList(1);
+            let Request = new Object();
+            Request = GetRequest();
+            this.Typeapp = Request.type;
+            // alert("this.Typeapp==>"+this.Typeapp)
+            this.nativeApp=this.Typeapp!=null&&this.Typeapp.trim()=="app"?false:true;
+            // alert("this.nativeApp==>"+this.nativeApp)
+
+            /*alter("进入方法");
+            //window.na.invoke('wxShare',title,url,img,summary,function(){})
+            try {
+                alter("调用isNativeApp");
+                window.na.invoke('isNativeApp',function(date){
+                    if(date){
+                        return false;
+                    }else{
+                        return true;
+                    }
+                })
+            } catch (e) {
+                console.log(e);
+            }*/
+        },
+        methods:{
+            /*nativeApp(){
+
+
+            },*/ActivityList(index){
+                let _this = this;
+                _this.activeClass = index;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        type:index+1,
+                    }
+                    postData(data,'AmoskiActivity/appRidingGuideManage/queryActivityList').then(response => {
+                        if (response.code == 0){
+                            let result = response.data.data;
+                            _this.activeClass = index;
+                            for(var i=0;i<this.useData.length;i++){
+                                clearTimeout(this.useData[i].timeoutObj);
+                            }
+                            result.forEach(function(cur,index,arr){
+                                arr[index].invertedTime="";
+                                arr[index].day ="";
+                                /*var timeData = new Date();
+                                timeData.setTime(arr[index].activityStop);
+                                debugger;*/
+
+                                arr[index].day = Math.floor((new Date(arr[index].activityStop).getTime() - new Date(arr[index].activityStart).getTime())/ 1000 / 60 / 60 / 24);
+                            })
+                            _this.useData = result;
+                            for(var i=0;i<this.useData.length;i++){
+                                countdown(this.useData[i].activityStart,"invertedTime",i);
+                            }
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                      //  reject(error)
+                    })
+
+                })
+            },
+            godetail(index,activityStop,title){
+                var tapp = '';
+                if(this.Typeapp == 'app')
+                {
+                    tapp =  this.Typeapp;
+                }else{
+                    tapp =  '';
+                }
+                window.location.href = 'detail.html?id='+index+'&endTime='+activityStop+'&TitleTxt='+title+'&type='+tapp+'&from=activityList';
+            }
+        },
+    })
+    for(var i=0;i<app._data.useData.length;i++){
+        debugger;
+        countdown(app._data.useData[i].activityStop,"invertedTime",i);
+    }
+</script>
+</body>
+</html>

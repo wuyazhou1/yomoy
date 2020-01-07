@@ -1,0 +1,4 @@
+com\nsc\Amoski\filter\PreRequestLogFilter.class
+com\nsc\Amoski\filter\ServletInitializer.class
+com\nsc\AmoskiRidingApplicationMain.class
+com\nsc\datasource\DataSourceConfig.class

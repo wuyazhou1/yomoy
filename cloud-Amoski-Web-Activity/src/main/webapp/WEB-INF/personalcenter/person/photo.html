@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+</head>
+<body>
+<div id="photo" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">所有相册<strong class="w24 displayinlik"><img src="../img/arrorbottom.png" width="100%" height="100%"></strong></span>
+            <span class="ml15 fr  mr12 f15"><a href="javascript:void(0)">完成</a></span>
+        </p>
+    </div>
+    <div class="clearfix albumwarp photoList">
+        <ul class="albumList">
+            <li>
+                <img src="../img/photo.png" width="100%" height="100%"/>
+            </li>
+            <li v-for="(item,index) in photoList"  :key="item"  @click="photoListclik(index,item)"  :id="item.id">
+                <img :src="item.img" width="100%" height="100%"/>
+                <label :for="item.id">
+                    <input name="Fruit" type="radio" v-model="item.check" value="" :class="{active:item.check}"/>
+                    {{item.text}}
+                </label>
+<!--                <input type="radio" class="photoInput wh18"/>-->
+            </li>
+        </ul>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#photo',
+        data: {
+            remnant:0,
+            desc:'',
+            photoList:[
+                {
+                    id:1,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:2,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:3,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:4,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:5,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:6,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:7,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                },
+                {
+                    id:8,
+                    img:'../img/albumwarpImg.png',
+                    check: false
+                }
+            ]
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            photoListclik(index,item){
+                if(item.check){
+                    item.check = false
+                } else {
+                    item.check = true
+                }
+
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,53 @@
+.buttonStyle{
+    background: white;
+}
+.select{
+    width: 180px;
+    height: 32px;
+}
+.tableTdTitle{
+    width:10% !important
+}
+.radius{
+    margin-left:5px;
+}
+.input-text, .textarea{
+    width: 93%;
+}
+.layui-layer-page .layui-layer-content{
+    overflow-x: hidden;
+}
+.form .row{
+    width:49%;
+    float:left
+}
+.col-sm-3{
+    width: 30%;
+}
+.col-sm-9{
+    width: 69%;
+}
+.tableTitle{
+    width: 160px;
+}
+.tableValue{
+    width:35%;
+}
+.trs td{
+    height: 32px;
+    padding-top: 10px;
+}
+label{
+    float: right!important;
+    padding: 0px!important;
+    margin-top: -2px;
+}
+.formControls {
+    padding-left: 9px;
+}
+.input-width{
+    width:100%
+}
+.widthTd{
+    width:20px
+}

@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="routeDetail" v-cloak>
+    <div class="pictureLoop">
+        <div class="mui-slider">
+            <div class="mui-slider-group mui-slider-loop">
+                <!--支持循环，需要重复图片节点-->
+                <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../img/sliderImg1.jpg" /></a></div>
+                <div class="mui-slider-item"><a href="#"><img src="../img/sliderImg1.jpg" /></a></div>
+                <!--支持循环，需要重复图片节点-->
+                <div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../img/sliderImg1.jpg" /></a></div>
+            </div>
+            <div class="mui-slider-indicator">
+                <div class="mui-indicator mui-active"></div>
+                <div class="mui-indicator"></div>
+            </div>
+        </div>
+        <h2 class="f15 color38 mt15 ml15 mr15">骑视：英国一地8天轻奢深度游,经典线路，小团出行</h2>
+        <ul class="clearfix routeTig ml15 mt10 pb15">
+            <li>9天</li>
+            <li>探险 主题活动</li>
+            <li>1-20人</li>
+        </ul>
+    </div>
+    <ul class="collectiveModule mt15 clearfix">
+        <li>
+            <div class="clearfix txt pt15 pb15">
+                <span class="ml15 fl f14">集合点：</span>
+                <p class="fl f14">爱摩老斯基重机生活馆<img src="../img/position-pin.png" class="fr positionImg" alt="" title=""></p>
+            </div>
+        </li>
+        <li>
+            <div class="clearfix txt pt15 pb15">
+                <span class="ml15 fl f14">目的地：</span>
+                <p class="fl f14">伦敦</p>
+            </div>
+        </li>
+        <li>
+            <div class="clearfix txt pt15 pb15">
+                <span class="ml15 fl f14">途经点：</span>
+                <p class="fl f14">伦敦-剑桥-曼彻斯特-小镇-马特洛科巴斯-埃文河畔斯特拉福德-牛津</p>
+            </div>
+        </li>
+    </ul>
+    <ul class="collectiveModule mt15 clearfix">
+        <li>
+            <div class="clearfix txt pt15 pb15">
+                <span class="ml15 fl f14">报名时间：</span>
+                <p class="fl f14">05.30 00:00-06.30 23:50</p>
+            </div>
+        </li>
+        <li>
+            <div class="clearfix txt pt15 pb15">
+                <span class="ml15 fl f14">活动时间：</span>
+                <p class="fl f14">06.01 00:00-06.30 23:55</p>
+            </div>
+        </li>
+        <li>
+            <div class="clearfix txt pt15 pb15 ActivityJoin">
+                <div class="ml15 fl f14"><span>活动参与：</span></div>
+                <div class="pb30 fr f14 mr15">
+                    <strong class="mr15 fl color59 f15">129937人报名</strong>
+                    <div class="ActiviImglist fr">
+                        <ul class="clearfix fl">
+                            <li v-for="(item,index) in ActiviImglist" @click="Goperson"><img :src="item.Imgpath" alt="" title=""></li>
+                        </ul>
+                        <span class="fl ArrorIcon"><img src="../img/arrorRight.png" alt="" title=""></span>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </ul>
+    <div class="clearfix mt15 tabulList">
+        <ul class="tab-tit clearfix pt15 pb15">
+            <li v-for="(title,index) in tabTitle" @click="cur=index" class="f15 color38" :class="{active:cur==index}">{{title}}</li>
+        </ul>
+        <div class="tab-content pb30">
+            <!--<div class="tab-main" v-for="(m,index) in tabMain" v-show="cur==index">{{m}}</div>-->
+            <div class="tab-main IntroduceModul" v-show="cur==0">
+                <h2 class="mt40 ml24 f24 color97">关于这次旅行</h2>
+                <p class="Arrange mt22 f15 ml25 mr25">
+                    <strong class="color38">住宿安排：</strong>
+                    住宿全方位升级，明示酒店，不只是有地方休息那么简单。特别安排市区四星级酒店住宿+升级一晚市区五星级酒店+一晚湖区小镇特色酒店+两晚特色庄园酒店+一晚峰区小镇特色酒店
+                </p>
+                <div class="h250 mt30"><img src="../img/IntroduceImg1.jpg" alt="" title="" width="100%" height="100%"></div>
+                <p class="Arrange mt22 f15 ml25 mr25">
+                    <strong class="color38">餐饮特色：</strong>
+                    餐饮全方位升级，打造一场英式光明料理美食盛宴。特别安排一顿伦敦米其林一星级餐厅三道式西餐+一顿爱丁堡著名街头美食“英式肉夹馍”+一顿湖区炸鱼薯条西餐+一次贝蒂茶室下午茶体验+一次全英著名的贝克韦尔布丁体验；全程英式自助早餐，中餐升级七菜一汤，中西结合，调节您的味蕾，更佳合理；
+                </p>
+                <div class="h250 mt30"><img src="../img/IntroduceImg2.jpg" alt="" title="" width="100%" height="100%"></div>
+                <p class="Arrange mt22 f15 ml25 mr25">
+                    <strong class="color38">行程亮点：</strong><br/>
+                    独家安排英国峰区：英国峰区国家公园(Peak District   National Park)是英国第一家国家公园和最大的国家公园，成立于1951年，位于英格兰中部，谢菲尔德和曼彻斯特两个城市之间，最高点海拔达到636米。这里环境安宁，大自然气息浓厚，景色美赞，特别适合外出活动，所以也称为“英国的户外天堂”，每年接待的游客量高达两千多万。深入峰区，游览因Bakewell Pudding出名的贝克韦尔小镇及因维多利亚女王知名的马特洛克巴斯小镇。特别安排乘坐缆车登上亚伯拉罕高地（Heights of Abraham），俯瞰德文特山谷（Derwent Valley）和峰区的壮丽景色。
+                </p>
+                <div class="h250 mt30"><img src="../img/IntroduceImg3.jpg" alt="" title="" width="100%" height="100%"></div>
+                <p class="Arrange mt22 f15 ml25 mr25">
+                    独家安排英格兰北部海滩旅游胜地<br/><br/>
+                    惠特比：如果你喜欢海滩，惠特比不容错过。这里是英格兰北部最吸引人的海滩旅游胜地。小镇中世纪的街道从泊满色彩斑斓的小渔船的港口向四周辐射，蜿蜒狭窄如迷宫一般。
+                </p>
+                <div class="h250 mt30"><img src="../img/IntroduceImg4.jpg" alt="" title="" width="100%" height="100%"></div>
+                <p class="Arrange mt22 f15 ml25 mr25">苏格兰风笛悠扬：深度游览苏格兰首府、英国著名文化古城爱丁堡。爱丁堡城堡、皇家英里大道、王子街、卡尔顿山、威士忌体验中心、大象咖啡馆，一网打尽。 </p>
+            </div>
+            <div class="tab-main" v-show="cur==1">2</div>
+            <div class="tab-main" v-show="cur==2">3</div>
+            <div class="tab-main" v-show="cur==3">4</div>
+            <div class="tab-main" v-show="cur==4">5</div>
+        </div>
+    </div>
+    <div class="scheduling clearfix pb15">
+        <h2 class="ml24 f24 color97 mt15 pt24">行程安排</h2>
+        <ol>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D1</span>
+                <span class="s_2">伦敦</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D2</span>
+                <span class="s_2">伦敦-剑桥-约克-小镇</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D3</span>
+                <span class="s_2">小镇-惠特比-爱丁堡</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D4</span>
+                <span class="s_2">爱丁堡-格拉斯哥</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D5</span>
+                <span class="s_2">格拉斯哥-温德米尔</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D6</span>
+                <span class="s_2">温德米尔-曼彻斯特-贝克韦尔-马特洛科巴斯</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D7</span>
+                <span class="s_2">马特洛科巴斯-埃文河畔斯特拉福德-牛津</span>
+            </li>
+            <li class="clearfix f15 mt20 pb18">
+                <span class="s_1">D8</span>
+                <span class="s_2">牛津-巴斯</span>
+            </li>
+        </ol>
+        <ul class="ml24 mr25">
+            <li class="mt30">
+                <h3 class="f24">DAY1</h3>
+                <span class="f15 mt15 displayblock">伦敦</span>
+                <div class="tripDetail mt15">
+                    <p>用餐：机内餐</p>
+                    <p>预计骑行：100km  &nbsp;&nbsp;240min</p>
+                    <p>住宿：HILTON LONDON OLYMPIA或其他当地四星级市区酒店</p>
+                </div>
+            </li>
+            <li class="mt30">
+                <h3 class="f24">DAY2</h3>
+                <span class="f15 mt15 displayblock">伦敦-剑桥-约克-小镇</span>
+                <div class="tripDetail mt15">
+                    <p>用餐：早&nbsp;&nbsp;午</p>
+                    <p>预计骑行：100km &nbsp;&nbsp; 240min</p>
+                    <p>住宿：HILTON LONDON OLYMPIA或其他当地四星级市区酒店</p>
+                </div>
+            </li>
+            <li class="mt30">
+                <h3 class="f24">DAY3</h3>
+                <span class="f15 mt15 displayblock">伦敦</span>
+                <div class="tripDetail mt15">
+                    <p>用餐：机内餐</p>
+                    <p>预计骑行：100km &nbsp;&nbsp; 240min</p>
+                    <p>住宿：HILTON LONDON OLYMPIA或其他当地四星级市区酒店</p>
+                </div>
+            </li>
+            <li class="mt30">
+                <h3 class="f24">DAY4</h3>
+                <span class="f15 mt15 displayblock">伦敦</span>
+                <div class="tripDetail mt15">
+                    <p>用餐：机内餐</p>
+                    <p>预计骑行：100km &nbsp;&nbsp; 240min</p>
+                    <p>住宿：HILTON LONDON OLYMPIA或其他当地四星级市区酒店</p>
+                </div>
+            </li>
+            <li class="mt30">
+                <h3 class="f24">DAY5</h3>
+                <span class="f15 mt15 displayblock">伦敦-剑桥-约克-小镇</span>
+                <div class="tripDetail mt15">
+                    <p>用餐：早&nbsp;午</p>
+                    <p>预计骑行：100km &nbsp;&nbsp; 240min</p>
+                    <p>住宿：HILTON LONDON OLYMPIA或其他当地四星级市区酒店</p>
+                </div>
+            </li>
+            <li class="mt30">
+                <h3 class="f24">DAY6</h3>
+                <span class="f15 mt15 displayblock">伦敦</span>
+                <div class="tripDetail mt15">
+                    <p>用餐：机内餐</p>
+                    <p>预计骑行：100km &nbsp;&nbsp; 240min</p>
+                    <p>住宿：HILTON LONDON OLYMPIA或其他当地四星级市区酒店</p>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div class="expenseModule clearfix">
+        <h2 class="ml24 f24 color97 mt15 pt24">费用说明</h2>
+        <h3 class="f24 color59 mt30 ml25">活动费用：3280/人</h3>
+        <div class="ml25 mr25">
+            <strong class="mt22 displayblock f15">费用包含：</strong><br/>
+            <ol class="f15 color6f lh24">
+                <li>1、交通:全程进山往返费用,及子梅村到子梅垭口往返交通费用。</li>
+                <li>2、住宿:按行程所列标准入住,已包含出发前当晚成都商务酒店住宿。</li>
+                <li>3、餐饮:8正7早,包含徒步期间的营地早餐、营地晚餐。营地早餐为:粥、榨菜、大饼、清炒蔬菜或面条等;营地晚餐为:三荤两素一汤。</li>
+                <li>4、门票:包含贡嗄寺进山门票。</li>
+                <li>5、马匹:包含马匹驮装备费用。</li>
+                <li>6、装备:炊事帐篷、燃料、炉具、炊具、部分餐具、通讯工具等。</li>
+                <li>7、向导及协作:专业领队和当地藏民协作。</li>
+                <li>8、保险:赠送户外意外险;</li>
+                <li>9、活动组织费等。</li>
+            </ol>
+            <strong class="mt22 displayblock f15">费用不含：</strong><br/>
+            <ol class="f15 color6f lh24 pb15">
+                <li>1、交通:各地往返成都大交通费用。</li>
+                <li>2、个人骑马费用(全程骑马费用1200元/人,价格随季节浮动)</li>
+                <li>3、徒步中的5顿路餐需自理。</li>
+                <li>4、用餐酒水费、其他娱乐费用。</li>
+                <li>5、报价未含发票,如需发票,税点自理。</li>
+                <li>6、单房差,本行程不收自然单房差,如果队员要求自己全程住宿一间,则需要补单房差。</li>
+                <li>7、个人装备驮运不能超过20公斤超重则需补超额费用。</li>
+            </ol>
+        </div>
+    </div>
+    <footer-bottom></footer-bottom>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/footer.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var gallery = mui('.mui-slider');
+        gallery.slider({
+            interval:3000//自动轮播周期，若为0则不自动播放，默认为0；
+        });
+    }
+    var app = new Vue({
+        el:'#routeDetail',
+        data:{
+            tabTitle: ['介绍', '行程', '费用', '须知','装备'],
+            tabMain: ['内容一', '内容二', '内容三', '内容四','内容五'],
+            cur: 0,//默认选中第一个tab
+            ActiviImglist:[
+                {
+                    Imgpath:'../img/ActivityImg1.jpg',
+                },
+                {
+                    Imgpath:'../img/ActivityImg1.jpg',
+                },
+                {
+                    Imgpath:'../img/ActivityImg1.jpg',
+                }
+            ],
+        },
+        mounted(){
+            this.detailInfor();
+        },
+        methods:{
+            Goperson(){
+                window.location.href = 'personnel.html';
+            },
+            detailInfor(){
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'fffffffffff').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result && result.length>0)
+                            {
+                            }
+                            resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

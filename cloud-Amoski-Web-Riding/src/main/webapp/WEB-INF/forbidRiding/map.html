@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<section class="warpper clearfix" id="map">
+    <div class="sidebar fl">
+        <el-row class="tac">
+            <el-col :span="24">
+                <h5>自定义颜色</h5>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        @open="handleOpen"
+                        @close="handleClose"
+                        background-color="#545c64"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>系统管理</span>
+                        </template>
+                        <el-menu-item-group>
+                            <el-menu-item index="1-1">部门管理</el-menu-item>
+                            <el-menu-item index="1-2">用户管理</el-menu-item>
+                            <el-menu-item index="1-3">会员管理</el-menu-item>
+                            <el-menu-item index="1-4">角色管理</el-menu-item>
+                            <el-menu-item index="1-5">菜单管理</el-menu-item>
+                            <el-menu-item index="1-6">字典类型管理</el-menu-item>
+                            <el-menu-item index="1-7">字典管理</el-menu-item>
+                            <el-menu-item index="1-8">禁限管理</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-menu-item index="2" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">活动管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">商城管理</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-row>
+    </div>
+    <div class="counRight fr">
+        <div class="title"><h2>禁限管理</h2></div>
+        <div class="explain clearfix">
+            <span class="limit borderN">添加禁限区</span>
+            <el-button type="primary" class="fr" icon="el-icon-search" size="mini" @click.stop="addforbid()">返回列表</el-button>
+        </div>
+        <div class="clearfix mt10 restricewarper">
+            <div class="mapwarp">
+                <img src="img/map.jpg" width="100%" height="100%">
+            </div>
+            <div class="mapcont">
+                <el-input
+                        placeholder="请输入内容"
+                        v-model="input10"
+                        clearable style="float:left;width:20%;" size="small">
+                </el-input>
+                <el-button type="primary" icon="el-icon-search" class="fl" size="small">搜索</el-button>
+                <el-select v-model="value" placeholder="请选择" class="elselect" size="small" @change="checklist(value)" style="float:left;display:inline;width:15%;margin-left:3%;">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.CITYNAME"
+                            :label="item.CITYNAME"
+                            :value="item.CITYNAME">
+                    </el-option>
+                </el-select>
+                <el-button type="info" size="small" class="fl">添加禁限区</el-button>
+                <div class="fl ml50">
+                    <el-button type="primary" icon="el-icon-edit" size="small" class="elbut"></el-button>
+                    <el-button type="primary" icon="el-icon-share" size="small" class="elbut"></el-button>
+                    <el-button type="primary" icon="el-icon-delete" size="small" class="elbut"></el-button>
+                    <el-button type="primary" icon="el-icon-search" size="small" class="elbut">搜索</el-button>
+                </div>
+            </div>
+            <div class="maptext" v-show="maptxt">
+                {{mapdesctxt}}
+                <span class="erroricon" @click="closecount"><img src="img/error.png" alt="" width="100%" height="100%"></span>
+            </div>
+        </div>
+    </div>
+</section>
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="js/flexible.js"></script>
+<script>
+    var app = new Vue({
+        el: '#map',
+        data: {
+            select2:'',
+            isCollapse: true,
+            tableData: [],
+            routeLists:[],
+            routeList:[],
+            options: [],
+            input10:'',
+            value:'',
+            LocalcityCode:'',
+            Localid:'',
+            LocalcityName:'',
+            mapdesctxt:'',
+            maptxt:true
+        },
+        mounted(){
+            let _this = this;
+            _this.LocalcityCode = window.sessionStorage.getItem('LocalcityCode')
+            _this.LocalcityName = window.sessionStorage.getItem('LocalcityName')
+            _this.Localid = window.sessionStorage.getItem('Localid')
+            _this.mapdesctxt = window.sessionStorage.getItem('Localcitydesc');
+            console.log(_this.mapdesctxt);
+            if(_this.mapdesctxt == 'null' || _this.mapdesctxt=='')
+            {
+                _this.maptxt = false;
+            }
+            _this.checklist();
+            _this.queryforbid();//下拉数据
+        },
+        methods:{
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            checklist(){
+                const data = {
+                    cityCode:'',
+                };
+                postData(data,'AmoskiRiding/forbidRidingManage/querySingForbidDetailInfo').then(response => {
+                    if (response.code == 0){
+                        console.log('xxxxxxxxxxxxxxxxxx');
+                        //resolve(result)
+                    } else {
+                        console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+            },
+            queryforbid(value){
+                let _this = this;
+                //_this.LocalcityCode = value;//切换城市更新数据
+                const data = {
+                    cityName:_this.LocalcityName,
+                    cityCode:_this.LocalcityCode,
+                };
+                postData(data,'AmoskiRiding/forbidRidingManage/queryAllCityForbid').then(response => {
+                    if (response.code == 0){
+                        _this.options = response.data;
+                        console.log(response);
+                        //_this.tableData = response.data;
+                        //resolve(result)
+                    } else {
+                        //console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                    // reject(error)
+                })
+            },
+            closecount(){
+                this.maptxt = false;//关闭文本框内容
+            }
+
+
+        }
+    })
+</script>
+</body>
+</html>

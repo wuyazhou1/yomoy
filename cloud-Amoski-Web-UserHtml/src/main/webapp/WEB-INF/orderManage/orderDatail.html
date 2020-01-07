@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="shortcut icon" href="/AmoskiWebUser/images/logo.ico">
+    <link rel="stylesheet" type="text/css" href="/AmoskiWebUser/css/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/AmoskiWebUser/css/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/AmoskiWebUser/css/Hui-iconfont/1.0.8/iconfont.css" />
+
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery/1.9.1/ajaxhook.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/layer/3.0/layer.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/public.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/common.js"></script>
+
+    <script type="text/javascript" src="/AmoskiWebUser/js/datatables/1.10.15/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/laydate/laydate.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.form.js"></script>
+
+    <script type="text/javascript" src="../js/vue2.min.js"></script>
+
+    <style>
+        /*.layui-layer-move {
+            display: block;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            cursor: move;
+            opacity: 0.6;
+            filter: alpha(opacity=0);
+            background-color: #c1c1c1;
+            z-index: 2147483647;
+        }*/
+    </style>
+</head>
+<body>
+<div id="orderdetail">
+    <h1 style="color: #7d7b7b;">订单详情<button style="float: right;width: 10%;height: 42px;font-size: 20px;font-family: 微软雅黑;border: 1px solid;border-radius: 10px;background: white;" onclick="history.go(-1)">返回列表</button></h1>
+    <div style="display: -webkit-box;padding: 10px 20px;background-color: #dedddd;">
+        <div style="padding-right: 30px;"><label>订单编号：</label>${orderDatail.CODE}</div>
+        <div style="padding-right: 30px;"><label>订单状态：</label>${orderDatail.STATE==1?'已取消':orderDatail.STATE==2?'未付款':orderDatail.STATE==3?'已付款':orderDatail.STATE==4?'申请退款':orderDatail.STATE==5?'已退款':orderDatail.STATE==6?'已完成':'未知'}</div>
+    </div>
+    <div style="padding: 10px 8px;">
+        <div style="display: -webkit-box;color:#535355"><h4 style="-webkit-margin-before: 0.1em;-webkit-margin-after: 0.5em;">账户金额：     </h4><label style="display: block;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;">+￥${orderDatail.ACCOUNT}</label></div>
+        <div style="display: -webkit-box;color:#535355"><h4 style="-webkit-margin-before: 0.1em;-webkit-margin-after: 0.5em;">支付金额：     </h4><label style="display: block;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;">+￥${orderDatail.PAYMENT}</label></div>
+        <div style="display: -webkit-box;color:#535355"><h4 style="-webkit-margin-before: 0.1em;-webkit-margin-after: 0.5em;">退款服务金额： </h4><label style="display: block;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;">+￥${orderDatail.SERVICE_MONEY}</label></div>
+        <div style="display: -webkit-box;color:#535355"><h4 style="-webkit-margin-before: 0.1em;-webkit-margin-after: 0.5em;">退款金额：     </h4><label style="display: block;-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;">-￥${orderDatail.REFUND}</label></div>
+    </div>
+    <div>
+        <div  style="display: -webkit-box;padding: 10px 20px;background-color: #dedddd;">活动信息</div>
+        <div style="float: left;padding: 10px 10px;width: 100%;">
+            <div style="float: left;width: 250px;height: 150px;"><img :src="activityDatail.IMAGES" style="height: 150px;width: 240px;" ></div>
+            <div>
+                <h5 style="-webkit-margin-before: 1em;-webkit-margin-after: 0.5em;font-weight: 800;">${activityDatail.TITLE}</h5>
+                <div style="-webkit-margin-before: 1em;-webkit-margin-after: 0.5em;">
+                    <div style="float: left;padding-right: 20px;">集合地点：${activityDatail.COLLECTION_PLACE}</div>
+                    <div>报名人数：${activityDatail.COUNT}人</div>
+                </div>
+                <div style="-webkit-margin-before: 1em;-webkit-margin-after: 0.5em;">
+                    <div style="float: left;padding-right: 20px;">集合时间：${new Date(activityDatail.COLLECTION_TIME).toLocaleString()}</div>
+                    <div>结束时间：${new Date(activityDatail.ACTIVITY_STOP).toLocaleString()}</div>
+                </div>
+                <div style="-webkit-margin-before: 1em;-webkit-margin-after: 0.5em;">
+                    <a href="#" onclick="appNode.queryActivity()" style="color: #62B297;">查看详情</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div  style="display: -webkit-box;padding: 10px 20px;background-color: #dedddd;">活动信息</div>
+        <div>
+            <table id="example" class="table table-border table-bordered table-bg table-hover table-sort" >
+                <thead>
+                <tr class="text-c">
+                    <th width="5%">票号</th>
+                    <th width="5%">姓名</th>
+                    <th width="10%">身份证</th>
+                    <th width="8%">联系方式</th>
+                    <th width="8%">俱乐部</th>
+                    <th width="8%">区域</th>
+                    <th width="8%">套餐/金额</th>
+                    <th width="8%">车型</th>
+                    <th width="8%">排量</th>
+                    <th width="5%">服装码数</th>
+                    <th width="5%">状态</th>
+                    <th width="5%">备注</th>
+                    <th width="">操作</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div style="margin-top: 70px;">
+        <h4 style="color: #6b9aad;">历史明细</h4>
+        <ul >
+            <li  v-for="(item,index) in orderHistoryDatailList"><h4><span>${item.CREATE_DATA}</span>&nbsp;&nbsp;&nbsp;<span>${item.DESCRIBE}</span></h4></li>
+        </ul>
+    </div>
+    <div v-show="showRefundOperation"  style="position: fixed;top: 0;right: 0;bottom: 0;left: 0;overflow: auto;margin: 0;z-index: 2001;background: rgba(123, 124, 124,0.4);">
+        <div style="margin: 10% auto 0 !important;position: absolute;border-radius: 2px;box-shadow: 0 1px 3px rgba(0,0,0,.3);box-sizing: border-box;width: 50%;background: #FFF;left: 25%;    font-family: 微软雅黑;padding-left: 2%;color: #979797;padding-bottom: 10px;">
+            <h4 style="-webkit-margin-before: 0.5em;-webkit-margin-after: 0.5em;">${RefundOperationDisabled?'驳回退款':'退款操作'}</h4>
+            <div>
+                <div style="width: 40%;float: left;"><label>订单编号：</label>${refundDetails.CODE}</div>
+                <div><label>支&nbsp;&nbsp;付&nbsp;人：</label>${refundDetails.A2}</div>
+            </div>
+            <div style="margin-top: 8px;">
+                <div style="width: 40%;float: left;"><label>票&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</label>${refundDetails.A1}</div>
+                <div><label>票&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;款：</label>￥${refundDetails.PRIMITIVE_MONEY}</div>
+            </div>
+            <div style="margin-top: 8px;">
+                <div><label>退款金额：</label>￥${RefundOperationDisabled?0:refundDetails.PRIMITIVE_MONEY-refundDetails.SERVICE_MONEY}</div>
+            <div><label>服&nbsp;&nbsp;务&nbsp;费：</label>￥<input type="text" v-model="refundDetails.SERVICE_MONEY" :disabled="RefundOperationDisabled"></div>
+        </div>
+            <!--<div style="margin-top: 8px;">-->
+                <!--<div style="width: 40%;float: left;"><label>支付渠道：</label>-->
+                    <!--${refundDetails.PAY_TYPE==1?'微信支付':refundDetails.PAY_TYPE==2?'支付宝支付':'未知'}</div>-->
+                <!--<div><label>退款金额：</label>￥${RefundOperationDisabled?0:refundDetails.PRIMITIVE_MONEY-refundDetails.SERVICE_MONEY}</div>-->
+            <!--</div>-->
+            <div style="margin-top: 12px;">
+                <div style="float: left;">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注：</div>
+                <textarea style="width: 66%;height: 80px;" v-model="refundDetails.REMARK" ></textarea>
+            </div>
+            <div style="padding-left: 70px;margin-top: 10px;">
+                <button style="width: 170px;height: 48px;background: rgba(255,255,255,1);border-radius: 5px;border: 1px solid rgba(204,213,219,1);" onclick="appNode.RefundOperationStop()">取消</button>
+                <button style="width: 170px;height: 48px;background: rgba(98,178,151,1);border-radius: 5px;border: 0.3px solid #d4d4d4;" onclick="appNode.SaveRefundOperation()">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+
+    function datedifference(sDate1, sDate2) {//sDate1和sDate2是2006-12-18格式
+        var dateSpan,
+            tempDate,
+            iDays;
+        sDate1 = Date.parse(sDate1);
+        sDate2 = Date.parse(sDate2);
+        dateSpan = sDate2 - sDate1;
+        dateSpan = Math.abs(dateSpan);
+        iDays = Math.floor(dateSpan / (24 * 3600 * 1000));
+        return iDays
+    }
+
+    function GetQueryString(name) {
+        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+        var r = window.location.search.substr(1).match(reg);
+        if(r != null) return decodeURI(r[2]);
+        return null;
+    }
+
+    var table;
+    function initTable(id) {
+        var columns = [
+            {
+                data : "A1"
+            }, {
+                data : "A2"
+            }, {
+                data : "A3"
+            },{
+                data : "A4",
+            },{
+                data : "A5",
+            },{
+                data : "A6"
+            },{
+                data : "A8",
+                render : function(data, type, full, meta) {
+                    if(data==null)
+                        return "";
+                    for(;data.indexOf("^")!=-1;){
+                        data=data.replace("^","<br/>");
+                    }
+                    return data
+                }
+            },{
+                data : "MODELS"
+            },{
+                data : "DISPLACEMENT"
+            },{
+                data : "CLOTHING_DIGITAL"
+            },{
+                data : "A9",
+                render : function(data, type, full, meta) {
+                    if(data=="1"){
+                        return "已取消"
+                    }else if(data=="2"){
+                        return "未付款"
+                    }else if(data=="3"){
+                        return "已付款"
+                    }else if(data=="4"){
+                        return "申请退款"
+                    }else if(data=="5"){
+                        return "已退款"
+                    }else if(data=="6"){
+                        return "已完成"
+                    }
+                },
+            },{
+                data : "A7"
+            },{
+                data : "A9",
+                sClass:"centerTd",
+                render : function(data, type, full, meta) {
+                    if(data==3){
+                        return '<button style=" background: #306fd0; border: none; color: #fff; font-size: 12px; padding: 1.7% 3%; border-radius: 4px; width: 30%; margin-left: 8%;" data-data="'+JSON.stringify(full).replace(RegExp("\"", "g"),"\'")+'"  >签到</button>'+
+                            '<button style=" background: #306fd0; border: none; color: #fff; font-size: 12px; padding: 1.7% 3%; border-radius: 4px; width: 30%; margin-left: 8%;" data-data="'+JSON.stringify(full).replace(RegExp("\"", "g"),"\'")+'" onclick="appNode.handleClick(\''+full.SIGN_UP_ID+'\')">编辑</button>';
+                    }else if(full.REFUND_AUDIT_ID==null){
+                        return "<span style='margin-left: 45%;'>-</span>"
+                    }else{
+                        return '<button style=" background: #306fd0; border: none; color: #fff; font-size: 12px; padding: 1.7% 3%; border-radius: 4px; width: 30%; margin-left: 8%;" data-data="'+JSON.stringify(full).replace(RegExp("\"", "g"),"\'")+'" onclick="appNode.RefundOperationChanage(true,this)">驳回</button>'+
+                            '<button style=" background: #306fd0; border: none; color: #fff; font-size: 12px; padding: 1.7% 3%; border-radius: 4px; width: 30%; margin-left: 8%;" data-data="'+JSON.stringify(full).replace(RegExp("\"", "g"),"\'")+'" onclick="appNode.RefundOperationChanage(false,this)">退款</button>';
+                    }
+                },
+            }
+        ];
+        table = $('#example').DataTable({
+            ajax : {
+                url : "/AmoskiUser/ActivityOrder/activityOrderDatail",
+                type : "POST",
+                data : function(d) {
+                    d.id = id;
+                },
+            },fnDrawCallback: function (oSettings) {
+                let resultMap=jQuery.parseJSON(oSettings.jqXHR.responseText).resultMap;
+                appNode.queryTableData(resultMap.orderDatail,resultMap.activityDatail,resultMap.orderHistoryDatailList,resultMap.RefundRulesList);
+            },
+            columns : columns,
+            serverSide : true,// 服务器查询数据分页
+            searching : false,
+            bAutoWidth : false, //宽度自适应
+            dom : 'rt<"bottom"ilp><"clear">',
+            filter : false,// 去掉搜索框
+            //scrollX : "100%",
+            scrollCollapse : "true",
+            paginationType : 'full_numbers',
+            sorting : [ [ 1, "desc" ] ],
+            // 默认第几个排序
+        });
+
+    }
+
+    function selected() {
+        $('#example tbody').on('click', 'tr', function() {
+            $(this).children().first().children().attr("checked", true);
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+    }
+    var appNode;
+    var app = new Vue({
+        delimiters: ['${', '}'],
+        el:'#orderdetail',//,el: '#orderdetail',
+        data: {
+            orderDatail:{},//订单详情
+            RefundRulesList:{},
+            activityDatail:{},//活动详情
+            orderHistoryDatailList:[],//订单历史详情
+            refundDetails:{},//退款详情数据
+            showRefundOperation:false,//退款操作界面
+            RefundOperationDisabled:true,
+            //showServiceCharge:false//是否显示服务费
+        },
+        mounted(){
+            initTable(GetQueryString("id"));
+            $("#btnSearch").on('click',function(){
+                table.draw();
+            });
+            selected();
+            appNode = this;
+            setTimeout(function(){
+                window.parent["adjustmentIframe2"](
+                    1649+"px"
+                    ,"100%");
+            },1000);
+        },
+        methods: {
+            queryTableData(orderDatail,activityDatail,orderHistoryDatailList,RefundRulesList){
+                this.orderDatail=orderDatail;
+                this.activityDatail=activityDatail;
+                this.orderHistoryDatailList=orderHistoryDatailList;
+                this.RefundRulesList=RefundRulesList;
+            },
+            RefundOperationChanage(bool,data){
+                this.refundDetails=JSON.parse(data.dataset.data.replace(RegExp("\'", "g"),"\""));
+                this.RefundOperationDisabled=bool;
+                let startTime = new Date().toLocaleString().split(" ")[0].replace(RegExp("/", "g"),"-");
+                let stopTime = this.activityDatail.ACTIVITY_END.split(" ")[0];
+                let dateTime = datedifference(startTime,stopTime);
+                if(new Date(stopTime).getTime()<new Date(startTime.split(" ")[0]).getTime()){
+                    window.parent.layer.msg("活动已开始，不能进行退款", {
+                        icon : 6,
+                        time : 5000
+                    });
+                    return;
+                }
+                let RefundRule=0;
+                if(dateTime<=1){
+                    RefundRule=1;
+                }else if(dateTime<=3){
+                    RefundRule=3;
+                }else if(dateTime<=10){
+                    RefundRule=10;
+                }else if(dateTime<=30){
+                    RefundRule=30;
+                }
+                for(let i=0;i<this.RefundRulesList.length;i++){
+                    if(this.RefundRulesList[i].closingDay==RefundRule){
+                        this.refundDetails.serviceCharge = this.RefundRulesList[i].serviceCharge;
+                        break;
+                    }
+                }
+                this.refundDetails.SERVICE_MONEY = (this.refundDetails.PRIMITIVE_MONEY / 100) * this.refundDetails.serviceCharge;
+                this.showRefundOperation=true;
+            },handleClick(id){
+                $.ajax({
+                    type: 'POST',
+                    dateType: 'JSON',
+                    data : {
+                        "id":id,
+                    },
+                    url: "/AmoskiUser/RegistrationPersonnel/RegistrationPersonneldetails",
+                    beforeSend:function(){
+                        layer_wait();
+                    },
+                    success: function(res){
+                        var data=res;
+                        window.top.ActivitySignUpQuery=false;
+                        window.top.ActivitySignUpDatil=data;
+                        layer_close();
+                        // window.location.href = '/AmoskiWebHtmlUser/registrationManage/personnelManag.html';
+                        window.parent["addTab"]("活动管理","/AmoskiWebHtmlUser/registrationManage/personnelManag.html")
+
+                    },
+                    error: function(e){
+                        layer_close();
+                        layer.msg(JSON.parse(e.responseText).message,{icon:6,time:2000},function(){
+                            layer_close();
+                        });
+                    }
+                });
+            },
+            RefundOperationStop(){
+                this.showRefundOperation=false;
+            },
+            initCreateObj(obj,bl){
+                //初始化活动里面的对象
+                obj.tbActivityBasicsEntity=obj.tbActivityBasicsEntity?obj.tbActivityBasicsEntity:new TbActivityBasicsEntity();//活动基础表
+                obj.tbActivitySynopsisEntity=obj.tbActivitySynopsisEntity?obj.tbActivitySynopsisEntity:new TbActivitySynopsisEntity();//活动简介表
+                obj.tbActivityOrdinationEntity=obj.tbActivityOrdinationEntity?obj.tbActivityOrdinationEntity:new TbActivityOrdinationEntity();//活动报名规则表
+                obj.tbActivityScheduleEntity=obj.tbActivityScheduleEntity?obj.tbActivityScheduleEntity:[new TbActivityScheduleEntity()];//活动日程安排表
+                for(let i=0;i<obj.tbActivityScheduleEntity.length;i++){
+                    let objRoute=obj.tbActivityScheduleEntity[i].tbActivityRouteEntity;
+                    for(let j=0;j<objRoute.length;j++){
+                        if(objRoute[j].xaxis!=null&&objRoute[j].xaxis!=""){
+                            objRoute[j].xAxis=objRoute[j].xaxis
+                        }
+                        if(objRoute[j].yaxis!=null&&objRoute[j].yaxis!=""){
+                            objRoute[j].yAxis=objRoute[j].yaxis
+                        }
+                    }
+                }
+                window.top.activityIndex="0";
+                var activityCreateList = [];
+                activityCreateList.push(obj);
+                window.top.activityCreateList=activityCreateList;
+                window.top.activityCreate=obj;
+                window.top.lookActivity=bl==true?true:false;
+            },
+            queryActivity(){
+                $.ajax({
+                    type: 'POST',
+                    dateType: 'JSON',
+                    data : {
+                        "id":this.activityDatail.ID,
+                    },
+                    url: "/AmoskiUser/ActivityCreate/QueryActivity",
+                    beforeSend:function(){
+                        layer_wait();
+                    },
+                    success: function(res){
+                        var data=res;//数据
+                        appNode.initCreateObj(data,false);
+                        window.parent.$("#tabzu [lay-id='活动管理'] .layui-tab-close").click()
+                        window.parent.addTab("活动管理","/AmoskiWebHtmlUser/activity/index.html")
+                       // window.location.href = '../activity/index.html';
+                    },
+                    error: function(e){
+                        layer_close();
+                        layer.msg(JSON.parse(e.responseText).message,{icon:6,time:2000},function(){
+                            layer_close();
+                        });
+                    }
+                });
+            },
+            SaveRefundOperation(){
+                $.ajax({
+                    type: 'POST',
+                    dateType: 'JSON',
+                    data : {
+                        "DETAILS_ID":this.refundDetails.DETAILS_ID,
+                        "SERVICE_MONEY":this.refundDetails.SERVICE_MONEY,
+                        "REFUND_MONEY":(this.refundDetails.PRIMITIVE_MONEY-this.refundDetails.SERVICE_MONEY),
+                        "PRIMITIVE_MONEY":this.refundDetails.PRIMITIVE_MONEY,
+                        "REMARK":this.refundDetails.REMARK,
+                        "REFUND_AUDIT_ID":this.refundDetails.REFUND_AUDIT_ID,
+                        "BOOL":this.RefundOperationDisabled
+                    },
+                    url: "/AmoskiUser/ActivityOrder/refundApplication",
+                    beforeSend:function(){
+                        layer_wait();
+                    },
+                    success: function(json){
+                        app._data.showRefundOperation=false;
+                        table.draw();
+                        layer.msg("操作成功",{icon:6,time:2000},function(){
+                            //layer_close();
+                        });
+                    },
+                    error: function(e){
+                        layer_close();
+                        layer.msg(JSON.parse(e.responseText).message,{icon:6,time:2000},function(){
+                            layer_close();
+                        });
+                    }
+                });
+            }
+        }
+    })
+</script>
+
+</html>

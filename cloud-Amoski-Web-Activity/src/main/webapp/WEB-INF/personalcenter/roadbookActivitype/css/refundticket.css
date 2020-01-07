@@ -1,0 +1,71 @@
+#refundticket .refundPickerHeader{background:url(../img/refundBg.jpg) center top repeat-x;width:100%;overflow:hidden;height:6.3rem;margin-top:0;padding:0;}
+#refundticket .refundPickerHeader .refundPicker{text-align:center;}
+#refundticket .swiperCount{margin-top:0.8rem;width:95%;background:#fff;border-radius:5px;/*height:3.6533333333333333rem;*/}
+/*#refundticket .swiperCount .swiper-slide{border-radius:5px;padding:15px;overflow:hidden;box-shadow:0 1px 6px #CCCCCC;height:3.6533333333333333rem;}*/
+/*#refundticket .swiperCount .swiper-slide-prev{width:8% !important;margin:0 0 0 -3px !important;padding:0 10px 0 0 !important;}*/
+/*#refundticket .swiperCount .swiper-slide-prev div{display:none;}*/
+/*#refundticket .swiperCount .swiper-slide-active{width:80% !important;margin:0 10px !important;}*/
+/*#refundticket .swiperCount .swiper-slide-next{width:10% !important;margin:0 !important;}*/
+/*#refundticket .swiperCount .swiper-slide-next div{display:none;}*/
+
+#refundticket .swiperCount .swiper-slide{border-radius:5px;padding:15px;overflow:hidden;box-shadow:0 1px 6px #CCCCCC;height:3.6533333333333333rem;}
+.swiper-slide .refundImg1{width:1.4933333333333334rem;height:1.4933333333333334rem;margin-left:5px;}
+.swiper-slide .txt{color:#2D3138;text-align:left;}
+.swiper-slide .PicTxt{width:100%;/*height:1.4933333333333334rem;*/}
+.swiper-slide .PicTxt .txt{width:75%;}
+.swiper-slide .PicTxt .refundImg1 img{border-radius:5px;}
+.swiper-slide .startTime{color:#979797;font-size:12px;text-align:left;}
+.peoplePicTxt .Img{width:0.64rem;height:0.64rem;display:block;}
+.peoplePicTxt .Img img{width:100%;height:100%;border-radius:50%;}
+.swiper-container-horizontal>.swiper-pagination-bullets{bottom:69px !important;z-index:9999;}
+.swiper-pagination-bullet{width:5px !important;height:5px !important;}
+.swiper-pagination-bullet-active{background:#62B297 !important;width:13px !important;height:5px !important;}
+
+#refundticket{background:#fff;height:100%;}
+.refundInCount{padding:0.4rem 1rem;}
+.refundInCount .refundTxt{border-bottom:1px solid #f3f3f3;padding-bottom:0.45333333333333337rem;}
+#refundticket .refundInCount ul li{border-left:1px solid #E5E5E5;padding-left:0.4rem;color:#979797;padding-bottom:0.4rem;font-size:0.4rem;position:relative;}
+#refundticket .refundInCount ul li span i{background:url(../img/circular.png) no-repeat;background-size:cover;position:absolute;left:-7px;top:0px;width:12px;height:12px;}
+#refundticket .refundInCount ul li.cur span{color:#2D3138;}
+#refundticket .refundInCount ul li.cur span i{background:url(../img/circularcur.png) no-repeat;background-size:cover;position:absolute;left:-7px;top:0px;}
+#refundticket .refundInCount .circleIcon{display: inline-block;width:14px;height:14px;}
+#refundticket .refundInCount .circleIcon img{display:inline-block;width:100%;height:100%;}
+#refundticket .alertServiceBox{width:100%;height:100%;position:fixed;left:0;bottom:0;background:rgba(0,0,0,.3);z-index:999;}
+#refundticket .ServiceBg{width:100%;background:#fff;position:fixed;left:0;bottom:0;}
+#refundticket .Servicecharge{background:#fff;width:100%;position:fixed;bottom:0;}
+#refundticket .Servicecharge h3{text-align:center;}
+#refundticket .baomEnd{padding:0.5333333333333333rem;border:1px solid #F2F2F2;border-radius:5px;}
+#refundticket .baomEnd .title{background:#F2F2F2;width:100%;border-top-left-radius:5px;border-top-right-radius:5px;}
+#refundticket .baomEnd .title span{width:49%;text-align:center;display:inline-block;}
+#refundticket .baomEnd ul{width:100%;color:#67676F;border:1px solid #F2F2F2;}
+#refundticket .baomEnd ul li{padding:0.26666666666666666rem 0;border-bottom:1px solid #F2F2F2;}
+#refundticket .baomEnd ul li span{width:49%;text-align:center;display:inline-block;}
+
+/*电子票*/
+.maineticket{background:#fff;text-align:center;color:#2D3138;}
+.maineticket h2{color:#2D3138;font-weight:bold;}
+.maineticket h3{color:#979797;}
+.maineticket .arrangeList li{width:100%;line-height:24px;margin-top:5px;}
+.maineticket .arrangeList li .s_1{width:40%;color:#67676F;}
+.maineticket .arrangeList li .s_2{width:40%;color:#2D3138;}
+.maineticket .arrangeList li .s_3 img{display:block;width:100%;height:100%;}
+
+/*已付款*/
+.paymentFooter{width:90%;margin:0 auto;}
+.paymentFooter .refundBtn{width:38%;color:#2D3138;text-align:center;line-height:1.0666666666666667rem;background:#F2F2F2;border-radius:5px;}
+.paymentFooter .ticketBtn{width:40%;text-align:center;line-height:1.0666666666666667rem;background:#62B297;color:#fff;border-radius:5px;margin-left:0.4rem;}
+
+/*电子票*/
+.tickliList li{border-bottom:1px solid #f4f4f4;padding:0.4rem 0;}
+.tickliList li img{display:block;width:100%;height:100%;}
+
+
+.etickListLi{background:#F7F7FF;}
+.etickListLi ul{width:95%;margin:2.2rem auto;padding-top:0.1rem;}
+.etickListLi ul li{background:#fff;width:100%;height:3.2rem;}
+.etickListLi ul li .Txt{float:left;display:inline;width:80%;padding-right:5%;}
+.etickListLi ul li .Txttag{width:20%;background:url(../img/Txttagcur.png) right center no-repeat;background-size:cover;height:100%; writing-mode: vertical-lr;text-align:center;
+    letter-spacing:15px;padding-left:26px;
+}
+.etickListLi ul li .Txttagno{width:20%;background:url(../img/Txttag.png) right center no-repeat;background-size:cover;height:100%; writing-mode: vertical-lr;text-align:center;
+    letter-spacing:15px;padding-left:26px;}

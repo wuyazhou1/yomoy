@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <style type="text/css">
+        #lineroadDetail .pathCount .count img{width:100%;}
+    </style>
+</head>
+<body>
+<div id="lineroadDetail" class="clearfix">
+    <!--<div class="positionBar pt10 pb10">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38 dblock textAlign">路书详情</span>
+    </div>-->
+    <div class="pathCount pl15 pr15 mt22">
+        <div class="count">
+            <h1 class="color38 f18 pt24 dblock"><strong>DAY{{roadDetailList.day}}</strong></h1>
+            <strong class="f15 mt15 dblock">{{roadDetailList.allRoutepoint}}</strong>
+            <p class="mt15 lh24 f15 color6f" v-html="roadDetailList.introduction"></p>
+        </div>
+        <ul class="mt21" v-show="roadDetailList.aboutdis>0 || roadDetailList.ridingtime>0">
+            <li>
+                <p class="f15 lh24 mt5">
+                    <strong>预计骑行:</strong>
+                    <span>
+                        <span v-show="roadDetailList.aboutdis>0">{{(roadDetailList.aboutdis/1000).toFixed(2)}}km</span>
+                         <span v-show="roadDetailList.ridingtime>0">{{(roadDetailList.ridingtime/60).toFixed(2)}}min</span><!--158km 360min-->
+                    </span>
+                </p>
+            </li>
+        </ul>
+        <div class="roadDetailBg f15 color6f mt30">
+            <strong>DAY{{roadDetailList.day}}</strong>
+            <span>线路安排</span>
+        </div>
+        <div v-for="(item,index) in roadDetailList.pointList">
+            <div class="clearfix pt15">
+                <span class="fl mt20 w24"><img :src="'img/ic_point_type'+item.routeIcon+'.png'" width="100%" height="100%"></span>
+                <div class="fl ImgTxt ml20">
+                    <span class="fl w40 h40 Img"><img :src="API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+item.imgUrl" width="100%" height="100%"></span>
+                    <div class="fl Txt ml10" style="width:80%;">
+                        <strong class="f15">{{item.routeName}}</strong>
+                        <p class="f12">{{item.address}}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix" v-show="item.aboutdis>0 || item.ridingtime>0">
+                <span class="fl"><img src="img/lineIcon2.jpg" width="100%" height="100%"></span>
+                <div class="fl ml20">
+                    <div class="fl ml10 mt22">
+                        <strong class="f15">距离<span v-show="item.aboutdis>0">{{item.aboutdis/1000}}km；</span>预计<span v-show="item.ridingtime>0">{{Math.floor(item.ridingtime/60)}}min</span></strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#lineroadDetail',
+        data:{
+            roadDetailList:{},//整体数据；
+        },
+        mounted(){
+            this.queryId=GetRequest().id;
+            this.roadInfor();
+        },
+        methods:{
+            roadInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        type:'4', // 1.路书简介 2.线路详情 3.途径点详情
+                        id:_this.queryId,//=345,346
+                    };
+                    postData(data,'AmoskiRiding/appRidingGuideManage/queryRouteInfo').then(response =>{
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result)
+                            {
+                                _this.roadDetailList = result;
+                            }
+                            resolve(result)
+                        } else {
+                            // reject('error')
+                        }
+                    }).catch(error => {
+                        // reject(error)
+                    })
+
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

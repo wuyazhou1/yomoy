@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/swiper.min.css"/>
+    <script src="../js/vue2.min.js"></script>
+    <script src="../js/swiper.min.js"></script>
+    <script src="../js/loading.js"></script>
+</head>
+<style>
+    html, body{
+        position: relative;
+        height: 100%;
+    }
+    body{
+        background: #eee;
+        font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        color:#000;
+        margin: 0;
+        padding: 0;
+    }
+    .swiper-container ,.swiper-wrapper,.swiper-slide{
+        width: 100%;
+        height: 100%;
+    }
+    .swiper-container2{width:100%;overflow:hidden;}
+    .SynopsisData{padding:0 10px;}
+    .tripDay{overflow:hidden;}
+    .roteListUl ul:last-child .pointJuli{display: none;}
+    #Module_3 img{display: block;width:100%;}
+</style>
+<body>
+<section id="activityWarp" v-cloak>
+    <!-- Swiper -->
+    <div class="headerFixed">
+        <div class="positionBar pt10 pb10">
+            <span class="w24 arrowIcon fl ml10" @click="GobackUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+            <span class="enrollees f18 color38">我的路书</span>
+        </div>
+    </div>
+
+    <div style="margin-top:1.3rem;overflow: auto;background:#fff;">
+            <div class="clearfix">
+                <div class="Module_1" id="Module_1">
+                    <div class="pictureBig">
+                        <!--<div class="pt10 pb10 clearfix refundPicker">-->
+                        <!--<span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeftf.png" alt="" title=""></a></span>-->
+                        <!--</div>-->
+                        <img :src="API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+filnameUrl" width="100%" height="100%" alt="" title="" @click="activithGo()">
+                    </div>
+                    <h2 class="f30 mt22 ml15 mr15 color97 textAlign"><strong>{{datactivity.title}}</strong></h2>
+                    <div style="margin-top:0.5rem;position:relative">
+                        <span class="displayblock f15 mt15 ml15 mr15 textAlign">优摩游为您定制的路书</span>
+                        <div class="btnSlideUp"><i class="icon-navigateup"></i>
+                            <!-- 向上滑动浏览-->
+                        </div>
+                    </div>
+                </div>
+                <!--行程路线-->
+                <ul class="tripDay" id="Module_2" style="margin-top:1.3rem;">
+                    <li class="clearfix" :Indexarr=index+4 v-for="(item,index) in scheduleList">
+                        <a href="#">
+                            <span class="day fl f20">D{{index+1}}</span>
+                            <div class="cities fl">
+                                <span class="fl">
+                                    <span class="city">{{item.placeDeparture}}</span>
+                                    <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                </span>
+                                <span class="fl">
+                                    <span class="city">{{item.destination}}</span>
+                                    <i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i>
+                                </span>
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+                <!--关于这次旅行 -->
+                <div class="clearfix" id="Module_3">
+                    <h2 class="f22 mt30 ml15 mr15 color97 mb19"><strong>关于这次旅行</strong></h2>
+                    <div class="clearfix SynopsisData">
+
+                    </div>
+                </div>
+                <!-- 行程安排-->
+                <div id="Module_4">
+                    <h2 class="f22 mt30 ml15 mr15 color97"><strong>行程安排</strong></h2>
+
+
+                    <!--<div class="arrangementSubHeader ml15 mr15 f15 mt20"><span class="subTitle">酒店安排</span></div>-->
+
+                    <ul class="schedulingList mt36 ml15 mr15" v-if="window.sessionStorage.getItem('sid')">
+                        <li class="mt15" v-for="(item,index) in scheduleList" >
+                            <div v-show="item.hotelName"  class="schedulingListName">
+                                <p class="clearfix title">
+                                    <strong class="fl color97 f15 pl15">D{{index+1}} - D{{index+2}}</strong>
+                                    <strong class="fl ml15 f15">{{item.destination}}</strong>
+                                </p>
+                                <div class="Txt pt10 pb10 pl15 pr15">
+                                    <p><span class="jiuDIcon"><img src="../img/jiuDIcon1.jpg"/></span><span class="ml15 f12">{{item.hotelName}}</span></p>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <!-- -->
+                <div v-for="(item,index) in scheduleList" :id="'Module_'+(index+5)" style="margin-top:1.3rem;">
+                    <div class="ml15 mr15">
+
+
+                        <p class="mt15"><strong class="f28 color97">D{{index+1}}</strong><span class="color67 f18">/{{getFmtTime(item.createData)}}</span></p>
+
+                        <!--接机开始-->
+                        <ul class="routeArrange ml15" style="width:90%;margin:0 auto;" v-show="signUpDto.orgCode==1 && signUpDto.meetGive=='是' && index==0  ">
+                            <li class="mt15">
+                                <div class="hangB">
+                                    <h4 class="pl15 pt10 pb10 f12 color67">{{signUpDto.flightNumber}}</h4>
+                                    <div class="clearfix  routeList pt10 pb10">
+                                        <div class="fl Whole">
+                                            <p>{{getFmtTime(signUpDto.flightDate,"HH-mm")}}</p>
+                                            <p class="mt5 f12">{{signUpDto.placeDeparture}}</p>
+                                        </div>
+                                        <div class="fl flgImg mt15">
+                                            <img src="../img/arrowIcon.png" width="100%" height="100%">
+                                        </div>
+                                        <div class="fl City">
+                                            <p>{{getFmtTime(signUpDto.arriveDate,"HH-mm")}}</p>
+                                            <p class="mt5 f12">{{signUpDto.destination}}</p>
+                                        </div>
+                                        <span class="flgIcon"><img src="../img/flgIcon1.png" width="100%" height="100%"></span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!--接机结束-->
+                        <!--送机开始-->
+                        <ul class="routeArrange ml15" style="width:90%;margin:0 auto;" v-show="signUpDto.orgCode==2 && signUpDto.meetGive=='是' && index== scheduleList.length-1  ">
+                            <li class="mt15">
+                                <div class="hangB">
+                                    <h4 class="pl15 pt10 pb10 f12 color67">{{signUpDto.flightNumber}}</h4>
+                                    <div class="clearfix  routeList pt10 pb10">
+                                        <div class="fl Whole">
+                                            <p>{{getFmtTime(signUpDto.flightDate,"HH-mm")}}</p>
+                                            <p class="mt5 f12">{{signUpDto.placeDeparture}}</p>
+                                        </div>
+                                        <div class="fl flgImg mt15">
+                                            <img src="../img/arrowIcon.png" width="100%" height="100%">
+                                        </div>
+                                        <div class="fl City">
+                                            <p>{{getFmtTime(signUpDto.arriveDate,"HH-mm")}}</p>
+                                            <p class="mt5 f12">{{signUpDto.destination}}</p>
+                                        </div>
+                                        <span class="flgIcon"><img src="../img/flgIcon1.png" width="100%" height="100%"></span>
+                                    </div>
+                                </div>
+                            </li>
+                        </ul>
+                        <!--送机结束-->
+                        <p class="f18 color61 mt15"><span>{{item.placeDeparture}}</span><i class="arrow icon-arrowPoi"><img src="../img/arrowIcon.jpg" alt="" title=""></i><span>{{item.destination}}</span></p>
+
+                        <div class="mt20 borderBottom pb20 swiperplh" v-show="item.introduce">
+                            <div class="f15 color67 lh24" v-html="item.introduce">
+                            </div>
+                        </div>
+                        <div class="mt20 borderBottom pb20 swiperplh" v-show="item.eatAdvice || item.allDistance || item.hotelName">
+                            <p class="f15 color67" v-show="item.eatAdvice">用餐包含： {{item.eatAdvice}}</p>
+                            <p class="f15 color67" v-show="item.allDistance">预计骑行： {{item.allDistance}} {{item.timeRequired}}</p>
+                            <p class="f15 color67" v-show="item.hotelName">住宿地点：{{item.hotelName}}</p>
+                        </div>
+                        <div class="mt36 f18 mr15">
+                            <h3 class="color97 f15">D{{index+1}} 日程安排</h3>
+                            <ul class="dayarrange">
+                                <li class="mt15 color67 f15">
+                                    <div v-for="(subItem,index) in item.tbActivityTimeHistoryEntity">
+                                        <span>{{subItem.startTime}} -- {{subItem.stopTime}}</span>
+                                        <strong>{{subItem.introduce}}</strong>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="mt36 f18 mr15">
+                            <h3 class="color97 f15">D{{index+1}} 线路安排</h3>
+                            <div class="roteListUl">
+                                <ul class="routeArrange ml15" v-for="(subItem,index) in item.tbActivityRouteEntity">
+                                    <li class="mt15">
+                                        <div class="clearfix  routeList pb10 pt10 pl15 pr15 hangB">
+                                            <!-- subItem.tbActivityRouteImageEntity-->
+                                            <!--<span class="HotalImg fl"><img :src="../img/TouteImg1.jpg" @click="activithGo()" width="100%" height="100%"></span>-->
+                                            <!--<span>{{subItem.tbActivityRouteImageEntity[0]}}</span>-->
+                                            <span class="HotalImg fl">
+                                    <!--<img :src="subItem.tbActivityRouteImageEntity[0].fileNameUrl" @click="activithGo()" width="100%" height="100%">-->
+                                                <!--<spna>{{subItem.tbActivityRouteImageEntity[0].fileNameUrl}}</spna>-->
+                                    <img :src="API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+subItem.tbActivityRouteImageEntity[0].fileNameUrl" @click="activithGo()" width="100%" height="100%">
+                                </span>
+                                            <div class="fr Hotel">
+                                                <span class="displayblock f15 color38">{{subItem.pathPointName}}</span>
+                                                <p class="f12 mt5 color67">{{subItem.address}}</p>
+                                            </div>
+                                            <span class="flgIcon"><img :src="'../img/ic_point_type'+roteIcon[subItem.pathPointType]+'.png'" width="100%" height="100%"></span>
+                                        </div>
+                                    </li>
+                                    <li class="mt22 clearfix pointJuli">
+                                        <div class="clearfix">
+                                            <span class="carIcon fl"><img src="../img/BicycleIcon.png" width="100%" height="100%"></span>
+                                            <!--<strong class="f12 displayinlik fwnormal ml15 mt5 color38">接机</strong>-->
+                                            <span class="f12 ml10 mt5 color67">距离{{subItem.distance}}</span>
+                                            <span class="f12 ml10 mt5 color67">预计{{subItem.timeRequired}}</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="tripMenuWrap" v-show="tripMenuWrapshow">
+        <div class="greyBg"></div>
+        <div class="tripMenu f15">
+            <div class="mb19">选择查看的页面及日程安排</div>
+            <div class="gap10">
+                <div class="row chTig clearfix f15 mt10 tabs">
+                    <a href="#Module_1" id="rotepage" class="btnPage active">
+                        <i class="tos-icon icon-roadbook icon"></i>
+                        <span class="title">路书封面</span>
+                    </a>
+                    <a href="#Module_2" class="btnPage">
+                        <i class="tos-icon icon-route icon"></i>
+                        <span class="title">行程路线</span>
+                    </a>
+                    <a href="#Module_3" class="btnPage mb19">
+                        <i class="tos-icon icon-talk icon"></i>
+                        <span class="title">活动介绍</span>
+                    </a>
+                    <a href="#Module_4" class="btnPage mb19">
+                        <i class="tos-icon icon-document icon"></i>
+                        <span class="title">行程安排</span>
+                    </a>
+                    <a  class="btnPage" v-for="(item,index) in scheduleList" :href="'#Module_'+(index+5)">D{{index+1}}</a>
+                </div>
+            </div>
+            <div class="gap10">
+                <div class="row">
+                    <div class="col-md-12 mt22">
+                        <div class="btnBorderGreen btnBlock pb10 pt10" @click="activithGo()">活动相册</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="ctrlBtn Rectangle" @click="showCarBtn()" v-show="RectBtn">
+        <img src="../img/Rectangle.png" alt="" title="" width="100%" height="100%">
+    </div>
+    <div class="ctrlBtn" @click="closeCatrlBtn()" v-show="closeBtn">
+        <img src="../img/colsectrl.png" alt="" title="" width="100%" height="100%">
+    </div>
+</section>
+<script src="../js/jquery-1.11.0.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+var app = new Vue({
+    el:'#activityWarp',
+    data:{
+        tripMenuWrapshow:false,
+        RectBtn:true,
+        closeBtn:false,
+        swiperSlideList:[
+            {
+                imgUrl:'../img/tripViewMapImg1.jpg',
+            },
+            {
+                imgUrl:'../img/tripViewMapImg2.jpg',
+            },
+            {
+                imgUrl:'../img/tripViewMapImg3.jpg',
+            },
+            {
+                imgUrl:'../img/tripViewMapImg4.jpg',
+            }
+        ],
+        dataList:[],
+        datactivity:[],//路书封面数据;
+        scheduleList:[],//
+        dataactivitySynopsis:[],//关于这次骑行
+        signUpDto:'',//线路安排,航班
+        Id:'',
+        filnameUrl:'',
+        roteIcon:{
+            'null':1,
+            "景点":1,
+            "饭店":2,
+            "加油店":3,
+            "酒店":4,
+            "医院":5,
+            "物流":6,
+            "维修站":7,
+            "休息区":8,
+        },
+        id2:'',
+        activityday:'',
+        goPage:'',//跳转返回跳转到电子标还是路书页
+        IdUrl:'',
+        Title:'',
+        platform:'',
+    },
+    created(){
+        let Request = new Object();
+        Request = GetRequest();
+        this.Id = Request.id;
+        this.activityday =Request.activityStart;
+        this.id2 = Request.id2;
+        this.goPage = Request.goTo;
+        this.Title = Request.TitleTxt;
+    },
+    computed:{},
+    mounted(){
+        let _this = this;
+        //this.sid = window.sessionStorage.getItem('sid');//验证码
+        _this.dataInfor1();//调接口数据；
+        _this.$nextTick(() => {
+            var mySwiper2 = new Swiper('.swiper-container2',{
+                autoplay : true,
+                pagination: {
+                    el: '.swiper-pagination2',
+                    clickable: true,
+                    observer:true,//修改swiper自己或子元素时，自动初始化swiper
+                    observeParents:true//修改swiper的父元素时，自动初始化swipe
+                },
+            })
+        })
+        //console.log(window.sessionStorage.getItem('sid'));
+
+        this.Title2 = Request.platform;
+        if(this.Title2 == 'wx')
+        {
+            this.platform = 'wx';
+        }else{
+            this.platform = '';
+        }
+    },
+    methods:{
+        showCarBtn(){
+            this.tripMenuWrapshow = true;
+            this.RectBtn = false;
+            this.closeBtn = true;
+        },
+        closeCatrlBtn(){
+            this.tripMenuWrapshow = false;
+            this.RectBtn = true;
+            this.closeBtn = false;
+        },
+        activithGo(){
+            window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/album/shopalbum.html?id='+this.Id+'&TitleTxt='+this.Title+'&platform='+this.platform;
+            // window.location.href = 'http://yomoy.com.cn/AmoskiWebActivity/personalcenter/album/shopalbum.html';
+        },
+        dataInfor1(){
+            let _this = this;
+            return new Promise((resolve, reject) =>{
+                const data = {basicsId:_this.Id};
+                postData(data,'AmoskiActivity/appRidingGuideManage/queryH5ActivityGuideInfo').then(response => {
+                  // var lodDiv = document.body.getElementsByClassName('lodingDiv');
+                  //   if(lodDiv.length >= 1)
+                  //   {
+                  //       console.log('fffffffffff');
+                  //       document.body.removeChild(lodDiv[0]);
+                  //      // lodDiv[0].style.display = 'none';
+                  //   }
+
+                    if (response.data.code == 0) {
+                        const result = response.data;
+                        if(result)
+                        {
+                         _this.dataList = result.data;
+                            _this.scheduleList = result.data.list;
+                            // console.log(_this.scheduleList[0].tbActivityRouteEntity[0].tbActivityRouteImageEntity);
+                            _this.datactivity = result.data.activity;
+                            console.log(_this.datactivity.tbActivityBillImageEntity[0]);
+
+                            if(_this.datactivity.tbActivityBillImageEntity[0]){
+                                _this.filnameUrl = _this.datactivity.tbActivityBillImageEntity[0].fileNameUrl;
+                            }
+
+                            _this.dataactivitySynopsis = result.data.activitySynopsis;
+                            _this.signUpDto = result.data.signUpDto;
+                            console.log(_this.signUpDto);
+
+                             $(".SynopsisData").html(_this.dataList.activitySynopsis[0].detailsActivities);
+
+                            // _this.$nextTick(function(){
+                            //     var tabsSwiper = new Swiper('.swiper-container', {
+                            //         direction: 'vertical',
+                            //         observer: true,//修改swiper自己或子元素时，自动初始化swiper
+                            //         observeParents: true,//修改swiper的父元素时，自动初始化swipe
+                            //         on: {
+                            //             slideChangeTransitionStart: function () {
+                            //                 $(".tabs .active").removeClass('active');
+                            //                 $(".tabs a").eq(this.activeIndex).addClass('active');
+                            //             }
+                            //         }
+                            //     });
+                            //     var startScroll, touchStart, touchCurrent;
+                            //     tabsSwiper.slides.on('touchstart', function (e) {
+                            //         startScroll = this.scrollTop;
+                            //         touchStart = e.targetTouches[0].pageY;
+                            //     }, true);
+                            //     tabsSwiper.slides.on('touchmove', function (e) {
+                            //         touchCurrent = e.targetTouches[0].pageY;
+                            //         var touchesDiff = touchCurrent - touchStart;
+                            //         var slide = this;
+                            //         var onlyScrolling =
+                            //             (slide.scrollHeight > slide.offsetHeight) &&
+                            //             (
+                            //                 (touchesDiff < 0 && startScroll === 0) ||
+                            //                 (touchesDiff > 0 && startScroll === (slide.scrollHeight - slide.offsetHeight)) ||
+                            //                 (startScroll > 0 && startScroll < (slide.scrollHeight - slide.offsetHeight))
+                            //             );
+                            //         if (onlyScrolling) {
+                            //             e.stopPropagation();
+                            //         }
+                            //     }, true);
+                            //     $(".tabs").on('click', '#rotepage', function (e) {
+                            //         e.preventDefault()
+                            //         $(".tabs .active").removeClass('active')
+                            //         $(this).addClass('active')
+                            //         tabsSwiper.slideTo($(this).index());
+                            //         _this.tripMenuWrapshow = false;
+                            //         _this.closeBtn = false;
+                            //         _this.RectBtn = true;
+                            //     })
+                            //
+                            // })
+
+                            $(".tabs").on('click', 'a', function (e) {
+                                // e.preventDefault()
+                                setTimeout(function () {
+                                    $(".tabs .active").removeClass('active')
+                                    $(this).addClass('active')
+                                    // tabsSwiper.slideTo($(this).index())
+                                    _this.tripMenuWrapshow = false;
+                                    _this.closeBtn = false;
+                                    _this.RectBtn = true;
+                                }, 200)
+                            })
+
+                            // $(".tabs").on('click','a', function(e){
+                            //     e.preventDefault()
+                            //     $(".tabs .active").removeClass('active')
+                            //     $(this).addClass('active')
+                            //    // tabsSwiper.slideTo($(this).index())
+                            //     _this.tripMenuWrapshow = false;
+                            //     _this.closeBtn = false;
+                            //     _this.RectBtn = true;
+                            // })
+
+                            // $(".tripDay").on('click', 'li', function(e) {
+                            //     e.preventDefault()
+                            //     $(".tripDay li.active").removeClass('active')
+                            //     $(this).addClass('active')
+                            //     console.log($(this).attr('Indexarr'))
+                            //   tabsSwiper.slideTo($(this).attr('Indexarr'))
+                            // })
+                        }
+                        resolve(result)
+                    } else {
+
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+
+            })
+        },
+        GobackUrl(){
+            if(this.goPage == 1)
+            {
+                window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/roadbookActivitype/eticket/index.html?id='+this.Id+'&activityStart='+this.activityday;
+            }else if(this.goPage == 2){
+                // window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/roadbookActivitype/activity/detail.html?id='+this.id2+'&activityStart='+this.activityday;
+                window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/roadbookActivitype/activity/detail.html?id='+this.Id+'&activityStart='+this.activityday;
+            }
+
+        }
+    }
+})
+</script>
+<script>
+
+</script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+spring:
+ profiles:
+  active: uat
+ application:
+  name: gateway
+ http:
+  multipart:
+   max-file-size: 100Mb
+   max-request-size: 100Mb
+ boot:
+  admin:
+   url: http://localhost:8761/admin
+server:
+ port: 8111 #指定该Eureke实例的端口
+zuul:
+ routes:
+  AmoskiUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiUser/**
+   service-id: AmoskiUser
+   # url: http://localhost:7061
+  AmoskiWebUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebUser/**
+   service-id: AmoskiWebUser
+   # url: http://localhost:7061
+ host:
+  socket-timeout-millis: 3600000
+  connect-timeout-millis: 3600000
+eureka:
+ client:
+  serviceUrl:
+   defaultZone: http://localhost:8761/eureka/
+ instance:
+  preferIpAddress: true
+  instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+  leaseRenewalInseconds: 1
+  leaseExpirationDurationInseconds: 3
+feign:
+ hystrix:
+  enabled: false
+hystrix:
+ command:
+  default:
+   execution:
+    isolation:
+     thread:
+      timeoutInMilliseconds: 600000
+ribbon:
+ ReadTimeout: 3600000
+ ConnectTimeout: 3600000
+url:
+ no-token: /login,/logOut/*

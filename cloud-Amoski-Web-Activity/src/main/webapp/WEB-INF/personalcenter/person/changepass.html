@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no"
+          name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="../css/login.css"/>
+</head>
+<body>
+<div class="logintel login" id="loginforget">
+    <div class="goarrow" @click="backUrl"><a href="javascript:void(0)"><img src="../img/arrow.png" width="100%"
+                                                                            height="100%"></a></div>
+    <div class="infor">
+        <p class="tel numberfont">{{tel}}</p>
+        <p class="message">修改密码</p>
+    </div>
+    <div class="logintelconent">
+        <ul>
+            <li class="oldpass"><input :type="typepass" placeholder="输入旧密码" v-model="pass1" @click="getInputValue"><span
+                    class="icon64"><img :src="typeImg" width="100%" height="100%" @click.stop="showPassword('oldpass')"></span>
+            </li>
+            <li><input :type="typepass2" placeholder="输入新密码" v-model="pass" @keyup="getInputValue"><span class="icon64"><img
+                    :src="typeImg2" width="100%" height="100%" @click.stop="showPassword('newpass')"></span></li>
+        </ul>
+        <p class="error">{{errortip}}</p>
+        <input v-if="btnshow2" type="button" value="确定" class="loginButton  activate" @click="quickLogin">
+        <input v-else type="button" value="确定" class="loginButton  notactivate" @click="quickLogin">
+        <p class="textTip">密码仅支持数字、英文字母、下划线或者横线</p>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    var app = new Vue({
+        el: '#loginforget',
+        data: {
+            btnshow2: false,//按钮状态
+            tel: '',//手机号
+            verif: '',//验证码
+            btnshow: false,    //v-show="false" 隐藏
+            newpsd: '',		  //v-model input 数据双向绑定
+            eye: true,         //
+            inputType: '',	  //,
+            pass: '',
+            pass1: '',
+            errortip: '',//错误提示
+            show: true,
+            count: '',
+            typepass: 'password',
+            typeImg: '../img/open_eyes.png',
+            typepass2: 'password',
+            typeImg2: '../img/open_eyes.png',
+            alertTipscuess: false,
+            alertTiperror: false,
+            scuesstext: '密码修改成功',
+            errortext: '密码修改失败',
+        },
+        mounted() {
+            let _this = this;
+            _this.tel = window.sessionStorage.getItem('tel');//本地手机
+            _this.verif = window.sessionStorage.getItem('bindcode');//本地验证码
+        },
+        methods: {
+            backUrl() {
+                window.history.go(-1)
+            },
+            showPassword: function (type) { /*密码显示*/
+                var _this = this;
+                if (type == 'oldpass') {
+                    if (_this.typepass == 'password') {
+                        _this.typepass = 'text';
+                        _this.typeImg = '../img/colse_eyes.png';
+                    } else {
+                        _this.typepass = 'password';
+                        _this.typeImg = '../img/open_eyes.png';
+                    }
+                }
+                if (type == 'newpass') {
+                    if (_this.typepass2 == 'password') {
+                        _this.typepass2 = 'text';
+                        _this.typeImg2 = '../img/colse_eyes.png';
+                    } else {
+                        _this.typepass2 = 'password';
+                        _this.typeImg2 = '../img/open_eyes.png';
+                    }
+
+                }
+
+            },
+            getInputValue() {
+                let _this = this
+                if (_this.pass.length >= 1 || _this.pass1.length >= 1) {
+                    _this.btnshow2 = true;
+                } else {
+                    _this.btnshow2 = false;
+                }
+            },
+            quickLogin: function () {
+                var _this = this;
+                _this.errortip = "";
+                if (!_this.pass) {
+                    _this.errortip = "请输入密码";
+                } else if (_this.pass.length < 6) {
+                    _this.errortip = '密码不能少于6位';
+                }
+                if (!_this.pass1) {
+                    _this.errortip = "请输入密码";
+                } else if (_this.pass.length < 6) {
+                    _this.errortip = '密码不能少于6位';
+                } else {
+                    console.log('dfffffffffffff');
+                    return new Promise((resolve, reject) = > {
+                        const data = {
+                            type: 2,
+                            pwd: _this.pass,
+                            oldPwd: _this.pass1,
+                        }
+                        postData(data,'AmoskiActivity/userCenterManage/userUpdPwd'
+                ).
+                    then(response = > {
+                        if(response.code == 0
+                )
+                    {
+                        const result = response.data
+                        _this.alertTipscuess = true;
+                        scuessTip(_this.scuesstext, _this.alertTipscuess);
+                        window.location.href = "index.html"
+                        resolve(result)
+                    }
+                else
+                    {
+                        _this.alertTiperror = true;
+                        errorTip(response.msg, _this.alertTiperror);
+                        reject('error')
+                    }
+                }).
+                    catch(error = > {
+                        reject(error)
+                    }
+                )
+
+                })
+
+
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

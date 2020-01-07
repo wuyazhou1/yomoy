@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <!--    <style>-->
+    <!--        canvas {-->
+    <!--            -moz-user-select: none;-->
+    <!--            -webkit-user-select: none;-->
+    <!--            -ms-user-select: none;-->
+    <!--        }-->
+    <!--        .chart-container {-->
+    <!--            width: 500px;-->
+    <!--            margin-left: 40px;-->
+    <!--            margin-right: 40px;-->
+    <!--            margin-bottom: 40px;-->
+    <!--        }-->
+    <!--        .container {-->
+    <!--            display: flex;-->
+    <!--            flex-direction: row;-->
+    <!--            flex-wrap: wrap;-->
+    <!--            justify-content: center;-->
+    <!--        }-->
+    <!--    </style>-->
+</head>
+<body>
+<div id="personindex">
+    <div class="header">
+        <div class="clearfix">
+            <ul class="LiIcon pt54">
+                <li class="w24"><a href="../person/notice.html"><img src="../img/newIcon.png" width="100%" height="100%"></a></li>
+                <li class="w24 ml20 mr14"><a href="javascript:void(0);" class="cursor" @click="setup()"><img src="../img/setIcon.png" width="100%" height="100%"></a></li>
+            </ul>
+        </div>
+        <!-- <ul class="picTxt clearfix">
+             <li class="ml16 fl">
+                 <span class="porImg w60 h60"><img src="../img/portrait.jpg" width="100%" height="100%"></span>
+                 <span class="porTxt ml12 f22 mt19">爱摩老斯基</span>
+             </li>
+             <li class="fr">
+                 <span class="displayinlik w16 h16"><img src="../img/arrowRight.png" width="100%" height="100%"></span>
+             </li>
+         </ul>-->
+        <p class="picTxt mt13 clearfix">
+            <a href="../person/personaldata.html">
+                <span class="displayinlik porImg w60 h60 ml16"><img :src="portrait" width="100%" height="100%"></span>
+                <span class="displayinlik porTxt ml12 f22">{{name}}</span>
+                <span class="displayinlik w16 h16 mt22 mr10" style="float:right;display:inline-block"><img src="../img/arrowRight.png" width="100%" height="100%"></span>
+            </a>
+        </p>
+        <!--<a href="../roadbookActivitype/activity/activityList.html">点击跳转到活动列表</a>-->
+        <!--<a href="../roadbookActivitype/order/orderList.html">点击跳转到活动列表2</a>-->
+        <!--<a href="../roadbookActivitype/eticket/eticketList.html">电子票</a>-->
+        <div class="personList ml15 mr15">
+            <ul class="mt22 clearfix">
+                <li class="pt18 pb18">
+                    <a href="../person/myalbum.html">
+                        <span class="Img w24 ml15 mr10"><img src="../img/albumIcon.png" width="100%" height="100%"></span>
+                        <strong class="f15">我的相册</strong>
+                    </a>
+                </li>
+                <li class="ml15 pt18 pb18">
+                    <a href="../person/authenticationcenter.html">
+                        <span class="Img w24 ml15 mr10"><img src="../img/carIcon.png" width="100%" height="100%"></span>
+                        <strong class="f15">认证中心</strong>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="personList2 ml15 mr15">
+        <ul class="mt22 clearfix">
+            <li class="pt18 pb18 mt15">
+                <a href='../roadbookActivitype/activity/activityList.html' class="displayblock">
+                    <span class="Img w24 ml15 mr10"><img src="../img/personList1.png" width="100%" height="100%"></span>
+                    <strong class="f15">我的活动报名入口</strong>
+                    <span class="w24 fr mr10"><img src="../img/arrorR.png" width="100%" height="100%"></span>
+                </a>
+            </li>
+            <li class="mt15 pt18 pb18">
+                <a href="javascript:void(0)" @click="goorderList()" class="displayblock">
+                    <span class="Img w24 ml15 mr10"><img src="../img/personList2.png" width="100%" height="100%"></span>
+                    <strong class="f15">我的活动</strong>
+                    <span class="w24 fr mr10"><img src="../img/arrorR.png" width="100%" height="100%"></span>
+                </a>
+            </li>
+            <li class="mt15 pt18 pb18">
+                <a href="../roadbookActivitype/eticket/eticketList.html" class="displayblock">
+                    <span class="Img w24 ml15 mr10"><img src="../img/personList3.png" width="100%" height="100%"></span>
+                    <strong class="f15">我的电子票</strong>
+                    <span class="w24 fr mr10"><img src="../img/arrorR.png" width="100%" height="100%"></span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="dataCenter ml15 mr15 mt36">
+        <div class="ridingdata pl15 pr15">
+            <p class="clearfix pt20">
+                <strong class="f15 color38 lh24 fl">骑行数据</strong>
+                <!--                <a href="#" class="fr share">分享记录</a>-->
+            </p>
+            <ul class="datanumberList clearfix pb20">
+                <li>
+                    <strong class="f30">{{allTotalDis}}<em class="km f14">km</em></strong>
+                    <span class="cumulative">累计骑行</span>
+                </li>
+            </ul>
+            <ul class="speeddata mt21 pb20 clearfix">
+                <li>
+                    <strong class="f24">{{quirly}}</strong>
+                    <span>时速（km/h）</span>
+                </li>
+                <li>
+                    <strong class="f24"><!--34:20-->{{allTotalTime}}</strong>
+                    <span>总时长</span>
+                </li>
+                <li>
+                    <strong class="f24">{{allRidingCount}}</strong>
+                    <span>累计次数</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="mapdata ml15 mr15 mt15 pt15 clearfix">
+
+        <p class="title f12 clearfix">
+            <span class="ml25 mt5" :class="atciveclass" @click="ridinginfor()">近半年</span>
+            <span class="ml52 mt5" :class="atciveclass2" @click="ridinginfor(1)">近一年</span>
+            <!--            <span class="fr day mr15">骑行日志</span>-->
+        </p>
+        <canvas id="myChart2" width="200" height="81" class="mt5"></canvas>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/Chart.min.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/utils.js"></script>
+<script>
+    var currMonth=new Date().getMonth();
+    var app = new Vue({
+        el: '#personindex',
+        data: {
+            atciveclass:'true',
+            atciveclass2:'false',
+            bindcode:'',
+            Identification:'',
+            portrait:'../img/portrait.png',
+            name:'',
+            sid:'',
+            allTotalDis:'',//累计骑行
+            areaRank:'',//地区排名
+            countryRank:'',//国内排名
+            allTotalTime:'',//总时长
+            allRidingCount:'',//累计次数
+            quirly:'',
+            punchPointarry:[],
+            montharry:[],
+            staticMonthArr:['1月','2月','3月','4月','5月','6月','7月','8月','9月','10月','11月','12月'],
+            riddata:'',
+        },
+        mounted(){
+            this.getMonth();
+            this.sid = window.sessionStorage.getItem('sid');//验证码
+            this.personinfor();
+            this.ridinginfor(this.riddata);//骑行数据；
+            // this.ridinglog();//骑行日志
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            personinfor:function(){
+                //手机号验证
+                return new Promise((resolve, reject) => {
+                    let _this = this;
+                    const data = {};
+                    postData(data,'AmoskiActivity/userCenterManage/queryUserInfo').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data;
+                            if(result){
+                                // _this.portrait = API_ROOT+'AmoskiActivity/userCenterManage/getImg?imgUrl='+result.headImgFile;
+                                _this.portrait = result.headImgFile?API_ROOT+"AmoskiActivity/userCenterManage/getImg?imgUrl="+result.headImgFile:_this.portrait;//头像
+                                _this.name = result.name;
+                                window.sessionStorage.setItem('bindcode', result);//验证码
+                                _this.Identification = result.bindingIdentification;
+                            }
+                            resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+            },
+            ridinginfor:function(riddata){
+                return new Promise((resolve, reject) => {
+                    let _this = this;
+                    const data = {
+                        areaRank:1,
+                        queryType:riddata,//空为半年，1为一年
+                    };
+                    postData(data,'AmoskiRiding/ridingManage/queryUserRidingInfo').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result)
+                            {
+                                _this.allTotalDis = Math.round(result.allTotalDis/1000) !=null?Math.round(result.allTotalDis/1000):'0';//累计骑行
+                                _this.areaRank = result.areaRank !=null?result.areaRank:'0';//地区排名
+                                _this.countryRank = result.countryRank !=null?result.countryRank:'0';//国内排名
+                                _this.allTotalTime=formatSeconds(result.allTotalTime) !=null?formatSeconds(result.allTotalTime):'0';//总时长
+                                _this.allRidingCount=result.allRidingCount != null?result.allRidingCount:'0';//累计次数
+                                // let allSeconds = parseInt(result.allTotalTime)*60*60;
+
+
+                                // _this.allTotalDis = 11;
+                                // result.allTotalTime = 10773;
+                                var speedpersecond= _this.allTotalDis/result.allTotalTime;//km/s
+                                let allSeconds = speedpersecond*60*60;
+                                // var a = 3.6758563074352546;
+                                // console.log(a.toFixed(2));
+                                _this.quirly = allSeconds.toFixed(1) !=null?allSeconds.toFixed(1):'0';
+
+                                var tempMonthArr=[];
+                                result.list.forEach(function(cur,index,arry){
+                                    var dataMonth=_this.staticMonthArr[parseInt(arry[index].queryDate.split("-")[1])-1];
+                                    tempMonthArr.push(dataMonth);
+                                })
+
+                                _this.montharry.forEach(function(cur,index,arry){
+                                    if(tempMonthArr.indexOf(cur)!=-1){
+                                        _this.punchPointarry.push(result.list[tempMonthArr.indexOf(cur)].allTotalDis);
+                                    }else{
+                                        _this.punchPointarry.push(0);
+                                    }
+                                })
+
+                            }else{
+                                _this.allTotalDis = 0;
+                                _this.quirly = 0;
+                                _this.allTotalTime= 0;
+                                _this.allRidingCount = 0;
+                            }
+                            _this.myChart2();
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+            },
+            // ridinglog:function(){//骑行日志
+            //     return new Promise((resolve, reject) => {
+            //         let _this = this;
+            //         const data = {
+            //             // areaRank:1
+            //         };
+            //         postData(data,'AmoskiRiding/ridingManage/queryUserRidingCountByMonth?appToken='+_this.sid).then(response => {
+            //             if (response.code == 0){
+            //                 const result = response.data;
+            //                 var tempMonthArr=[];
+            //                 result.forEach(function(cur,index,arry){
+            //                     var dataMonth=_this.staticMonthArr[parseInt(arry[index].queryDate.split("-")[1])-1];
+            //                     tempMonthArr.push(dataMonth);
+            //                 })
+            //
+            //                 _this.montharry.forEach(function(cur,index,arry){
+            //                     if(tempMonthArr.indexOf(cur)!=-1){
+            //                         _this.punchPointarry.push(result[tempMonthArr.indexOf(cur)].punchPoint);
+            //                     }else{
+            //                         _this.punchPointarry.push(0);
+            //                     }
+            //                 })
+            //                 _this.myChart2();
+            //                 resolve(result)
+            //             } else {
+            //                 //reject('error')
+            //             }
+            //         }).catch(error => {
+            //             reject(error)
+            //         })
+            //
+            //     })
+            // },
+            setup(){
+                let _this = this;
+                window.location.href = 'setup.html?ident='+_this.Identification;
+            },
+            myChart2:function (){
+                let _this = this;
+                let pointarry = _this.punchPointarry;
+                var ctx = document.getElementById("myChart2").getContext('2d');
+                this.myChart3 = new Chart(ctx,{
+                    type: 'line',
+                    data: {
+                        labels: _this.montharry,
+                        datasets: [{
+                            backgroundColor: 'rgb(255, 255, 255,0)',//绘制双曲线的时候最好使用rgba,要不不透明的白色背景可以使得某些线条绘制不出来
+                            borderColor: 'rgb(99, 178, 151)',
+                            data:_this.punchPointarry,
+                            fill: true,
+                            pointRadius: 5,
+                            pointHoverRadius: 8,
+                        }]
+                    },
+                    options: {
+                        borderSkipped:'剩下',
+                        title: {
+                            display: false,
+                            text: '',
+                        },
+                        legend: {
+                            display: false,
+                        },
+                        tooltips: {
+                            callbacks: {
+                                label: function(tooltipItem, data) {
+                                    // var label = data.datasets[tooltipItem.datasetIndex].label || '';
+                                    // console.log(label);
+                                    //
+                                    // if (label) {
+                                    //     label += ': ';
+                                    // }
+                                    var label = "";
+                                    label += Math.round(tooltipItem.yLabel * 100) / 100;
+                                    return label+'km';
+                                }
+                            }
+                        }
+                    }
+                },{
+                    responsive: true
+                });
+            },
+            getMonth:function(){
+                var _this=this;
+                /*var monthArr=[];
+                var curyear=new Date().getFullYear();*/
+                var curmonth=new Date().getMonth();
+                var flagNum=6; //需要最近几个月，如8个月
+                for(var i=0;i<flagNum;i++){
+                    /*if(curmonth<=i){
+                        monthArr.push((curyear-1)+"-"+(curmonth+12-i));
+                    }else{
+                        monthArr.push(curyear+"-"+(curmonth-i));
+                    }*/
+                    /*var val=curmonth-i;
+                    monthArr.push(val<0?val+12:val);*/
+                    var indx=curmonth-i;
+                    if(curmonth<i){
+                        indx=curmonth+12-i;
+                    }
+                    console.log(_this.staticMonthArr[indx]);
+                    _this.montharry.push(_this.staticMonthArr[indx])
+                }
+            },
+            goorderList:function(){
+                window.sessionStorage.setItem('Indexes','1');
+                window.location.href = '../roadbookActivitype/order/orderList.html';
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

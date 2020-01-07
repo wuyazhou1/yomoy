@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+</head>
+<body>
+<div id="costdetailPage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <my-aisde></my-aisde>
+        <div class="information fl costdetailCount">
+            <h2>费用详情</h2>
+            <div class="baomingcount" >
+                <div class="clearfix" v-for="(item,index) in costdetail">
+                    <div class="costdetalist">
+                        <div class="title clearfix">
+                            <h2 class="fl">票种{{index+1}}</h2>
+                            <span class="DeleteReduce" @click="deleteDate(index)" >一</span>
+                        </div>
+                        <ul class="ticketul clearfix">
+                            <li>票种名称</li>
+                            <li>票价（元）</li>
+                            <li>数量</li>
+                        </ul>
+                        <ul class="clearfix">
+                            <li><input type="text" placeholder="默认免费票1" v-model="item.nameInvoice"  :disabled="formDisabled" v-on:input="inputChangecost(item.nameInvoice,'nameInvoice',index)"></li>
+                            <li><input type="text" placeholder="1" v-model="item.ticketPrice" :disabled="formDisabled" v-on:input="inputChangecost(item.ticketPrice,'ticketPrice',index)"></li>
+                            <li><input type="text" placeholder="默认无限制" v-model="item.numberCount" :disabled="formDisabled" v-on:input="inputChangecost(item.numberCount,'numberCount',index)"></li>
+                        </ul>
+                        <div class="title"><h2>描述</h2></div>
+                        <textarea class="desc" v-model="item.describe" :disabled="formDisabled" v-on:input="inputChangecost(item.describe,'describe',index)"></textarea>
+                    </div>
+                </div>
+            </div>
+            <input type="button" value="+" class="addbutton" @click="adddata" :disabled="formDisabled" >
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script>
+    var app = new Vue({
+        el: '#costdetailPage',
+        data: {
+            imageUrlcost: '',
+            adddataLength:0,
+            costdetail:[],
+            //InvoiceEntiy:{},
+            createObjcost:{},
+        },
+        mounted(){
+            this.costdetail=window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity;
+        },
+        methods: {
+            adddata:function(){
+                let that = this;
+                var newitems = new TbCtivityInvoiceEntity();
+                that.costdetail.push(newitems)//往items中添加newitems
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity=that.costdetail;
+            },
+            deleteDate(index){
+                if(this.formDisabled){
+                    return;
+                }
+                this.costdetail.splice(index,1);
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity=that.costdetail;
+            },
+            inputChangecost(node,tab,index){
+                //费用详情在活动基础下 （费用详情 = 活动票种表）
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity[index][tab]=node;
+            },
+        }
+    })
+    lookDisabled();//如果是查看需要禁用表单
+</script>
+</body>
+</html>

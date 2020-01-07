@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div class="logintel login" id="loginmessageerror">
+    <div class="goarrow"><a href="#"><img src="img/arrow.png" width="100%"  height="100%"></a></div>
+    <h2>短信快捷登录</h2>
+    <div class="logintelconent">
+        <ul>
+            <li><span>+86</span><input type="text" placeholder="请输入手机号" v-model="tel" @keyup="getInputValue"></li>
+            <li ><input type="text" placeholder="4986" v-model="verif" @keyup="getInputValue"><span class="seconds">40S</span></li>
+        </ul>
+        <p class="error">您输入的验证码有误</p>
+        <input v-if="btnshow2" type="button" value="登录" class="loginButton  activate" >
+        <input v-else type="button" value="登录" class="loginButton  notactivate">
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script>
+    var app = new Vue({
+        el: '#loginmessageerror',
+        data: {
+            btnshow2:false,//按钮状态
+            tel:'',//手机号
+            verif:''//验证码
+        },
+        methods:{
+            getInputValue(){
+                let _this = this
+                if(_this.tel.length>=1 || _this.verif.length>=1){
+                    _this.btnshow2 = true;
+                }else{
+                    _this.btnshow2 = false;
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

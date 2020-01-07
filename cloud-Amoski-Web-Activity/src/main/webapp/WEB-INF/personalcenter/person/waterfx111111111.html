@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <script src="../js/jweixin-1.2.0.js"></script>
+</head>
+<body>
+<div id="waterfx" class="publicHeader">
+    <div class="waterImg clearfix"><img src="../img/watermarkImg.png" width="100%" height="100%" class="watermarkImg watermark"></div>
+    <div class="sharList">
+<!--        <ul class="clearfix">-->
+<!--            <li @click="shareFriend">-->
+<!--                <span class="Img"><img src="../img/wbImg.png" width="100%" height="100%"></span>-->
+<!--                <span class="txt f12">微信好友</span>-->
+<!--            </li>-->
+<!--            <li @click="shareFriend">-->
+<!--                <span class="Img"><img src="../img/pyqImg.png" width="100%" height="100%"></span>-->
+<!--                <span class="txt f12" @click="shareFriend()">朋友圈11111111111</span>-->
+<!--            </li>-->
+<!--            <li @click="shareFriend()">-->
+<!--                <span class="Img"><img src="../img/xcImg.png" width="100%" height="100%"></span>-->
+<!--                <span class="txt f12" @click="shareFriend">保存相册</span>-->
+<!--            </li>-->
+<!--        </ul>-->
+       <div class="cancelbtn"><input type="button" value="取消" class="f15 color38"></div>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<!--<script src="../js/watermark.js"></script>-->
+<script type="text/javascript">
+
+   // window.onload = function(){
+        // wmark.init({
+        //     "position": "bottom-right",
+        //     "opacity": 50,
+        //     "className": "watermark",
+        //     "path": "../img/qr.jpg"
+        // });
+
+
+
+       /* wx.onMenuShareTimeline({
+            title: '', // 分享标题
+            link: '', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+            imgUrl: '', // 分享图标
+            success: function () {
+                // 用户确认分享后执行的回调函数
+            },
+            cancel: function () {
+                // 用户取消分享后执行的回调函数
+            }
+        });*/
+
+    //}
+
+    var app = new Vue({
+        el: '#waterfx',
+        data: {
+            remnant:0,
+            desc:'',
+            watermark:[
+                {
+                    img:'markImg1.png',
+                },
+                {
+                    img:'markImg2.png',
+                },
+                {
+                    img:'markImg3.png',
+                },
+                {
+                    img:'markImg4.png',
+                },
+                {
+                    img:'markImg5.png',
+                },
+
+            ]
+        },
+        mounted(){
+
+          this.watch();
+            /*wx.config({
+                debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                appId: 'wxb32615d0ad90ffa8', // 必填，公众号的唯一标识
+                timestamp: '1557315969', // 必填，生成签名的时间戳
+                nonceStr: 'bf45c6568a3e924784e53a88bc9465aa62ef761f', // 必填，生成签名的随机串
+                signature: 'QaMHJyZ5K8W9IWL2oHBhyW2UtxIPetOz',// 必填，签名
+                jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'] // 必填，需要使用的JS接口列表
+            });*/
+
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            watch(){
+                let _this = this;
+                   axiosSendPost('AmoskiActivity/userCenterManage/userShareConfig',location.href.split("#")[0], function (res) {
+                    //成功获取数据
+                    let resdata = res.data;
+                    if (resdata.code == "0"){
+                        console.log(resdata.data);
+                        wx.config({
+                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: resdata.data.appId, // 必填，公众号的唯一标识
+                            timestamp: resdata.data.timestamp, // 必填，生成签名的时间戳
+                            nonceStr: resdata.data.nonceStr, // 必填，生成签名的随机串
+                            signature: resdata.data.signature,// 必填，签名
+                            jsApiList: ['onMenuShareAppMessage','onMenuShareTimeline'] // 必填，需要使用的JS接口列表
+                        });
+
+                        wx.ready(function () {
+                            wx.onMenuShareTimeline({
+                                title: '-ddsfsf', // 分享标题
+                                link: '', // 分享链接,将当前登录用户转为puid,以便于发展下线
+                                imgUrl: '', // 分享图标
+                                success: function () {
+                                    // 用户确认分享后执行的回调函数
+                                    alert('分享成功');
+                                },
+                                cancel: function () {
+                                    // 用户取消分享后执行的回调函数
+
+                                }
+                            });
+                            wx.error(function(res){
+                                // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+                                alert("errorMSG:"+res);
+
+                            });
+                        });
+
+                        // window.location.href = 'myalbum.html';
+                    } else {
+                        that.errortip =  resdata.msg;
+                    }
+                }, function (err){
+                    //请求失败
+                    _this.errortip = err;
+                })
+
+            },
+            shareFriend(){
+                console.log(">>>>>>>>>>>>info");
+                    /*wx.updateAppMessageShareData({
+                        // code...
+                    });*/
+                    alert();
+                    wx.onMenuShareAppMessage({
+                        title: 'test', // 分享标题
+                        desc: '我是来测试的', // 分享描述
+                        link: '', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+                        imgUrl: '', // 分享图标
+                        success: function () {
+                            alert("分享成功!!!");
+                            // 设置成功
+                        }
+                    })
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

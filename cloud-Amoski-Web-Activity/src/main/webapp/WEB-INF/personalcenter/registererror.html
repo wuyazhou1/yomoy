@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/ui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div class="logintel login" id="registersucess">
+    <div class="goarrow"><a href="#"><img src="img/arrow.png" width="100%"  height="100%"></a></div>
+    <h2>新用户注册</h2>
+    <div class="logintelconent">
+        <ul>
+            <li   v-if="eye"><input type="text" placeholder="密码，6-16位字母或数字" v-model="pass" @keyup="getInputValue"><span class="forgeteyes"><img src="img/open_eyes.png" width="100%" height="100%" @click="showPassword()"></span></li>
+            <li v-else><input type="password" placeholder="密码，6-16位字母或数字"  v-model="pass" @keyup="getInputValue"><span class="forgeteyes"><img src="img/colse_eyes.png" width="100%" height="100%" @click="showPassword()"></span></li>
+        </ul>
+        <input v-if="btnshow2" type="button" value="下一步" class="loginButton  activate"  @click="alerttip" id="loginButton" >
+        <input v-else type="button" value="下一步" class="loginButton  notactivate"  @click="alerttip" id="loginButton">
+    </div>
+    <div class="box" v-if="show">
+        <div class="box1">
+            <span class="scuessIcon"><img src="img/errorIcon.png" width="100%" height="100%"></span>
+            <p class="text">注册失败，请重新输入</p>
+        </div>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/mui.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#registersucess',
+        data: {
+            show:false,
+            btnshow:false,    //v-show="false" 隐藏
+            newpsd:'',		  //v-model input 数据双向绑定
+            eye:true,         //
+            inputType:'',	  //
+            pass:'',
+            btnshow2:'',
+        },
+        methods:{
+            alerttip: function () {
+                _this = this;
+                this.show = !this.show;
+                setTimeout(function () {
+                    _this.show = false;
+                }, 2000)
+            },
+            showPassword:function(){ /*密码显示 */
+                var me = this;
+                if (me.eye) {
+                    me.eye = false
+                    me.inputType = 'password'
+                } else {
+                    me.eye = true
+                    me.inputType = 'text'
+                }
+            },
+            getInputValue(){
+                let _this = this
+                if(_this.pass.length>=1 ){
+                    _this.btnshow2 = true;
+                }else{
+                    _this.btnshow2 = false;
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

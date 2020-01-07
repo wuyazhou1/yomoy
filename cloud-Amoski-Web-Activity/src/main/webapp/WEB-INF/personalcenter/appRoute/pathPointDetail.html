@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/swiper.min.css"/>
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="js/swiper.min.js"></script>
+    <style type="text/css">
+        .tripViewMap{height:6.666666666666667rem;overflow:hidden;}
+        .swiper-pagination-bullet{margin:0 3px;}
+    </style>
+</head>
+<body>
+<div id="pathPoint" class="clearfix">
+    <!--<div class="positionBar pt10 pb10">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38 dblock textAlign">途径点详情</span>
+    </div>-->
+    <!--<span class="Img"><img :src="portrait" width="100%" height="100%" alt="" title=""></span>-->
+    <div style="height:250px;" v-show="pointDataImg.length>=1">
+        <div class="swiper-container">
+            <div class="swiper-wrapper">
+                <div class="swiper-slide" v-for="(item,index) in pointDataImg">
+                    <div class="tripViewMap"><img :src="API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+item.imgUrl"  alt="" title="" width="100%" height="100%"></div>
+                    <!--<div class="tripViewMap"><img :src="item.imgUrl"  alt="" title="" width="100%" height="100%"></div>-->
+                </div>
+            </div>
+        </div>
+        <div class="swiper-pagination" style="position:relative">
+            <span class="swiper-pagination-bullet" v-for="(item,index) in pointDataImg" tabindex="0" role="button" aria-label="Go to slide "></span>
+        </div>
+    </div>
+    <div class="pathCount ml25 mr25 mt22">
+        <p class="f15 clearfix" v-show="pointData.routeName">
+            <!--<span class="fl w24 h24"><img src="img/pathIcon1.jpg" width="100%" height="100%"></span>-->
+            <span class="fl w24"><img :src="'img/ic_point_type'+pointData.routeIcon+'.png'" width="100%" height="100%"></span>
+            <strong class="fl f15 ml15" style="width:85%">{{pointData.routeName}}</strong>
+        </p>
+        <p class="mt22 lh24 f15" v-html="pointData.remake">
+        </p>
+        <div class="mt15" v-show="pointData.address">
+            <span class="dinline w24 h24"><img src="img/pathLocation.jpg" width="100%" height="100%"></span>
+            <span class="colorbc">{{pointData.address}}</span>
+        </div>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#pathPoint',
+        data:{
+            pointData:{},
+            portrait:'',
+            queryId:'345',
+            pointDataImg:[
+                // {
+                //     imgUrl:'img/Img1.jpg',
+                // },
+                // {
+                //     imgUrl:'img/Img2.jpg',
+                // },
+                // {
+                //     imgUrl:'img/Img3.jpg',
+                // },
+                // {
+                //     imgUrl:'img/Img4.jpg',
+                // }
+            ],
+        },
+        created(){
+            let Request = new Object();
+            Request = GetRequest();
+            this.queryId=GetRequest().id;
+        },
+        mounted(){
+            let _this = this;
+
+            this.patPointInfor();
+
+
+
+        },
+        methods:{
+            patPointInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        type:3,//  1.路书简介 2.线路详情 3.途径点详情
+                        id:_this.queryId,
+                        // id:'1125',
+                    };
+                    postData(data,'AmoskiRiding/appRidingGuideManage/queryRouteInfo').then(response =>{
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result)
+                            {
+                                _this.pointData = result;
+                                if(_this.pointData.imgUrl)
+                                {
+
+                                    _this.pointDataImg.push({
+                                        imgUrl:_this.pointData.imgUrl
+                                    })
+
+                                }
+                                if(_this.pointData.imgUrl1)
+                                {
+                                    _this.pointDataImg.push({
+                                        imgUrl:_this.pointData.imgUrl1
+                                    })
+                                }
+                                if(_this.pointData.imgUrl2)
+                                {
+                                    _this.pointDataImg.push({
+                                        imgUrl:_this.pointData.imgUrl2
+                                    })
+                                }
+                                 if(_this.pointData.imgUrl3)
+                                {
+                                    _this.pointDataImg.push({
+                                        imgUrl:_this.pointData.imgUrl3
+                                    })
+                                }
+                                _this.$nextTick(() => {
+                                    var swiper = new Swiper('.swiper-container', {
+                                        pagination: {
+                                            el: '.swiper-pagination',
+                                            observer:true,//修改swiper自己或子元素时，自动初始化swiper
+                                            observeParents:true//修改swiper的父元素时，自动初始化swipe
+                                        },
+                                    });
+                            })
+                                // _this.portrait = result.imgUrl?API_ROOT+"AmoskiRiding/appRidingGuideManage/getImg?fileUrl="+result.imgUrl:_this.portrait;
+                            }
+                            resolve(result)
+                        } else {
+                        }
+                    }).catch(error => {
+                    })
+
+                })
+            }
+        }
+    })
+
+
+</script>
+</body>
+</html>

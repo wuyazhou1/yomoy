@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>报名列表</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+</head>
+<body>
+<div id="regisInfor" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <!--<li><a href="#">预览和设置</a></li>-->
+            <!--<li><a href="#">保存</a></li>
+            <li><a href="#">发布</a></li>-->
+            <li><a href="/AmoskiWebHtmlUser/activityManage/index.html">退出</a></li>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <my-aisde></my-aisde>
+        <div class="reginfor fl" >
+            <div class="clearfix">
+                <h2 class="fl">报名列表</h2>
+                <div class="fr sideManage" style="margin-right: 11%;">
+                    地区：
+                    <el-cascader v-model="region"
+                                 v-on:input ="inputChange('','destination')"
+                                 @change="addreChange(province,'province')" :options="optionsShen"
+                                 class="optionSelect"
+                                p
+                    >
+                        <!--<el-option label="云南省" value="云南省"></el-option>-->
+                    </el-cascader>
+                    <select v-model="state" class="el-input__inner" style="width: 180px;">
+                        <option value="">请选择状态</option>
+                        <option value="1">未提交</option>
+                        <option value="2">未付款</option>
+                        <option value="3">已付款</option>
+                        <option value="4">审核退款</option>
+                        <option value="5">以退款</option>
+                        <option value="6">已使用</option>
+                        <option value="7">已失效</option>
+                    </select>
+                    <el-input v-model="input" placeholder="名称/手机/订单号" class="elSelect"></el-input>
+                    <el-button class="searchbutton el-icon-search" size="small" @click="queryTableData">搜索</el-button>
+                </div>
+            </div>
+            <el-table
+                    :data="tableData"
+                    style="width: 100%" class="RegtableData">
+                <el-table-column
+                        prop="name"
+                        label="姓名"
+                        width="80">
+                </el-table-column>
+
+                <el-table-column
+                        prop="region"
+                        label="区域"
+                        width="80">
+                </el-table-column>
+
+                <el-table-column
+                        prop="orderCode"
+                        label="订单号"
+                        width="140"
+                >
+                </el-table-column>
+
+                <el-table-column
+                        prop="identityNumber"
+                        label="身份证"
+                        width="175"
+                >
+                </el-table-column>
+
+                <el-table-column
+                        prop="tel"
+                        label="手机号"
+                        width="120"
+                >
+                </el-table-column>
+
+                <el-table-column
+                        prop="tel"
+                        label="票号"
+                        width="120"
+                >
+                </el-table-column>
+
+                <el-table-column
+                        prop="club"
+                        label="俱乐部">
+                </el-table-column>
+                <el-table-column
+                        prop="invoiceName"
+                        label="票种">
+                </el-table-column>
+                <el-table-column
+                        prop="state"
+                        label="状态"
+                        width="80"
+                >
+                </el-table-column>
+                <el-table-column
+                        prop="operation"
+                        label="操作" width="220">
+                    <template slot-scope="scope">
+                        <!--<el-button
+                                size="mini"
+                                @click="handleClick(scope.row, 'look')">查看</el-button>-->
+                        <el-button
+                                size="mini"
+                                @click="handleClick(scope.row, 'edit')">编辑</el-button>
+                        <!--<el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleClick(scope.row, 'delete')">删除</el-button>-->
+                    </template>
+                </el-table-column>
+            </el-table>
+            <el-pagination
+                    background
+                    layout="prev, pager, next"
+                    @current-change="queryTableData"
+                    :page-size="pageSize"
+                    :current-page="currentPage"
+                    :total="currentTotal" class="mt20">
+            </el-pagination>
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/citys.js"></script>
+<script>
+    var app = new Vue({
+        el: '#regisInfor',
+        data: {
+            optionsShen:options,
+            pageSize: 10,
+            state:'',
+            currentPage: 1,
+            region:'',
+            input:'',
+            imageUrl: '',
+            isCollapse: true,
+            requestUrl:{
+                requestRegisterListDataUrl:"/AmoskiUser/RegistrationPersonnel/RegistrationPersonnelList",
+                requestEditDataUrl:"/AmoskiUser/RegistrationPersonnel/RegistrationPersonneldetails",
+                requestDeleteDataUrl:""
+            },
+            options: [{
+                value: '选项1',
+                label: '黄金糕'
+            }, {
+                value: '选项2',
+                label: '双皮奶'
+            }],
+            options2: [{
+                value: '选项1',
+                label: '黄金糕'
+            }, {
+                value: '选项2',
+                label: '双皮奶'
+            }],
+            value: '',
+            value2: '',
+            tableData: []
+        },
+        mounted(){
+            let that = this;
+            that.queryTableData();
+        },
+        methods: {
+            handleClick(tableObj,type) {
+                let that = this;
+                var obj={
+                    id:tableObj.id
+                };
+                if(type=="look"){
+                    //弹出展示数据弹出框
+                    axiosSendPost(that.requestUrl.requestEditDataUrl,obj,function(res){
+                        var data=res;
+                        window.top.ActivitySignUpQuery=true;
+                        window.top.ActivitySignUpDatil=data;
+                        window.location.href = '../registrationManage/personnelManag.html';
+                    },function(res){
+                    });
+                }else if(type=="edit"){
+                    //弹出展示数据弹出框
+                    axiosSendPost(that.requestUrl.requestEditDataUrl,obj,function(res){
+                        var data=res;
+                        window.top.ActivitySignUpQuery=false;
+                        window.top.ActivitySignUpDatil=data;
+                        window.location.href = '../registrationManage/personnelManag.html';
+                    },function(res){
+                    });
+                }else if(type=="delete"){
+                    //弹出提示 确认删除
+
+                }
+                // console.log(tab, event);
+            },
+            queryTableData(curPage){//查询表格数据
+                let that = this;
+                if(curPage!=null&&curPage!=""){
+                    that.currentPage=curPage;
+                }
+                var obj={
+                    start:that.currentPage,
+                    length:that.pageSize,
+                    addres:that.region==null||that.region.length==0?'':that.region[that.region.length-1],
+                    nameTel:that.input,
+                    state:that.state,
+                    basicsId:window.top.activityCreateList[0].tbActivityBasicsEntity.code,
+                    //basicsId:"25",
+                };
+                axiosSendPost(that.requestUrl.requestRegisterListDataUrl,obj,function(res){
+                    that.tableData=res.data;//赋值给表格
+                    that.currentTotal=res.recordsTotal;
+                    window.parent["adjustmentIframe2"](300+(67*res.recordsTotal)+"px","100%")
+                },function(res){
+
+                });
+            },
+            editTableData(){//编辑表格数据
+                let that = this;
+                var obj={
+
+                };
+                axiosSendPost(that.requestUrl.requestEditDataUrl,obj,function(res){
+                    //成功
+
+                    //修改tableData
+
+                    //关闭弹出框
+
+
+                },function(res){
+
+                });
+            },
+            deleteTableData(){//删除表格数据
+                let that = this;
+                var obj={
+
+                };
+                axiosSendPost(that.requestUrl.requestDeleteDataUrl,obj,function(res){
+                    //成功
+
+                    //删除tableData对应数据
+                },function(res){
+
+                });
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+        }
+    })
+</script>
+</body>
+</html>

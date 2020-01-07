@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/acitvity.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<div id="waitpayment" v-cloak>
+    <div class="orderHeader clearfix colorff">
+        <div class="positionBar pt10 pb10 clearfix" v-show="appplate">
+            <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeftf.png" alt="" title=""></a></span>
+            <span class="enrollees f18 colorff">活动订单</span>
+        </div>
+        <strong class="f22 mt22 ml20 displayblock" v-if="ActivityTabarr[paymentList.state]== '待付款' && new Date(paymentList.activityEnd).getTime() <= new Date().getTime()">
+            已关闭
+        </strong>
+        <strong class="f22 mt22 ml20 displayblock"  v-else >{{ActivityTabarr[paymentList.state]}}</strong>
+
+        <span class="mt10 displayblock ml20"  v-show="ActivityTabarr[paymentList.state]=='待付款' && new Date(paymentList.activityEnd).getTime() >= new Date().getTime()">
+           <span v-show="timeShow">订单将于{{time}}关闭</span>
+        </span>
+
+        <wait-pay :option="wiatplayData"></wait-pay>
+    </div>
+    <div class="baomInfor mt15 ml15 mr15">
+        <div class="clearfix">
+            <h1 class="fl f15 color38"><strong>报名人信息</strong></h1>
+            <div @click="viewDetail()" class="fr">
+                <p v-if="mealListShow" class="color97">查看详情<i class="displayinlik arrow ml5"><img src="../img/arrowTop.jpg"></i></p>
+                <p v-else class="color97">收起<i class="displayinlik arrow ml5"><img src="../img/arrowBottom.jpg"></i></p>
+            </div>
+        </div>
+        <ul class="setmeal mt15">
+            <li class="clearfix" v-for="(item,index) in paymentList.list">
+                <div>
+                    <p class="clearfix taocang">
+                        <span class="fl Taocan f15 color9797 width35">{{item.data[0].invoiceName}}</span>
+                        <span class="fl ml5 TaoMoney width53">￥{{item.data[0].primitiveMoney}}X{{item.data.length}}</span>
+                    </p>
+                    <p class="name" v-if="mealListShow">
+                        <span v-for="(subitem,subindex) in item.data">{{subitem.name}}</span>
+                    </p>
+                    <div v-else class="mealList mt15" v-for="(subitem,subindex) in item.data">
+                        <p class="clearfix">
+                            <span class="fl Taocan f15 color9797 s_1" v-show="subitem.name">姓名：</span>
+                            <span class="fl ml5 TaoMoney s_2" v-show="subitem.name">{{subitem.name}}</span>
+                            <span class="fl s_3" style="position:absolute;right:0;top:0;">
+                                  <!-- 已退款-->
+                                <span v-show="ActivityTabarr[subitem.state] == '已退款'" class="aleadyPay ">{{ActivityTabarr[subitem.state]}}</span>
+                                <!-- 已付款状态-->
+                                <span v-show="ActivityTabarr[subitem.state] == '已付款'" class="aleadyPay ">{{ActivityTabarr[subitem.state]}}</span>
+                                <!--退款中-->
+                                <span v-show="ActivityTabarr[subitem.state] == '退款中'" class="aleadyPay ">{{ActivityTabarr[subitem.state]}}</span>
+                                <!-- 退款驳回-->
+                                <span v-show="ActivityTabarr[subitem.state] == '退款驳回'" class="aleadyPay ">{{ActivityTabarr[subitem.state]}}</span>
+                                <!--                                &lt;!&ndash; 待付款&ndash;&gt;-->
+                                <!--                                <span v-show="ActivityTabarr[subitem.state] == '待付款'" class="aleadyPay fr">{{ActivityTabarr[subitem.state]}}</span>-->
+                            </span>
+                        </p>
+                        <p class="clearfix" v-show="subitem.identityNumber">
+                            <span class="fl Taocan f15 color9797 s_1">身份证：</span>
+                            <span class="fl ml5 TaoMoney s_2">{{subitem.identityNumber}}</span>
+                            <!--<span class="fl s_3">-->
+                               <!--&lt;!&ndash; 已付款状态&ndash;&gt;-->
+                                <!--<a v-show="ActivityTabarr[subitem.state] == '已付款'" class="circular" href="javascript:void(0)" @click="shareFriend()">分享</a>-->
+
+                                <!--&lt;!&ndash; 退款驳回&ndash;&gt;-->
+                               <!--<a v-show="ActivityTabarr[subitem.state] == '退款驳回'" class="circular" href="javascript:void(0)" @click="shareFriend()">分享</a>-->
+                            <!--</span>-->
+                        </p>
+                        <p class="clearfix">
+                            <span class="fl Taocan f15 color9797 s_1" v-show="subitem.club">俱乐部：</span>
+                            <span class="fl ml5 TaoMoney s_2" v-show="subitem.club">{{subitem.club}}</span>
+                            <span class="fl s_3" style="position:absolute;right:0;top:0;">
+                                 <!-- 已付款状态-->
+                             <a v-show="ActivityTabarr[subitem.state] == '已付款'" class="circular" href="javascript:void(0)" @click="refundTicket(subitem.id)">退票</a>
+                                <!-- 退款驳回-->
+                             <a v-show="ActivityTabarr[subitem.state] == '退款驳回'" class="circular" href="javascript:void(0)" @click="refundTicket(subitem.id)">退票</a>
+                            </span>
+                        </p>
+                        <p class="clearfix" v-show="subitem.region">
+                            <span class="fl Taocan f15 color9797 s_1">地区：</span>
+                            <span class="fl ml5 TaoMoney s_2">{{subitem.region}}</span>
+                        </p>
+                        <p class="clearfix" v-show="ActivityTabarr[paymentList.state]!='待付款'" v-show="subitem.verificationCode || subitem.verificationCode">
+                            <span class="fl Taocan f15 color9797 s_1">票号：</span>
+                            <span v-if="ActivityTabarr[subitem.state] =='已付款'" class="fl ml5 TaoMoney s_2">{{subitem.verificationCode}}</span>
+                            <s v-else class="fl ml5 TaoMoney s_2">{{subitem.verificationCode}}</s>
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+        <div class="paymentpeople mt10 clearfix">
+            <p class="mt5 clearfix lh30">
+                <span class="f15 color9797 fl mt5"><i>*</i>付款人</span>
+                <input type="text" ref="panyname" class="color38 InputTxt fl" placeholder="请输入付款人姓名" v-model="paymentpeople" @blur="updOrderInfo()">
+                <span class="Icon fl" @click="editpayment(1)"><img src="../img/iphone.png" width="100%" height="100%"></span>
+            </p>
+            <p class="mt5 clearfix lh30">
+                <span class="f15 color9797 fl mt5"><i>*</i>联系电话</span>
+                <input type="text" ref="panytel" class="color38 InputTxt fl" v-model="paymenttel" placeholder="请输入联系电话" @blur="updOrderInfo()">
+                <span class="Icon fl" @click="editpayment(2)"><img src="../img/iphone.png" width="100%" height="100%"></span>
+            </p>
+        </div>
+    </div>
+    <footer v-show="ActivityTabarr[paymentList.state] == '待付款'" class="orderFooter pt10 pb10 mt22 clearfix">
+        <span class="f15 color38 ml15 mt10 displayinlik">合计</span>
+        <strong class="ml15 color59 f18 mt10 displayinlik">
+            <i class="f18 dollar">￥{{allmoeny}}</i>
+        </strong>
+        <input v-if=" new Date(paymentList.activityEnd).getTime() >= new Date().getTime()" class="fr mr15 nextButton"  type="button"  @click="Goorderpay()" value="马上支付">
+        <input v-else class="fr mr15 nextButton "  disabled="true" type="button"   value="订单已关闭">
+    </footer>
+
+    <footer v-show="ActivityTabarr[paymentList.state] == '已付款' || ActivityTabarr[paymentList.state] == '已完成'" class="orderFooter efundFooter pt10 pb10 mt22 clearfix">
+        <input  v-show="refundDetails" class="fl mr15 nextButton refundDetail" type="button"  @click="alreadyredetail()" value="退票详情">
+        <input class="mr15 nextButton"  @click="goeTick(paymentList.activityStart)"  v-show="eticket" :class="{alreadyretund:!refundDetails}" type="button" value="签到电子票">
+    </footer>
+
+    <footer v-show="ActivityTabarr[paymentList.state] == '已退款' || ActivityTabarr[paymentList.state] == '退款中'" class="orderFooter efundFooter pt10 pb10 mt22 clearfix">
+        <input class="fl mr15 refundDetail alreadyretund" type="button" value="退票详情" @click="alreadyredetail()">
+    </footer>
+</div>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/waitpay.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#waitpayment',
+        data: {
+            day: 0, hr: 0, min: 0, sec: 0,
+            time: 1,
+            mealListShow: true,
+            ActivityTabarr:['0','1','待付款',"已付款",'退款中','已退款',"已完成",'退款驳回'],//2未付款，3已付款，4审核退款，5以退款
+            setmealList: [
+                {
+                    standard: "骑士标准套餐",
+                    money: '30000X2',
+                    name: '张三',
+                    name1: '李四',
+                    list: [
+                        {
+                            name: '张三',
+                            id: '433122199809309878',
+                            club: '牛村',
+                            address: '北京',
+                            picker: '999-632215',
+                        },
+                        {
+                            name: '李四',
+                            id: '433122199809309878',
+                            club: '牛村',
+                            address: '北京',
+                            picker: '999-632215',
+                        }
+                    ]
+
+
+                },
+                {
+                    standard: "家属标准套餐",
+                    money: '10000X2',
+                    name: '张三',
+                    name1: '李四'
+                }
+            ],
+            orderId:'',
+            paymentList:{},//所有页面数据
+            wiatplayData:{
+                code:'',//订单号
+                subTitle:'',//标题
+                img:'',//图片路径
+                startTime:'',//开始时间
+                address:'',//地点
+            },
+            paymentpeople:'',//付款人
+            paymenttel:'',//付款人电话
+            albummList:[],
+            refundId:'',//退票id;
+            endTime:'',//活动结束时间；
+            nowDay : new Date().getTime(),//系统时间;
+            timeShow:true,
+            refundDetails:false,//退款详情
+            eticket:false,//签到电子票
+            allmoeny:0,//总金额
+            TextTitle:'',
+        },
+        created(){
+            let Request = new Object();
+            Request = GetRequest();
+            this.orderId = Request.orderId;
+            this.endTime = Request.endTime;
+
+            this.waitpaymentdata();
+            if(this.nowDay>this.endTime)
+            {
+                this.timeShow = false;
+            }else{
+                this.timeShow = true;
+            }
+
+
+        },
+        mounted() {
+            let Request = new Object();
+            Request = GetRequest();
+            // this.watch();//分享接口
+        },
+        methods: {
+            viewDetail() {
+                this.mealListShow = !this.mealListShow;
+            },
+            countdown(endTime) {
+                const end = Date.parse(new Date(endTime))
+                const now = Date.parse(new Date())
+                const msec = end - now;
+                let day = parseInt(msec / 1000 / 60 / 60 / 24)
+                let hr = parseInt(msec / 1000 / 60 / 60 % 24)
+                let min = parseInt(msec / 1000 / 60 % 60)
+                let sec = parseInt(msec / 1000 % 60)
+                this.day = day
+                this.hr = hr > 9 ? hr : '0' + hr
+                this.min = min > 9 ? min : '0' + min
+                this.sec = sec > 9 ? sec : '0' + sec
+                const that = this;
+                this.time = `${hr}时${min}分${sec}秒`;
+                if(this.time == '0时0分0秒')
+                {
+                    this.timeShow = false;
+                }
+                setTimeout(function () {
+                    that.countdown(endTime)
+                }, 1000)
+            },
+            editpayment(val){
+                if(val == 1)
+                {
+                    this.$refs.panyname.focus()
+                }
+                if(val == 2){
+                    this.$refs.panytel.focus()
+                }
+            },
+            waitpaymentdata(){
+                let _this = this;
+                return new Promise((resolve, reject) =>{
+                    const data = {id:_this.orderId};
+                    postData(data,'AmoskiActivity/activityOrderManage/queryOrderDetail').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            //报名人信息接口数据重新组装;
+                            if(result){
+                                _this.TextTitle = result.title;
+                                _this.paymentList = result;
+                                console.log(_this.paymentList);
+                                _this.refundDetails = false;
+                                _this.eticket = false;
+                                //电子票和退票详情显示判断
+                                result.list.forEach(function (cur,index,arr) {
+                                    _this.allmoeny+=Number(arr[index].primitiveMoney);
+
+                                    if(arr[index].state == '4' || arr[index].state == '5')//显示退票详情；
+                                    {
+                                        _this.refundDetails = true;
+                                    }else if(arr[index].state == '3' || arr[index].state == '6')//显示退票详情；
+                                    {
+                                        _this.eticket = true;
+                                    }
+                                })
+
+
+                                window.sessionStorage.setItem('orderPayObj',JSON.stringify(result));
+                                result.list.forEach(function(value,index,arry){
+                                    _this.albummList.push( arry[index]);
+                                    let arr = _this.albummList;
+                                    var map = {},
+                                        dest = [];
+                                    for(var i = 0; i < arr.length; i++){
+                                        var ai = arr[i];
+                                        if(!map[ai.invoiceName]){
+                                            dest.push({
+                                                invoiceName: ai.invoiceName,
+                                                data: [ai]
+                                            });
+                                            map[ai.invoiceName] = ai;
+                                        }else{
+                                            for(var j = 0; j < dest.length; j++){
+                                                var dj = dest[j];
+                                                if(dj.invoiceName == ai.invoiceName){
+                                                    dj.data.push(ai);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    result.list = dest;
+                                })
+                                //付款人姓名、电话
+                                _this.paymentpeople = result.contactName;
+                                _this.paymenttel = result.contactTel;
+
+
+                                _this.countdown(_this.paymentList.activityEnd);//倒计时;
+
+                                //头部公用模块-父传子信息
+                                _this.wiatplayData ={
+                                    code:_this.paymentList.code,//订单号
+                                    title:_this.paymentList.title,//标题
+                                    img:'',//图片路径
+                                    startTime:_this.paymentList.activityStart,//开始时间
+                                    address:_this.paymentList.collectionPlace,//地点
+                                };
+
+                            }
+
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            },
+            refundTicket(id){
+                console.log(id);
+                let _this = this;
+                return new Promise((resolve, reject) =>{
+                    const data = {id:id};
+                    postData(data,'AmoskiActivity/activityOrderManage/applicationForRefund').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            if(result){
+                                _this.paymentList.state = 4;//点击退票，修改状态为4退款中
+                            }
+                            window.location.href = '../refundticket/index.html?orderId='+_this.orderId;
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            },
+            updOrderInfo(){
+                let _this = this;
+                var myreg=/^[1][3,4,5,7,8][0-9]{9}$/;
+                //if (!myreg.test($poneInput.val()))
+                if(_this.paymentpeople && _this.paymenttel )
+                {
+                    if(myreg.test(_this.paymenttel)){
+                        return new Promise((resolve, reject) =>{
+                            const data = {
+                                id:_this.orderId,
+                                contactName:_this.paymentpeople,//联系人姓名
+                                contactTel:_this.paymenttel,//联系人电话
+                            };
+                            postData(data,'AmoskiActivity/activityOrderManage/updOrderInfo').then(response => {
+                                if (response.code == 0){
+                                    let result = response.data;
+                                    if(result){
+                                        _this.paymentList.state = 4;//点击退票，修改状态为4退款中
+                                    }
+                                    resolve(result)
+                                } else {
+                                    //reject('error')
+                                }
+                            }).catch(error => {
+                                //  reject(error)
+                            })
+
+                        })
+                    }else{
+                        alert('请输入正确的手机号！');
+                    }
+                }
+                else{
+
+                }
+            },
+            alreadyredetail(){//退款
+                let _this = this;
+                window.location.href = '../refundticket/index.html?orderId='+_this.orderId;
+            },
+            watch(){
+                let _this = this;
+                axiosSendPost('AmoskiActivity/userCenterManage/userShareConfig',{url:location.href.split("#")[0]}, function (res) {
+                    //成功获取数据
+                    let resdata = res.data;
+                    if (resdata.code == "0"){
+                        console.log(resdata.data);
+                        wx.config({
+                            debug: true, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+                            appId: resdata.data.appId, // 必填，公众号的唯一标识
+                            timestamp: resdata.data.timestamp, // 必填，生成签名的时间戳
+                            nonceStr: resdata.data.nonceStr, // 必填，生成签名的随机串
+                            signature: resdata.data.signature,// 必填，签名
+                            jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', 'onMenuShareWeibo',
+                                'onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareQZone'] // 必填，需要使用的JS接口列表
+                        });
+
+                        wx.ready(function () {
+                            wx.checkJsApi({
+                                jsApiList: ['updateAppMessageShareData', 'updateTimelineShareData', 'onMenuShareWeibo',
+                                    'onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareQZone'], // 需要检测的JS接口列表，所有JS接口列表见附录2,
+                                success: function(res) {
+                                    // 以键值对的形式返回，可用的api值true，不可用为false
+                                    // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+                                    //var paramObj=_this.shareFriend();
+                                    var paramDescObj=_this.shareFriend(true);
+                                    //var checkResult=typeof res.checkResult=='object'?res.checkResult:JSON.parse(res.checkResult);
+                                    if(wx.onMenuShareAppMessage&&wx.onMenuShareQQ){//自定义“分享给朋友”及“分享到QQ”按钮的分享内容（1.4.0）
+                                        //获取“分享给朋友”按钮点击状态及自定义分享内容接口（即将废弃）
+                                        wx.onMenuShareAppMessage(paramDescObj);
+                                        //获取“分享到QQ”按钮点击状态及自定义分享内容接口（即将废弃）
+                                        wx.onMenuShareQQ(paramDescObj);
+                                    } else {
+                                        wx.updateAppMessageShareData(paramDescObj);
+                                    }
+                                    if(wx.onMenuShareTimeline&&wx.onMenuShareQZone){//自定义“分享到朋友圈”及“分享到QQ空间”按钮的分享内容（1.4.0）
+                                        //获取“分享到朋友圈”按钮点击状态及自定义分享内容接口（即将废弃）
+                                        wx.onMenuShareTimeline(paramDescObj)
+                                        //获取“分享到QQ空间”按钮点击状态及自定义分享内容接口（即将废弃）
+                                        wx.onMenuShareQZone(paramDescObj);
+                                    } else {
+                                        wx.updateTimelineShareData(paramDescObj);
+                                    }
+                                    if(wx.onMenuShareWeibo){//获取“分享到腾讯微博”按钮点击状态及自定义分享内容接口
+                                        wx.onMenuShareWeibo(paramDescObj)
+                                    }
+                                },error:function(res){
+                                    alert("checkJsApi  errorMSG:"+JSON.stringify(res));
+                                }
+                            });
+                            wx.error(function(res){
+                                // config信息验证失败会执行error函数，如签名过期导致验证失败，具体错误信息可以打开config的debug模式查看，也可以在返回的res参数中查看，对于SPA可以在这里更新签名。
+                                alert("errorMSG:"+JSON.stringify(res));
+                            });
+                        });
+
+                        // window.location.href = 'myalbum.html';
+                    } else {
+                        that.errortip =  resdata.msg;
+                    }
+                }, function (err){
+                    //请求失败
+                    _this.errortip = err;
+                })
+
+            },
+            /**
+             * sucCallback 分享成功回调
+             * canCelCallBack 分享失败回调
+             * appendDesc 是否添加描述
+             **/
+            shareFriend(appendDesc,sucCallback,canCelCallBack){
+                console.log(">>>>>>>>>>>>info");
+                /*wx.updateAppMessageShareData({
+                    // code...
+                });*/
+                /*wx.ready(function () {
+                    wx.updateAppMessageShareData({
+                        title: '-的说法都是', // 分享标题
+                        link: '', // 分享链接,将当前登录用户转为puid,以便于发展下线
+                        imgUrl: '', // 分享图标
+                        success: function () {
+                            // 用户确认分享后执行的回调函数
+                            alert('分享成功');
+                        },
+                        cancel: function () {
+                            // 用户取消分享后执行的回调函数
+                        }
+                    });
+                });*/
+                var sucFun,cancelFun;
+                if(sucCallback&&typeof sucCallback == 'function'){
+                    sucFun=sucCallback;
+                }else{
+                    sucFun=function(){
+                        // 用户确认分享后执行的回调函数 默认
+                        alert("分享成功");
+                    }
+                }
+                if(canCelCallBack&&typeof canCelCallBack == 'function'){
+                    cancelFun=canCelCallBack;
+                }else{
+                    cancelFun=function(){
+                        // 用户取消分享后执行的回调函数 默认
+                        alert("取消成功");
+                    }
+                }
+                var obj={
+                    title: '测试分享', // 分享标题
+                    // link: link, // 分享链接,将当前登录用户转为puid,以便于发展下线
+                    // imgUrl: imgUrl, // 分享图标
+
+                    success: sucFun,
+                    cancel: cancelFun
+                }
+                if(appendDesc){
+                    obj.desc=desc;
+                }
+                return obj;
+            },
+            Goorderpay(){
+                window.location.href = '../order/orderPayment.html';
+            },
+            goeTick(activityStart){
+                let Request = new Object();
+                Request = GetRequest();
+                let activityStarttime = getFmtTime(activityStart,'yyyy-MM-dd-HH-mm');
+                window.location.href = '../eticket/index.html?id='+Request.orderId+'&activityStart='+activityStarttime+'&orderid=true'+'&TitleTxt='+this.TextTitle;
+            }
+        }
+    })
+</script>
+</body>
+</html>

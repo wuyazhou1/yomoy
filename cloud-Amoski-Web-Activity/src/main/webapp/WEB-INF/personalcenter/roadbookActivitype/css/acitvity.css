@@ -1,0 +1,80 @@
+/*活动*/
+.ActivitynavTab{width:100%;background:#fff;height:40px;margin-top:0.6rem;}
+.ActivitynavTab li:nth-of-type(1){margin-left:0.5333333333333333rem;}
+.ActivitynavTab li:nth-of-type(2){margin-left:0.9333333333333333rem;}
+.ActivitynavTab li{float:left;display:inline;height:40px;line-height:40px;cursor: pointer;font-size:0.4rem;color:#121212;}
+.ActivitynavTab li a{color:#2D3138;cursor: pointer;}
+.ActivitynavTab li.cur{font-weight: bold;color:#121212;border-bottom:1px solid #121212;}
+.AcitityCount ul{margin-top:1.4rem;height:100%;}
+.AcitityCount ul li{margin-left:0.4rem;margin-right:0.4rem;padding-bottom:0.4rem;position:relative;background:#fff;margin-top:1.4rem;font-size:12px;box-shadow:0 3px 9px #f0f0f0;border-radius:5px;}
+.AcitityCount ul li:nth-of-type(1){margin-top:0 !important;}
+.AcitityCount ul li .Img{display:block;position:relative;top:-1rem;height:4.48rem;margin-left:5%;margin-right:5%;overflow:hidden;}
+.AcitityCount ul li .Img .ActivityImg{display:block;border-radius:5px;width:100%;margin:0 auto;box-shadow:0px 3px 7px #ccc; }
+.AcitityCount ul li .Img .payment{position: absolute;left:0;top:0;background:url(../img/payment.png) no-repeat;background-size:cover;text-align:center;line-height:24px;color:#fff;width:56px;height:24px;}
+
+.AcitityCount ul li .Img2{display:block;width:4.053333333333334rem;height:2.3466666666666667rem;margin-left:5%;margin-right:5%;overflow:hidden;}
+.AcitityCount ul li .Img2 img{width:100%;height:100%;border-radius:5px;}
+.AcitityCount ul li .Txtwz{width:4.08rem;height:2.3466666666666667rem;}
+
+
+.AcitityCount ul li .AcitityOut{position:absolute;top:1.0133333333333334rem;left:0;text-align:center;width:100%;}
+.AcitityCount ul li .AcitityInner{width:75%;margin:0 auto;text-align:center;color:#fff;height:1.7866666666666666rem;background:#000;background:url(../img/lineBg.png) repeat-x;border-radius:5px;display:flex;justify-content:center;align-items:center;}
+.AcitityCount ul li .AcitityInner .eyesIcon{display:inline-block;width:0.42666666666666664rem;height:0.42666666666666664rem;}
+.AcitityCount ul li .AcitityInner .eyesIcon img{width:100%;height:100%;}
+.AcitityCount ul li .AcitityInner p{color:#fff;}
+.AcitityCount ul li p{height: 21px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;}
+.AcitityCount ul li p.dsySpan span{margin:0 0.2rem 0 0;}
+.AcitityInner .eyesIcon{width:0.42666666666666664rem;height:0.42666666666666664rem;display: inline-block;}
+
+.AcitityCount .AcitityTxt{padding-top:0;margin-left:5%;margin-right:5%;position:relative;}
+.AcitityCount .AcitityTxt .day{background:#62B297;padding:0.13rem 0.13333333333333333rem;color:#fff;border-radius:3px;}
+.AcitityCount .AcitityTxt .panyIcon{background:#62B297;/*width:66px;height:30px;*/width:1.4599999999999998rem;height:0.8rem;line-height:0.8rem;text-align:center;border-radius:30px;color:#fff;margin-top:0.48rem;margin-right:0.4rem;}
+.AcitityCount .AcitityTxt .panyIcon2{position:absolute;bottom:2px;right:0;background:#62B297;/*width:66px;height:30px;*//*width:1.4599999999999998rem;*/padding:0px 3px;height:0.8rem;line-height:0.8rem;text-align:center;border-radius:5px;color:#fff;}
+.AcitityCount .AcitityTxt .panyIcongury{background:#f2f2f2;color:#979797;border:1px solid #f2f2f2;}
+.AcitityCount .activityTime{position:relative;}
+.AcitityCount .acivityTxtpay{margin-right:2% !important;}
+#orderIndex .publicAcitity{display:none;background:#fff;}
+#orderIndex .acitityCur{display:block;overflow: auto}
+.myactivitynavTab{width:100%;}
+.myactivitynavTab li{margin:0 16px !important;text-align:center;}
+
+/*活动订单*/
+#waitpayment{height:100%;overflow:auto;margin-bottom:50px;}
+.orderHeader{background:url(../img/orderHeaderBg.png) center top no-repeat;width:100%;}
+#waitpayment .positionBar{background:none;}
+.orderHeader .picTxt{width:90%;border-radius:5px;background:#fff;padding:0.4rem;box-shadow:0px 1px 8px #ccc;}
+.orderHeader .picTxt .picTxtImg{display:block;width:1.4933333333333334rem;height:1.4933333333333334rem;}
+.orderHeader .picTxt .Txt{width:80%;}
+#waitpayment .baomInfor{padding:0.4rem;border-radius:5px;background:#fff;box-shadow:0px 1px 8px #ccc;width:90%;}
+#waitpayment .baomInfor .setmeal li{border-bottom:1px solid #f2f2f2;padding-bottom:0.42666666666666664rem;margin-top:0.4rem;}
+#waitpayment .baomInfor .setmeal li p{color:#2D3138;line-height:0.7466666666666667rem;position:relative;}
+#waitpayment .baomInfor .setmeal li .name span{margin-right:8px;}
+#waitpayment .baomInfor .paymentpeople p i{color:#E44A44;font-style:normal;}
+#waitpayment .baomInfor .paymentpeople .Icon{display:inline-block;width:16px;height:16px;}
+#waitpayment .baomInfor .paymentpeople .InputTxt{float:left;display:inline;width:60%;margin:0 10px;border:none;}
+.width35{width:33%;}
+.width53{width:53%;}
+#waitpayment .baomInfor .setmeal .mealList p span:nth-of-type(1){width:21%;text-align:right;}
+#waitpayment .baomInfor .setmeal .mealList p span:nth-of-type(2){width:39%;text-align:right;}
+#waitpayment .baomInfor .setmeal .mealList p span:nth-of-type(3){width:38%;text-align:right;}
+#waitpayment .baomInfor .arrow{width:21px;height:12px;}
+#waitpayment .baomInfor .arrow img{width:100%;height:100%;display:block;}
+#waitpayment .baomInfor .setmeal .mealList p .circular{display:inline-block;background:#62B297;color:#fff;padding:0 3px;border-radius:5px;margin-top:2px;}
+
+/*已付款*/
+.paymentFooter .refundBtn{margin-left:0.4rem;width:40%;color:#2D3138;text-align:center;line-height:1.0666666666666667rem;background:#F2F2F2;border-radius:5px;}
+.paymentFooter .ticketBtn{margin-right:0.4rem;width:40%;text-align:center;line-height:1.0666666666666667rem;background:#62B297;color:#fff;border-radius:5px;margin-left:0.4rem;}
+.paymentFooter .refundBtn2{width:92% !important;}
+.publiCircle{background:#fff;border-radius:3px;border:1px solid #62B297;padding:0px 4px;color:#62B297;line-height:24px !important;position:absolute;top:0;right:0;}
+.publicBtn{color:#E88F59;position:absolute;top:0;right:0;}
+
+.orderFooter{width:100%;text-align:center;}
+.mealList .aleadyPay{color:#E44A44 !important;}
+.mealList .aleadyPay a{display: inline-block;border:1px solid #62B297;border-radius:5px;padding:0 4px !important;color:#62B297;margin:0;}
+.refundDetail{background:#F2F2F2 !important;color:#2D3138 !important;margin-left:10px !important;;}
+.efundFooter .nextButton{padding:0.32rem 1.3rem !important;}
+.efundFooter .alreadyretund{text-align:center;}
+.alreadyretund{width:80% !important;margin-left:10% !important;padding:0.32rem 0 !important;}
+
+
+.orderuseData{width:6.746666666666667rem;/*height:3.3333333333333335rem;*/margin:45% auto 0;}

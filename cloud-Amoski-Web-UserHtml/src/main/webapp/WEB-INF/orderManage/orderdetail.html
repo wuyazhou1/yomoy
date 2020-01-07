@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+</head>
+<body>
+<div id="orderdetail" class="couenter fl">
+    <div class="orderTitle"><span>订单管理</span></div>
+    <div class="orderCount">
+        <h2>订单详情<a onclick="backUrl()" href="javascript:void(0);" class="fr">返回</a></h2>
+        <div class="orderFrame">
+            <h3><span>订单状态</span></h3>
+            <div class="count Orderstatus">
+                <div class="clearfix">
+                    <div class="fl">
+                        <el-steps :active="1">
+                            <el-step title="待付款"></el-step>
+                            <el-step title="待使用"></el-step>
+                            <el-step title="已完成"></el-step>
+                            <el-step title="退款"></el-step>
+                        </el-steps>
+                    </div>
+                    <div class="fr price">
+                        <p><strong><span class="price_1">总金额 </span><span class="price_2">￥14824</span></strong></p>
+                        <p class="mt15"><span>已付金额 ￥14824</span></p>
+                    </div>
+                </div>
+                <div class="clearfix orderCode mt20">
+                    <span class="s_1">订单编号：11051134137172</span>
+                    <span class="s_2 ml15">创建时间：2019-05-28  17:52</span>
+                </div>
+            </div>
+        </div>
+        <div class="orderFrame">
+            <h3><span>活动信息</span></h3>
+            <div class="count">
+                <div class="clearfix activityNews">
+                    <div class="img fl"><img src="../img/activityImg.png" alt="" title=""></div>
+                    <div class="fl ml15">
+                        <strong>内蒙草原生机嘉年华</strong>
+                        <p class="mt10">
+                            <span>集合地点：湖南长沙长沙县未来漫城</span>
+                            <span>报名人:2</span>
+                        </p>
+                        <p class="mt10">
+                            <span>集合时间： 2019-05-28</span>
+                            <span>结束时间：2019-5-30</span>
+                        </p>
+                        <p class="mt10 more"><a href="#">查看详情</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="orderFrame">
+            <h3><span>航班信息</span><span class="flightTitle">航班的起飞时间为24小时制当地时间,机票必须按顺序使用</span></h3>
+            <div class="count">
+                <ul>
+                    <li v-for="(item,index) in flightList" class="clearfix">
+                        <div class="clearfix fligInfor">
+                            <p class="fs_1 mt20">{{item.time}}</p>
+                            <p class="fs_2">
+                                <span>{{item.address}}</span><br/>
+                                <span>{{item.english}}</span><br/>
+                                <a href="#">{{item.refundTicket}}</a><br/>
+                            </p>
+                            <p class="fs_3">
+                               <span class="flgIcon mt20"><img :src=item.flgImg alt="" title=""></span>
+                                {{item.aviation}}
+                            </p>
+                            <p class="fs_4 mt20">
+                                <span>{{item.configure}}</span><br/>
+                                <span>{{item.machine}}</span><br/>
+                            </p>
+                        </div>
+                        <div class="clearfix aircrew">
+                            <span class="curP">{{item.boarding}}</span>
+                            <span>{{item.adult}}</span>
+                            <span>{{item.adult2}}）</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="orderFrame">
+            <h3><span>报名详情</span></h3>
+            <div class="count">
+                <ul class="RegistDetails">
+                    <li class="clearfix" v-for="(item,index) in registrationList">
+                        <div class="fl RegLeft">
+                            <strong>报名人</strong>
+                            <span>（成人）</span>
+                        </div>
+                        <div class="fl RegRight" >
+                            <p class="clearfix">
+                                <span class="s_1">姓名：</span>
+                                <span class="s_2">{{item.name}}</span>
+                            </p>
+                            <p class="clearfix">
+                                <span class="s_1">证件类型：</span>
+                                <span class="s_2">{{item.id}}</span>
+                            </p>
+                            <p class="clearfix">
+                                <span class="s_1">摩托牌照：</span>
+                                <span class="s_2">{{item.plate}}</span>
+                            </p>
+                            <p class="clearfix">
+                                <span class="s_1">区域：</span>
+                                <span class="s_2">{{item.area}}</span>
+                            </p>
+                            <p class="clearfix">
+                                <span class="s_1">电话：</span>
+                                <span class="s_2">{{item.tel}}</span>
+                            </p>
+                            <p class="clearfix">
+                                <span class="s_1">身份：</span>
+                                <span class="s_2">{{item.shengf}}</span>
+                            </p>
+                            <p class="clearfix">
+                                <span class="s_1">俱乐部：</span>
+                                <span class="s_2">{{item.club}}</span>
+                            </p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: '#orderdetail',
+        data: {
+            active: 0,
+            flightList:[
+                {
+                    time:'2019-06-11 16:40-19:15',
+                    address:'黄花机场T2-中川机场',
+                    english:'Huanghua...（csx）-Zhongchuan...（LHW）',
+                    refundTicket:'退改签及购票说明',
+                    flgImg:'../img/flgIcon1.png',
+                    aviation:'东方航空 MU5368 738',
+                    configure:'2小时35分钟 ｜ 无配置',
+                    machine:'经济舱 | 送机',
+                    boarding:'乘机人',
+                    adult:'宋俊（成人）',
+                    adult2:'宋俊（成人）',
+                },
+                {
+                    time:'2019-06-11 16:40-19:151111',
+                    address:'黄花机场T2-中川机场222222222',
+                    english:'Huanghua...（csx）-Zhongchuan...（LHW）3333333',
+                    refundTicket:'退改签及购票说明4444444444',
+                    flgImg:'../img/flgIcon1.png5555555555',
+                    aviation:'东方航空 MU5368 73866666',
+                    configure:'2小时35分钟 ｜ 无配置',
+                    machine:'经济舱 | 送机',
+                    boarding:'乘机人',
+                    adult:'宋俊（成人）',
+                    adult2:'宋俊（成人）',
+                }
+            ],
+            registrationList:[
+                {
+                    name:'宋俊',
+                    id:'身份证456215488956254569',
+                    plate:'湘A',
+                    area:'湖南',
+                    tel:'15884569878',
+                    shengf:'骑士',
+                    club:'怒潮',
+                },
+                {
+                    name:'宋俊',
+                    id:'身份证456215488956254569',
+                    plate:'湘A',
+                    area:'湖南',
+                    tel:'15884569878',
+                    shengf:'骑士',
+                    club:'怒潮',
+                },
+            ],
+        },
+        mounted(){
+
+        },
+        methods: {
+        }
+    })
+</script>
+</body>
+</html>

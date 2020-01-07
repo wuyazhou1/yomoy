@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+</head>
+<body>
+<div id="diningManage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <!--<li><a href="#">预览和设置</a></li>-->
+            <li><a href="#">保存</a></li>
+            <li><a href="#">发布</a></li>
+            <li><a href="#">退出</a></li>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <div class="templateleft fl">
+            <div class="Img"><img src="../img/listImg1.png" alt="" title=""></div>
+            <strong class="displayBlock mt5">内蒙草原重机嘉年华</strong>
+            <p class="mt5">集合地点：湖南长沙县未…</p>
+            <p class="mt5">集合时间： 2019-05-28</p>
+        </div>
+        <div class="reginfor fl">
+            <div class="clearfix mt20">
+                <h2>签到管理</h2>
+                <div class="clearfix checkInmanage">
+                    <el-input placeholder="请输入内容" v-model="input3" class="input-with-select">
+                        <el-button slot="append" icon="el-icon-search" @click="singRegister">签到</el-button>
+                    </el-input>
+                </div>
+                <div class="clearfix TableMoudle">
+                    <div class="clearfix">
+                        <el-button class="fr">批量导入</el-button>
+                    </div>
+                    <el-table
+                            :data="tableData"
+                            stripe
+                            style="width: 100%" class="tableDataMoudle">
+                        <el-table-column
+                                prop="name"
+                                label="姓名"
+                                width="80">
+                        </el-table-column>
+                        <el-table-column
+                                prop="area"
+                                label="区域"
+                                width="90">
+                        </el-table-column>
+                        <el-table-column
+                                prop="ticket"
+                                label="票种"
+                                width="100"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="tel"
+                                label="手机号"
+                                width="160"
+                        >
+                        </el-table-column>
+                        <el-table-column
+                                prop="money"
+                                label="实付金额"
+                                width="100"
+                            >
+                        </el-table-column>
+                        <el-table-column
+                                prop="numcode"
+                                label="验票数字码" width="120">
+                        </el-table-column>
+                        <el-table-column
+                                prop="time"
+                                label="验票时间" width="120">
+                        </el-table-column>
+                        <el-table-column
+                                prop="number"
+                                label="人数" width="80">
+                        </el-table-column>
+                    </el-table>
+                    <el-pagination
+                            background
+                            layout="prev, pager, next"
+                            :total="1000" class="elPagination">
+                    </el-pagination>
+                </div>
+            </div>
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script>
+    var app = new Vue({
+        el: '#diningManage',
+        data: {
+            input3:'',
+            requestUrl:{
+                requestTableListDataUrl:"",
+                requestRegisterDataUrl:"",
+                requestBatchRegisterDataUrl:""
+            },
+            tableData: [{
+                name:'许肖阳',
+                area:'湖北',
+                ticket:'票种一',
+                tel:'15887846548',
+                money:'￥2800',
+                numcode:'-',
+                time:'2019-08-20',
+                number:'2',
+            },{
+                name:'许肖阳',
+                area:'湖北',
+                ticket:'票种一',
+                tel:'15887846548',
+                money:'￥2800',
+                numcode:'-',
+                time:'2019-08-20',
+                number:'2',
+            },{
+                name:'许肖阳',
+                area:'湖北',
+                ticket:'票种一',
+                tel:'15887846548',
+                money:'￥2800',
+                numcode:'-',
+                time:'2019-08-20',
+                number:'2',
+            },{
+                name:'许肖阳',
+                area:'湖北',
+                ticket:'票种一',
+                tel:'15887846548',
+                money:'￥2800',
+                numcode:'-',
+                time:'2019-08-20',
+                number:'2',
+            }]
+        },
+        methods: {
+            handleClick(tab, event) {
+                //console.log(tab, event);
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            queryTableData(){//查询表格数据
+                let that = this;
+                var obj={
+
+                };
+                axiosSendPost(that.requestUrl.requestTableListDataUrl,obj,function(res){
+                    var data;//数据
+                    that.tableData=data;//赋值给表格
+                },function(res){
+
+                });
+            },
+            singRegister(){//单个签到
+                let that = this;
+                var obj={
+                    input3:that.input3
+                };
+                axiosSendPost(that.requestUrl.requestRegisterDataUrl,obj,function(res){
+                    //成功
+                },function(res){
+
+                });
+            },
+            bachInputData(){//批量导入上传数据
+                let that = this;
+                var obj={
+
+                };
+                axiosSendPost(that.requestUrl.requestBatchRegisterDataUrl,obj,function(res){
+                    //成功
+                },function(res){
+
+                });
+            },
+        }
+    })
+</script>
+</body>
+</html>

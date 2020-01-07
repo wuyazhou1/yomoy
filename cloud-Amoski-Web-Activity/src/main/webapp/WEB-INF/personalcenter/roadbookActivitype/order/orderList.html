@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/acitvity.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="orderIndex" v-cloak>
+    <div class="headerFixed clearfix">
+        <div class="positionBar pt10 pb10" v-show="appplate">
+            <span class="w24 arrowIcon fl ml10" onclick="backUrl('person/index.html')"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+            <span class="enrollees f18 color38">我的活动</span>
+        </div>
+        <ul class="ActivitynavTab f15 myactivitynavTab clearfix">
+            <li :class="activeClass == index?'cur':''"  v-for="(item,index) in ActivityTab" @click="changeActivity(index)"><a href="#">{{item.txt}}</a></li>
+        </ul>
+    </div>
+    <div class="publicAcitity AcitityCount acitityCur">
+        <ul style="margin-top:3.6rem;">
+            <li v-for="(item,index) in useData" class="mt15" @click="gourl(item.id,item.activityEnd)">
+                <h2 class="f16 color12 pt15 ml15">{{item.title}}</h2>
+                <div class="clearfix mt8" style="height:2.3466666666666667rem;">
+                    <div class="fl Img2"><img class="ActivityImg" :src="API_ROOT+'AmoskiActivity/appRidingGuideManage/getImg?imgUrl='+item.fileNameUrl" alt="" title=""></div>
+                    <div class="fl Txtwz" >
+                        <div class="clearfix">
+                            <span class="colora4">活动状态：
+                            <strong class="payment colorc9" v-if="ActivityTabarr[item.state] == '待付款' && item.invertedTime <= 0">已关闭</strong>
+                                <strong class="payment colorc9" v-else>{{ActivityTabarr[item.state]}}</strong>
+                        </div>
+                        <div class="clearfix">
+                            <span class="colora4">开始时间：</span>
+                            <span class="colora4">{{getFmtTime(item.activityStart)}}</span>
+                        </div>
+                        <div class="clearfix">
+                            <span class="colora4">结束时间：</span>
+                            <span class="colora4">{{getFmtTime(item.activityStop)}}</span>
+                        </div>
+                        <div class="colora4">
+                            <span class="colora4">集合地点：</span>
+                            <span class="colora4">{{item.collectionPlace}}{{item.activityEnd}}</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="clearfix mt10 ml10 activityTime" style="position:relative;">
+                    <div class="fl" v-show="nowDay>item.activityStop == false"><!-- 'true'改'false' -->
+                        <div v-show="ActivityTabarr[item.state]=='待付款'" class="fr mr10">
+                            <div v-show="nowDay<item.activityEnd"><!--'>'改成'<' -->
+                                <p class="colora4">离报名截止：</p>
+                                <p class="f16 color12 fw">{{item.invertedTime}}</p>
+                                <p class="textAlign pb10 f10 dsySpan colorie">
+                                    <span>DAY</span>
+                                    <span>HOU</span>
+                                    <span>MIN</span>
+                                    <span>SEC</span>
+                                </p>
+                            </div>
+                        </div>
+                        <div v-show="ActivityTabarr[item.state]=='已付款'" class="fr mr10">
+                            <p class="colora4">离活动开始剩：</p>
+                            <p class="f16 color12 fw">{{item.invertedTime}}</p>
+                            <p class="textAlign pb10 f10 dsySpan colorie">
+                                <span>DAY</span>
+                                <span>HOU</span>
+                                <span>MIN</span>
+                                <span>SEC</span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="AcitityTxt fr mr15" style="min-height:25px;">
+                        <a href="javascript:void(0);"  @click.stop="goactivety(item.basicsId,item.title)" v-if="ActivityTabarr[item.state] == '已完成'" class="panyIcon">活动相册</a>
+                        <p class="panyIcon panyValid" v-else-if="ActivityTabarr[item.state] == '待付款'">
+                            <span v-if="item.invertedTime <= 0">已关闭</span>
+                            <span v-else>{{ActivityTabarr[item.state]}}</span>
+                        </p>
+
+                        <!--<input value="开始提醒"  type="button"   @click.stop="tartRemind(item.id,item.isRemind)" v-else-if="ActivityTabarr[item.state] == '已付款'"-->
+                               <!--class="panyIcon2 color38 InputTxt fl" style="position:absolute;right:2%;top: 3%;">-->
+
+                        <!--<input value="开始提醒"  type="button" :disabled="startgury == item.isRemind==1?false:true"-->
+                               <!--@click.stop="tartRemind(item.id,item.isRemind)" v-else-if="ActivityTabarr[item.state] == '已付款'"-->
+                               <!--class="panyIcon2 color38 InputTxt fl" :class="{panyIcongury:item.isRemind==1?true:false}">-->
+
+
+
+                        <a href="javascript:void(0);"  v-else class="panyIcon" >{{ActivityTabarr[item.state]}}</a>
+                    </div>
+                </div>
+            </li>
+            <div v-show="useData.length==0" class="orderuseData">
+                <img  src="../img/kong.png" width="100%" alt="" title="" class="displayblock">
+                <p style="text-align:center;" class="colorbc f15">暂无数据</p>
+            </div>
+        </ul>
+    </div>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+
+    /*function TestFmtTime(t,fmt){
+        alert("进入方法");
+        alert("t==》"+t);
+        var time=new Date();
+        fmt=fmt||"yyyy-MM-dd";
+        try {
+            if(t){
+                time=new Date(t.replace(/-/g,'/'));
+            }else{
+                return "";
+            }
+        } catch (e) {
+            alert("转换失败的时间"+t);
+            console.log(e);
+        }
+        alert("转换成功的时间"+time);
+
+        //年
+        if(fmt.indexOf("yyyy")>=0){
+            fmt=fmt.replace("yyyy",time.getFullYear());
+        }
+
+        alert("年"+fmt);
+
+        //月
+        if(fmt.indexOf("MM")>=0){
+            var month=time.getMonth()+1;
+            if(month<10){
+                month="0"+month;
+            }
+            fmt=fmt.replace("MM",month);
+        }else if(fmt.indexOf("M")>=0){
+            fmt=fmt.replace("M",time.getMonth()+1);
+        }
+        alert("月"+fmt);
+        //日
+        if(fmt.indexOf("dd")>=0){
+            var date=time.getDate();
+            if(date<10){
+                date="0"+date;
+            }
+            fmt=fmt.replace("dd",date);
+        }else if(fmt.indexOf("d")>=0){
+            fmt=fmt.replace("d",time.getDate());
+        }
+
+        alert("日"+fmt);
+
+        //时
+        if(fmt.indexOf("HH")>=0){
+            var hour=time.getHours();
+            if(hour<10){
+                hour="0"+hour;
+            }
+            fmt=fmt.replace("HH",hour);
+        }else if(fmt.indexOf("H")>=0){
+            fmt=fmt.replace("H",time.getHours());
+        }
+        alert("时"+fmt);
+
+        //分
+        if(fmt.indexOf("mm")>=0){
+            var minute=time.getMinutes();
+            if(minute<10){
+                minute="0"+minute;
+            }
+            fmt=fmt.replace("mm",minute);
+        }else if(fmt.indexOf("m")>=0){
+            fmt=fmt.replace("m",time.getMinutes());
+        }
+        alert("分"+fmt);
+
+        //秒
+        if(fmt.indexOf("ss")>=0){
+            var second=time.getSeconds();
+            if(second<10){
+                second="0"+second;
+            }
+            fmt=fmt.replace("ss",second);
+        }else if(fmt.indexOf("s")>=0){
+            fmt=fmt.replace("s",time.getSeconds());
+        }
+        alert("秒"+fmt);
+        return fmt;
+    }*/
+
+
+
+
+    var app = new Vue({
+        el:'#orderIndex',
+        data:{
+            activeClass:0,
+            ActivityTab:[
+                {
+                    txt:'全部',
+                },
+                {
+                    txt:'待付款',
+                },
+                {
+                    txt:'已付款',
+                },
+                {
+                    txt:'已完成',
+                },
+                {
+                    txt:'退款',
+                },
+            ],
+            ActivityTabarr:['0','1','待付款',"已付款",'退款中','已退款',"已完成",'已驳回退款'],//2未付款，3已付款，4退款中，5以退款,6.已完成,7.驳回退款
+            useData:[],//最终数据存放到此变量
+            dataWarp:{
+                hotdataList:[],//全部
+                peripherydataList:[],//待付款
+                peripherydataList2:[],//已付款
+                peripherydataList3:[],//已完成
+                peripherydataList4:[]//退款中
+            },
+            over: false, // 是否已结束
+            leftTimeString: '',
+            endTime: '', // 截止时间 时间格式: 2019/01/01 00:00:00, 用 - 连接会有兼容性问题(IE: ???), ememem... ios 也会有, 当然也可以用时间戳
+            interval: 1000, // 默认时间间隔
+            Indexes:1,//默认索引
+            nowDay : new Date().getTime(),
+            startgury:false,
+            disabledstart:false,//按钮禁止判断
+            panyInput:false,
+            stateNum:false,
+        },
+        created(){
+
+        },
+        mounted(){
+            this.useData = this.dataWarp.hotdataList;
+            this.orderData();
+            let _this = this;
+            let Indexessy = window.sessionStorage.getItem('Indexes');
+            let indexy = JSON.parse(Indexessy);
+            //console.log(indexy);
+            if(indexy)
+            {
+                this.Indexes = indexy-1;
+            }else{
+                this.Indexes = 1;
+            }
+
+        },
+        methods:{
+            changeActivity(index){//tab切换
+                let _this = this;
+                this.activeClass = index;
+                for(var i=0;i<this.useData.length;i++){
+                    clearTimeout(this.useData[i].timeoutObj);
+                }
+                index = index+1;
+                this.useData= "";
+                if(index == 1){
+                    this.useData = this.dataWarp.hotdataList//索引为
+                    if(!this.useData.length){
+
+                    }
+                    this.Indexes = 1;
+                }
+                else if(index == 2 )//2未付款，3已付款，4审核退款，5以退款
+                {
+                    this.useData = this.dataWarp.peripherydataList;//索引为2待付款
+                    this.Indexes = 2;
+                }else if(index == 3){
+                    this.useData = this.dataWarp.peripherydataList2//索引为3已付款
+                    this.Indexes = 3;
+                }
+                else if(index == 4){
+                    this.useData = this.dataWarp.peripherydataList3//索引为6已完成
+                    this.Indexes = 4;
+                }
+                else if(index == 5){
+                    this.useData = this.dataWarp.peripherydataList4//索引为4审核退款
+                    this.Indexes = 5;
+                }
+                for(var i=0;i<_this.useData.length;i++){
+                    if(_this.useData[i].state==2){//待付款2 取报名截止时间
+                        countdown(_this.useData[i].activityEnd,"invertedTime",i);
+                    }else{
+                        countdown(_this.useData[i].activityStop,"invertedTime",i);
+                    }
+                }
+            },
+            orderData(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {};
+                    postData(data,'AmoskiActivity/activityOrderManage/queryOrder').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            for(var i=0;i<this.useData.length;i++){
+                                clearTimeout(this.useData[i].timeoutObj);
+                            }
+                            result.forEach(function(cur,index,arr){
+                                arr[index].invertedTime="";
+                                 arr[index].day ="";
+                                arr[index].day = Math.floor((arr[index].activityStop - arr[index].activityStart)/ 1000 / 60 / 60 / 24);
+                                _this.$nextTick(() => {
+                                    //状态数据分类；//2未付款，3已付款，4退款中，5以退款,6.已完成,7.驳回退款
+                                    if(arr[index].state == 2){//2未付款
+                                        _this.dataWarp.peripherydataList.push(arr[index]);
+                                        _this.useData = _this.dataWarp.peripherydataList;
+                                    }
+                                    if(arr[index].state == 3){//3已付款
+                                        _this.dataWarp.peripherydataList2.push(arr[index]);
+                                        _this.useData = _this.dataWarp.peripherydataList2;
+                                    }
+                                    if(arr[index].state == 4 || arr[index].state == 5){//4退款中
+                                        _this.dataWarp.peripherydataList4.push(arr[index]);
+                                        _this.useData = _this.dataWarp.peripherydataList4;
+                                        console.table(_this.dataWarp.peripherydataList4);
+                                    }
+                                    if(arr[index].state == 6){//6.已完成
+                                        _this.dataWarp.peripherydataList3.push(arr[index]);
+                                        _this.useData = _this.dataWarp.peripherydataList3;
+                                    }
+                                })
+                                if(index==result.length-1){
+                                    _this.dataWarp.hotdataList = result;//全部
+                                    _this.useData = _this.dataWarp.hotdataList//默认为全部数据；
+                                }
+                                //TestFmtTime(result[0].activityStop);
+                            })
+                            _this.$nextTick(()=>{
+                                for(var i=0;i<_this.useData.length;i++){
+                                    if(_this.useData[i].state==2){//待付款2 取报名截止时间
+                                        countdown(_this.useData[i].activityEnd,"invertedTime",i);
+                                    }else{
+                                        countdown(_this.useData[i].activityStop,"invertedTime",i);
+                                    }
+                                }
+
+                                _this.changeActivity(0);
+                            })
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            },
+            gourl(id,time){
+                window.sessionStorage.setItem('Indexes',JSON.stringify(this.Indexes));
+                window.location.href = '../order/waitpayment.html?orderId='+id+'&endTime='+time//待付款
+            },
+            tartRemind(id,isRemind){
+                let _this = this;
+                _this.startgury = id;
+                _this.panyInput = id;
+                // return false;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        id:id,
+                    };
+                    postData(data,'AmoskiActivity/activityOrderManage/orderRemind').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+
+                })
+            },
+            goactivety(id,title){
+                window.location.href = '/AmoskiWebActivity/personalcenter/album/shopalbum.html?id='+id+'&TitleTxt='+title;
+            }
+        },
+    })
+    // for(var i=0;i<app._data.useData.length;i++){
+    //     countdown(app._data.useData[i].activityStop,"invertedTime",i);
+    // }
+</script>
+</body>
+</html>

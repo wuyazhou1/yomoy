@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Amoski-Util/Amoski-Util.iml" filepath="$PROJECT_DIR$/Amoski-Util/Amoski-Util.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Activity/cloud-Amoski-Activity.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Activity/cloud-Amoski-Activity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Goods/cloud-Amoski-Goods.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Goods/cloud-Amoski-Goods.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Riding/cloud-Amoski-Riding.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Riding/cloud-Amoski-Riding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-User/cloud-Amoski-User.iml" filepath="$PROJECT_DIR$/cloud-Amoski-User/cloud-Amoski-User.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Web-Activity/cloud-Amoski-Web-Activity.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Web-Activity/cloud-Amoski-Web-Activity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Web-Goods/cloud-Amoski-Web-Goods.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Web-Goods/cloud-Amoski-Web-Goods.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Web-Riding/cloud-Amoski-Web-Riding.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Web-Riding/cloud-Amoski-Web-Riding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Web-User/cloud-Amoski-Web-User.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Web-User/cloud-Amoski-Web-User.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-Amoski-Wechat/cloud-Amoski-Wechat.iml" filepath="$PROJECT_DIR$/server-Amoski-Wechat/cloud-Amoski-Wechat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-Amoski-Wechat/cloud-Amoski-Wechat.iml" filepath="$PROJECT_DIR$/cloud-Amoski-Wechat/cloud-Amoski-Wechat.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-discovery/cloud-discovery.iml" filepath="$PROJECT_DIR$/cloud-discovery/cloud-discovery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/cloud-gateway/cloud-gateway.iml" filepath="$PROJECT_DIR$/cloud-gateway/cloud-gateway.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-Amoski-Activity/server-Amoski-Activity.iml" filepath="$PROJECT_DIR$/server-Amoski-Activity/server-Amoski-Activity.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-Amoski-Goods/server-Amoski-Goods.iml" filepath="$PROJECT_DIR$/server-Amoski-Goods/server-Amoski-Goods.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-Amoski-Riding/server-Amoski-Riding.iml" filepath="$PROJECT_DIR$/server-Amoski-Riding/server-Amoski-Riding.iml" />
+      <module fileurl="file://$PROJECT_DIR$/server-Amoski-User/server-Amoski-User.iml" filepath="$PROJECT_DIR$/server-Amoski-User/server-Amoski-User.iml" />
+    </modules>
+  </component>
+</project>

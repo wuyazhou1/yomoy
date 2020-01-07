@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+<!-- <link rel="stylesheet" type="text/css" href="../css/main1119.css"/>-->
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+        /*地图*/
+        #tip {
+            background-color: #ddf;
+            color: #333;
+            border: 1px solid silver;
+            box-shadow: 3px 4px 3px 0px silver;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            line-height: 20px;
+        }
+        #tip input[type="text"] {
+            height: 25px;
+            border: 0;
+            padding-left: 5px;
+            width: 280px;
+            border-radius: 3px;
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+<div id="accomMagePage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <div class="templateleft fl">
+            <el-tabs v-model="activeName" @tab-click="handleClick" class="clearfix">
+                <el-tab-pane label="模板中心" name="first">
+                    <div class="temp">
+                        <el-input v-model="input" placeholder="请输入内容" class="fl searchinput"></el-input>
+                        <el-button class="searchbutton el-icon-search" size="small">搜索</el-button>
+                    </div>
+                    <ul class="tagInfor clearfix">
+                        <li class="tagall"><a href="#">全部</a></li>
+                        <li><a href="#">川菜</a></li>
+                        <li><a href="#">鲁菜</a></li>
+                        <li><a href="#">香菜</a></li>
+                        <li><a href="#">湘菜</a></li>
+                        <li><a href="#">土家菜</a></li>
+                        <li><a href="#">粤菜</a></li>
+                        <li><a href="#">烧烤</a></li>
+                        <li><a href="#">火锅</a></li>
+                        <li><a href="#">农家乐</a></li>
+                    </ul>
+                    <ul class="tagInfor clearfix">
+                        <li><a href="#">人均消费</a></li>
+                        <li class="tagall"><a href="#">全部</a></li>
+                        <li><a href="#">230</a></li>
+                        <li><a href="#">￥50</a></li>
+                        <li><a href="#">￥80</a></li>
+                        <li><a href="#">￥100</a></li>
+                        <li><a href="#">￥150</a></li>
+                        <li><a href="#">￥200</a></li>
+                    </ul>
+                    <ul class="tablistImg mt30 clearfix">
+                        <li v-for="item in tablistimg">
+                            <a href="#">
+                                <img :src=item.img>
+                                <span>{{item.txt}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </el-tab-pane>
+                <el-tab-pane label="我的" name="second">
+                    <div>sdfsdfsdfsdfsf</div>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
+        <div class="information fl eatmanageCount">
+            <div id="container">
+                <div id="myPageTop" style="height: auto;">
+                    <table>
+                        <tr>
+                            <td>
+                                <el-cascader
+                                        :options="options"
+                                        v-model="cityname"
+                                        @change="handleChange"
+                                        :separator="''">
+                                </el-cascader>
+                                <input id="tipinput" class="tipInput" v-model="inputVal" />
+                                <el-button type="primary" @click="searchMap()">点击搜索</el-button>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="clearfix accomMageMoudle" v-show="showForm">
+                        <el-form ref="form" label-width="80px" :disabled="formDisabled" > <!--v-for="(item,index) in tbActivityList"-->
+                            <el-form-item label="酒店名：">
+                                <el-input id="hotelName" v-model="hotelObj.hotelName" v-on:input="inputChange('','hotelName')"></el-input>
+                                <p ><img src="../img/Shape.png" alt="" title=""> <span>{{hotelAddr}}</span></p><!--@click="timgShow()"-->
+                            </el-form-item>
+                            <el-form-item label="图片：">
+                                <el-form-item class="">
+                                    <el-upload
+                                            class="avatar-uploader fl"
+                                            action="/AmoskiUser/ActivityCreate/saveFile"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess1"
+                                            :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl1" :src="imageUrl1" class="avatar">
+                                        <img src="../img/camera.png" width="32" height="30" class="camera">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                    <el-upload
+                                            class="avatar-uploader fl"
+                                            action="/AmoskiUser/ActivityCreate/saveFile"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess2"
+                                            :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl2" :src="imageUrl2" class="avatar">
+                                        <img src="../img/camera.png" width="32" height="30" class="camera">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                    <el-upload
+                                            class="avatar-uploader fl"
+                                            action="/AmoskiUser/ActivityCreate/saveFile"
+                                            :show-file-list="false"
+                                            :on-success="handleAvatarSuccess3"
+                                            :before-upload="beforeAvatarUpload">
+                                        <img v-if="imageUrl3" :src="imageUrl3" class="avatar">
+                                        <img src="../img/camera.png" width="32" height="30" class="camera">
+                                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                    </el-upload>
+                                </el-form-item>
+                                <div class="color:#9B9B9B;font-size:12px;">仅支付jpg/png格式，尺寸不低于126*80,大小1M以内,最多上传3张</div>
+                            </el-form-item>
+                            <el-form-item label="配套：">
+                                <el-input v-model="hotelObj.hotelMatching" v-on:input="inputChange('','hotelMatching')"></el-input>
+                            </el-form-item>
+                            <el-form-item label="酒店政策：">
+                                <el-input v-model="hotelObj.hotelPolicy" v-on:input="inputChange('','hotelPolicy')"></el-input>
+                            </el-form-item>
+                            <el-form-item label="联系人：">
+                                <el-input v-model="hotelObj.contacts" v-on:input="inputChange('','contacts')"></el-input>
+                            </el-form-item>
+                            <el-form-item label="电话：">
+                                <el-input v-model="hotelObj.contactsTel" v-on:input="inputChange('','contactsTel')"></el-input>
+                            </el-form-item>
+                            <el-form-item label="星级：" >
+                                <el-select v-model="hotelObj.starClass" placeholder="请选择星级" v-on:change="inputChange('','starClass')">
+                                    <el-option label="一星级" value="一星级"></el-option>
+                                    <el-option label="二星级" value="二星级"></el-option>
+                                    <el-option label="三星级" value="三星级"></el-option>
+                                    <el-option label="四星级" value="四星级"></el-option>
+                                    <el-option label="五星级" value="五星级"></el-option>
+                                    <el-option label="六星级" value="六星级"></el-option>
+                                    <el-option label="七星级" value="七星级"></el-option>
+                                    <el-option label="八星级" value="八星级"></el-option>
+                                    <el-option label="九星级" value="九星级"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </el-form>
+                        <div class="baomingcount">
+                            <div class="clearfix" v-for="(item,index) in costdetail">
+                                <div class="costdetalist">
+                                    <div class="title clearfix">
+                                        <h2 class="fl">房型{{index+1}}</h2>
+                                        <span class="DeleteReduce" @click="deleteDate(index)">一</span>
+                                    </div>
+                                    <el-form ref="form" label-width="80px" class="bedType" :disabled="formDisabled">
+                                        <div class="clearfix modelModule">
+                                            <el-form-item label="型号：" class="fl modelRegion">
+                                                <el-select v-model="item.hotelType" placeholder="请选择型号" v-on:change="inputHotelRoomChange(index,'','hotelType')">
+<!--                                                    (1[大床房]2,[中等床房],3[小床房])-->
+                                                    <el-option label="大床房" value="大床房"></el-option>
+                                                    <el-option label="中等床房" value="中等床房"></el-option>
+                                                    <el-option label="小床房" value="小床房"></el-option>
+                                                </el-select>
+                                            </el-form-item>
+                                            <el-form-item class="fl number">
+                                                <el-input v-model="item.numberCount" placeholder="数量" v-on:change="inputHotelRoomChange(index,'','numberCount')"></el-input>
+                                            </el-form-item>
+                                            <el-form-item class="fl price">
+                                                <el-input v-model="item.price" placeholder="价格" v-on:change="inputHotelRoomChange(index,'','price')"></el-input>
+                                            </el-form-item>
+                                        </div>
+                                        <el-form-item label="图片：" style="margin-left:0;">
+                                            <el-form-item class="elUploadImg">
+                                                <el-upload
+                                                        :id="'img'+index"
+                                                        class="avatar-uploader fl"
+                                                        action="/AmoskiUser/ActivityCreate/saveFile"
+                                                        :show-file-list="false"
+                                                        :on-success="(res,file)=>{return handleAvatarSuccess(res,file, index,0)}"
+                                                        :before-upload="beforeAvatarUpload">
+                                                    <img v-if="item.imageUrl0" :src="item.imageUrl0" class="avatar">
+                                                    <img src="../img/camera.png" width="32" height="30" class="camera">
+                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                </el-upload>
+                                                <el-upload
+                                                        :id="'img'+index"
+                                                        class="avatar-uploader fl"
+                                                        action="/AmoskiUser/ActivityCreate/saveFile"
+                                                        :show-file-list="false"
+                                                        :on-success="(res,file)=>{return handleAvatarSuccess(res,file, index,1)}"
+                                                        :before-upload="beforeAvatarUpload">
+                                                    <img v-if="item.imageUrl1" :src="item.imageUrl1" class="avatar">
+                                                    <img src="../img/camera.png" width="32" height="30" class="camera">
+                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                </el-upload>
+                                                <el-upload
+                                                        :id="'img'+index"
+                                                        class="avatar-uploader fl"
+                                                        action="/AmoskiUser/ActivityCreate/saveFile"
+                                                        :show-file-list="false"
+                                                        :on-success="(res,file)=>{return handleAvatarSuccess(res,file, index,2)}"
+                                                        :before-upload="beforeAvatarUpload">
+                                                    <img v-if="item.imageUrl2" :src="item.imageUrl2" class="avatar">
+                                                    <img src="../img/camera.png" width="32" height="30" class="camera">
+                                                    <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                                </el-upload>
+                                            </el-form-item>
+                                        </el-form-item>
+                                        <el-form-item label="设施" >
+                                            <el-checkbox-group v-model="item.facilitiesArr" v-on:change="inputHotelRoomChange(index,'','facilitiesArr')">
+                                                <el-checkbox-button name="type" v-for="(item,index) in facilitiesList" :label="item.name" :value="item.id" ></el-checkbox-button>
+                                            </el-checkbox-group>
+                                        </el-form-item>
+                                    </el-form>
+                                </div>
+                            </div>
+                        </div>
+                        <input type="button" value="+" class="addbutton" @click="adddata">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <menu-right></menu-right>
+
+<!--        <el-dialog title="菜单明细" :visible.sync="centerDialogVisible" class="eldialogWarp">-->
+<!--            <el-form :model="form">-->
+<!--                <el-form-item label="菜名" :label-width="formLabelWidth" class="menuname">-->
+<!--                    <el-input type="textarea" v-model="form.desc" class="dialogTextare"></el-input>-->
+<!--                </el-form-item>-->
+<!--            </el-form>-->
+<!--            <div slot="footer" class="dialog-footer">-->
+<!--                <el-button @click="centerDialogVisible = false">取 消</el-button>-->
+<!--                <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
+<!--            </div>-->
+<!--        </el-dialog>-->
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=76e7b372802c8e7526fa37f79717c502&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script>
+    var placeSearch,auto,map;
+    var app = new Vue({
+        el: '#accomMagePage',
+        data: {
+            formDisabled:false,
+            hotelAddr:"",
+            InputHotedetail:'',
+            showForm:true,
+            activeName: 'first',
+            isActive:'',
+            optiondata:'',
+            imageUrl1: '',
+            imageUrl2: '',
+            imageUrl3: '',
+            value:'',
+            isCollapse: true,
+            input:'',
+            centerDialogVisible:false,
+            formLabelWidth: '120px',
+            inputVal:'',//输入框内容
+            lodIndex:0,
+            tablistimg:[],//存放最终显示的图片
+            tablistall:[
+                [
+                    {
+                        img:'../img/listImg1.png',
+                        txt:'内蒙草原生机嘉年华',
+                    },
+                    {
+                        img:'../img/listImg2.png',
+                        txt:'哈尔滨冰雪重机嘉年华',
+                    },
+                    {
+                        img:'../img/listImg1.png',
+                        txt:'内蒙草原生机嘉年华',
+                    },
+                ],
+            ],
+            cityname:'长沙',//城市名;
+            selectedOptions: [],//存放默认值
+            options:options,//存放城市数据
+            searchCurButton:'',//
+            costdetail:[],
+            newitems:{
+                // ticketname:'默认免费票1',
+                // ticketprice:'1',
+                // tickenumber:'默认无限制',
+                // desc:'',
+            },
+            facilities:[],
+            facilitiesList:[
+                /*{text:'WIFI',value:'WIFI'},
+                {text:'浴霸',value:'浴霸'},
+                {text:'厕所',value:'厕所'},
+                {text:'空调',value:'空调'},
+                {text:'电视',value:'电视'},
+                {text:'电话',value:'电话'},
+                {text:'阳台',value:'阳台'},
+                {text:'会议室',value:'会议室'},
+                {text:'含早餐',value:'含早餐'},
+                {text:'含温泉',value:'含温泉'},*/
+            ],
+            hotelObj:{
+            },
+            scheIdx:0,
+        },
+        mounted(){
+            queryDict("14","facilitiesList");//查询字典数据
+            let that = this;
+            that.tablistimg = that.tablistall[0];
+            that.initMap();
+            that.initEatData(0);
+            /*
+
+            */
+        },
+        methods: {
+            handleClick(tab, event){},
+            timgShow(){
+                this.showForm=false;
+                //this.input=this.hotelObj.hotelName;
+            },
+            initEatData(scheIdx){//初始化住宿数据
+                let that = this;
+                that.scheIdx=scheIdx;
+                that.hotelObj=window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbActivityHotelEntity;
+                if(!that.hotelObj){
+                    that.hotelObj=new TbActivityHotelEntity();
+                    //that.costdetail.push(new TbActivityHotelRoomEntity());
+                }else{
+                    var costdetail=that.hotelObj.tbActivityHotelRoomEntity;
+                    for(var i=0;i<costdetail.length;i++){
+                        var imgs=costdetail[i].tbActivityRoomImageEntity;
+                        for(var j=0;j++;j<imgs.length){//房型图片
+                            var url=joinImgSrc(imgs[j].projectUrl+imgs[j].filePathUrl,imgs[j].fileNameUrl);
+                            costdetail[i]["imageUrl"+j]=url?url:"../img/camera.png";
+                        }
+                        if(!costdetail[i].facilities){
+                            costdetail[i].facilitiesArr=[];
+                        }else{
+                            costdetail[i].facilitiesArr=costdetail[i].facilities.split(",");
+                        }
+                    }
+                    that.costdetail=costdetail;
+                    if(!that.costdetail||that.costdetail.length==0){
+                        //that.costdetail.push(new TbActivityHotelRoomEntity());
+                    }
+                }
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbActivityHotelEntity=that.hotelObj;
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbActivityHotelEntity.tbActivityHotelRoomEntity=that.costdetail;
+                /*if(that.hotelObj.tbHotelRestaurantImageEntity.length==3){
+                    that.imageUrl1=joinImgSrc(that.hotelObj.tbHotelRestaurantImageEntity[0].projectUrl+that.hotelObj.tbHotelRestaurantImageEntity[0].filePathUrl,that.hotelObj.tbHotelRestaurantImageEntity[0].fileNameUrl);
+                    that.imageUrl2=joinImgSrc(that.hotelObj.tbHotelRestaurantImageEntity[1].projectUrl+that.hotelObj.tbHotelRestaurantImageEntity[1].filePathUrl,that.hotelObj.tbHotelRestaurantImageEntity[1].fileNameUrl);
+                    that.imageUrl3=joinImgSrc(that.hotelObj.tbHotelRestaurantImageEntity[2].projectUrl+that.hotelObj.tbHotelRestaurantImageEntity[2].filePathUrl,that.hotelObj.tbHotelRestaurantImageEntity[2].fileNameUrl);
+                }*/
+                for (var i=0;i<that.hotelObj.tbHotelRestaurantImageEntity.length;i++){
+                    that["imageUrl"+(i+1)]=joinImgSrc(that.hotelObj.tbHotelRestaurantImageEntity[i].projectUrl+that.hotelObj.tbHotelRestaurantImageEntity[i].filePathUrl,that.hotelObj.tbHotelRestaurantImageEntity[i].fileNameUrl);
+                }
+            },
+            handleAvatarProgerss(evt,file){
+                console.log("evt:"+evt);
+            },
+            handleAvatarSuccess(res, file,idx,imgIdx) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbActivityHotelRoomEntity[idx].tbActivityRoomImageEntity[imgIdx]=obj
+                    this.costdetail[idx]["imageUrl"+imgIdx]=URL.createObjectURL(file.raw);
+                }
+            },
+            handleAvatarSuccess1(res, file) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    obj.type=1;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbHotelRestaurantImageEntity[0]=obj;
+                    this["imageUrl1"] = URL.createObjectURL(file.raw);
+                }
+            },
+            handleAvatarSuccess2(res, file) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    obj.type=1;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbHotelRestaurantImageEntity[1]=obj;
+                    this["imageUrl2"] = URL.createObjectURL(file.raw);
+                }
+            },
+            handleAvatarSuccess3(res, file) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    obj.type=1;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbHotelRestaurantImageEntity[2]=obj;
+                    this["imageUrl3"] = URL.createObjectURL(file.raw);
+                }
+            },
+            initMap(){
+                let _this = this;
+                //地图加载
+                map = new AMap.Map("container", {
+                    //center: [],
+                    zoom: 14,
+                    resizeEnable: true,
+                });
+
+                //输入提示
+                var autoOptions = {
+                    input: "tipinput",
+                    //city:_this.cityname,
+                };
+                var hotelNameOptions = new AMap.Autocomplete({
+                    input: "hotelName"
+                });
+                AMap.event.addListener(hotelNameOptions, "select", function(e){
+                    app._data.hotelAddr=e.poi.district;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].
+                        tbActivityHotelEntity.hotelName=e.poi.name;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].
+                        tbActivityHotelEntity.locationAddrName=e.poi.district;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].
+                        tbActivityHotelEntity.yAxis=e.poi.location.lat;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].
+                        tbActivityHotelEntity.xAxis=e.poi.location.lng;
+                    app.$forceUpdate();
+                });
+                auto = new AMap.Autocomplete(autoOptions);
+                placeSearch = new AMap.PlaceSearch({
+                    map: map,
+                    //city:_this.cityname,
+                    autoFitView:true,
+                    citylimit:true
+                });  //构造地点查询类
+
+                AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+                function select(e) {
+                    //placeSearch.setCity(e.poi.adcode);
+                    _this.searchPoiMap(e.poi.name);
+                    _this.showForm=false;
+                    _this.inputVal=e.poi.name;
+                    /*placeSearch.search(e.poi.name,function(status, result){
+
+                    });  //关键字查询查询*/
+                }
+                AMap.event.addListener(placeSearch, "markerClick", this.markPointClick);
+            },
+            searchPoiMap(name){//搜索poi
+                placeSearch.search(name,function(status, result){
+                    if(status=="no_data"){
+                        alert("搜索不到结果! 请重新输入");
+                    }else if(status=="error"){
+                        alert("查询失败!");
+                    }
+                });  //关键字查询查询
+            },
+            markPointClick(data){
+                let _this = this;
+                var point=data.data.location;
+                var addr=data.data.address;
+                _this.showForm=true;
+                _this.hotelAddr=addr;
+                var frameHotelObj=window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity;
+                frameHotelObj.locationAddrName=_this.hotelAddr;
+                frameHotelObj.yAxis=point.lat;
+                frameHotelObj.xAxis=point.lng;
+            },
+            searchMap(){
+                if(!this.cityname){
+                    alert("请选择城市再搜索");
+                    return;
+                }
+                if(!this.inputVal){
+                    alert("请输入搜索内容");
+                    return;
+                }
+                this.showForm=false;
+                this.searchPoiMap(this.inputVal);
+            },
+            handleChange(value) {
+                let that = this;
+                placeSearch.setCity(that.cityname[1]);
+                auto.setCity(that.cityname[1]);
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;
+            },
+            adddata:function(){
+                let that = this;
+
+                let tbActivityObj = {};
+                //window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity.push(tbActivityObj);
+
+                let newRoom=new TbActivityHotelRoomEntity();
+                newRoom.facilitiesArr=[];
+                newRoom.imageUrl0="";
+                newRoom.imageUrl1="";
+                newRoom.imageUrl2="";
+                that.costdetail.push(newRoom)//往items中添加newitems
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbActivityHotelRoomEntity=that.costdetail;
+            },
+            deleteDate(index){
+                this.costdetail.splice(index,1);
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbActivityHotelRoomEntity=that.costdetail;
+            },
+            inputChange(node,tab){
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity[tab]=this.hotelObj[tab];
+            },
+            inputHotelRoomChange(index,node,tab){
+                var value=this.costdetail[index][tab];
+                if(tab=="facilitiesArr"){//设施数组拼成字符
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbActivityHotelRoomEntity[index]["facilities"]=value.join(',');
+                    this.$forceUpdate();
+                }
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbActivityHotelEntity.tbActivityHotelRoomEntity[index][tab]=value;
+            }
+        }
+    })
+    if(!window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[app._data.scheIdx]){
+        alert("请添加日程！");
+        lookDisabled(true);
+    }else{
+        lookDisabled();//如果是查看需要禁用表单
+    }
+</script>
+</body>
+</html>

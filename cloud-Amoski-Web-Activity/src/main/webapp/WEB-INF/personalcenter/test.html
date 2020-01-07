@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<style>
+    .active {
+        background: #fd7522;
+        border: 1px solid #fd7522;
+        color: #fff;
+    }
+</style>
+<div id="watermark">
+<ul class="wp-list">
+    <li v-for="item in wpList"
+               :class="{active : active == item.name}"
+               @click="selected(item.name)">{{item.name}}</li>
+</ul>
+</div>
+
+<script src="js/vue2.min.js"></script>
+
+<script type="text/javascript">
+    // var arr = [
+    //     {"id":"1001","name":"值1","value":"111"},
+    //     {"id":"1001","name":"值1","value":"11111"},
+    //     {"id":"1002","name":"值2","value":"25462"},
+    //     {"id":"1002","name":"值2","value":"23131"},
+    //     {"id":"1002","name":"值2","value":"2315432"},
+    //     {"id":"1003","name":"值3","value":"333333"}
+    // ];
+    // var map = {},
+    //     dest = [];
+    // for(var i = 0; i < arr.length; i++){
+    //     var ai = arr[i];
+    //     if(!map[ai.id]){
+    //         dest.push({
+    //             id: ai.id,
+    //             name: ai.name,
+    //             data: [ai]
+    //         });
+    //         map[ai.id] = ai;
+    //     }else{
+    //         for(var j = 0; j < dest.length; j++){
+    //             var dj = dest[j];
+    //             if(dj.id == ai.id){
+    //                 dj.data.push(ai);
+    //                 break;
+    //             }
+    //         }
+    //     }
+    // }
+    // console.log(dest);
+    var app = new Vue({
+        el: '#watermark',
+        data: {
+            wpList: [
+                {
+                    name: '食品饮料'
+                },
+                {
+                    name: '鲜花'
+                },
+                {
+                    name: '蛋糕'
+                },
+                {
+                    name: '水果生鲜'
+                },
+                {
+                    name: '服装鞋帽'
+                },
+                {
+                    name: '其它'
+                }
+            ],
+            active: ''
+        },
+        methods:{
+            selected(name){
+                this.active = name;
+            }
+        }
+    })
+
+
+</script>
+</body>
+</html>

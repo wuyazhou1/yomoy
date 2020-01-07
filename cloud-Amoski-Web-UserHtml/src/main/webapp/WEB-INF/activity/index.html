@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script type="text/javascript" src="../js/country-level2-data.js"></script>
+    <!--<link  rel="stylesheet" type="text/css" href="../css/swiper.min.css" />-->
+    <script type="text/javascript" src="../laydate/laydate.js"></script> <!-- 改成你的路径 -->
+
+    <style>
+        img[src='../img/camera.png']{
+            width: 32px;
+            height: 30px;
+            display: inline-table!important;
+            margin-top: 65px!important;
+        }
+    </style>
+</head>
+<body>
+<div id="activity" class="couenter fl">
+    <div class="header clearfix" id="header">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div name="#99"></div>
+    <div name="#97"></div>
+    <div name="#94"></div>
+    <div class="center clearfix">
+<!--        <my-aisde  @addlist="TabCountInfor"></my-aisde>-->
+        <my-aisde></my-aisde>
+        <div class="clearfix moduleWarp" style="height: 93%;width: 100%;" >
+            <div >
+                <div class="information fl" id="module1">
+                    <h2><a name="Amodule1">基本信息</a></h2><!--:rules="rules"-->
+                    <el-form :model="createObj"  ref="createObj" label-width="100px" class="demo-ruleForm" :disabled="formDisabled" >
+                        <el-form-item label="活动标题" prop="title" >
+                            <input type="hidden" id="id" name="id" value="65" >
+                            <el-input v-model="createObj.title" v-on:input ="inputChange($event,'title')" ></el-input>
+                        </el-form-item>
+                        <el-form-item label="活动性质" prop="nature" >
+                            <el-select v-model="createObj.nature" v-on:input ="inputChange($event,'nature')"  placeholder="请选择活动性质">
+                                <el-option v-for="(item,index) in typeList" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="活动海报" >
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="/AmoskiUser/ActivityCreate/saveFile"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccess"
+                                    :before-upload="beforeAvatarUpload">
+                                <img  :src="imageUrl[0]" width="100%" height="100%"   class="avatar">
+                                <!--<img src="../img/camera.png" width="32" height="30" class="camera">-->
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                            <span>建议尺寸:630*336,图片小于1M</span>
+                        </el-form-item>
+
+
+                        <el-form-item label="路书封面" >
+                            <el-upload
+                                    class="avatar-uploader"
+                                    action="/AmoskiUser/ActivityCreate/saveFile"
+                                    :show-file-list="false"
+                                    :on-success="handleAvatarSuccessLuShu"
+                                    :before-upload="beforeAvatarUploadLuShu">
+                                <img :src="imageUrl[1]" width="100%" height="100%"   class="avatar" style="margin-top:0px">
+                                <!--<img src="../img/camera.png" width="32" height="30" class="camera">-->
+                                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                            </el-upload>
+                            <span>建议尺寸:750*750,图片小于1M</span>
+                        </el-form-item>
+                        <!--<el-form-item label="活动描述" prop="describe">
+                            <el-input type="textarea" v-model="createObj.describe"  v-on:input ="inputChange($event,'describe')"></el-input>
+                        </el-form-item>-->
+
+
+                    </el-form>
+                </div>
+            </div>
+            <div>
+                <div  id="module2" class="information fl">
+                    <h2><a name="Amodule2">活动报名</a></h2>
+                    <el-form ref="form" :model="createObjbaom" label-width="80px" size="mini" class="baomingcount" >
+                        <el-form-item label="报名必填">
+                            <el-checkbox-group v-model="type" v-on:change="inputChangebaom($event,'mandatoryField')">
+                                <el-checkbox-button name="type" v-for="(item,index) in typeListbaom" :label="item.name" :value="item.id" ></el-checkbox-button>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="报名范围：">
+                            <el-radio-group v-model="createObjbaom.scopeRegistration" v-on:change="inputChangebaom($event,'scopeRegistration')">
+                                <el-radio label="团体"></el-radio>
+                                <el-radio label="个人"></el-radio>
+                            </el-radio-group>
+                        </el-form-item>
+                        <el-form-item label="集合地点：" >
+                            <el-input   id="tipinput"  v-model="createObjbaom.collectionPlace" v-on:input="inputChangebaom($event,'collectionPlace')"></el-input>
+                        </el-form-item>
+                        <div id="container"  style="display: none;"></div>
+                        <el-form-item label="集合时间：">
+                            <el-input v-model="createObjbaom.collectionTime" readonly="readonly"  id="collectionTime"  placeholder="选择日期时间" style="width:80%;"></el-input>
+                            <!--<el-date-picker
+                                    v-model="createObjbaom.collectionTime"
+                                    type="datetime"
+                                    placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:change="inputChangebaom($event,'collectionTime')">
+                            </el-date-picker>-->
+                        </el-form-item>
+                        <el-form-item label="活动开始时间：">
+                            <el-input v-model="createObjbaom.activityStart"  readonly="readonly"  id="activityStart"  placeholder="选择日期时间" style="width:80%;"></el-input>
+                            <!--<el-date-picker
+                                    v-model="createObjbaom.activityStart"
+                                    type="datetime"
+                                    placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:change="inputChangebaom($event,'activityStart')">
+                            </el-date-picker>-->
+                        </el-form-item>
+                        <el-form-item label="活动结束时间：">
+                            <el-input v-model="createObjbaom.activityStop"  readonly="readonly"  id="activityStop"  placeholder="选择日期时间" style="width:80%;"></el-input>
+                            <!--<el-date-picker
+                                    v-model="createObjbaom.activityStop"
+                                    type="datetime"
+                                    placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:change="inputChangebaom($event,'activityStop')">
+                            </el-date-picker>-->
+                        </el-form-item>
+                        <el-form-item label="报名截止时间：">
+                            <el-input v-model="createObjbaom.activityEnd"  readonly="readonly"  id="activityEnd"  placeholder="选择日期时间" style="width:80%;"></el-input>
+                            <!--<el-date-picker
+                                    v-model="createObjbaom.activityEnd"
+                                    type="datetime"
+                                    placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:input="inputChangebaom($event,'activityEnd')">
+                            </el-date-picker>-->
+                        </el-form-item>
+                        <el-form-item label="报名人数限制：">
+                            <el-input v-model="createObjbaom.numberLimitation"  placeholder="不填为不限制" style="width:80%;" v-on:input="inputChangebaom($event,'numberLimitation')"></el-input>
+                        </el-form-item>
+                        <el-form-item label="人数显示">
+                            <el-radio-group v-model="createObjbaom.showNumber" v-on:change="inputChangebaom($event,'showNumber')">
+                                <el-radio label="显示"></el-radio>
+                                <el-radio label="不显示"></el-radio>
+                            </el-radio-group>
+                            <span class="activenote"><i>*</i>在活动详情页显示已报名人数列表</span>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </div>
+            <div>
+                <div  id="module3" class="information inforCount fl mt30">
+                    <h2><a name="Amodule3">活动简介</a></h2><!--:rules="rules"-->
+                    <el-form ref="form" :model="createObjintrod"  label-width="80px" size="mini" class="baomingcount" :disabled="formDisabled" >
+                        <el-form-item label="玩法：">
+                            <el-checkbox-group v-model="typeintrod" v-on:change="inputChangeintrod($event,'typeintrod')">
+                                <el-checkbox-button name="typeintrod" v-for="(item,index) in typeListintrod" :label="item.name" :value="item.id" ></el-checkbox-button>
+                            </el-checkbox-group>
+                        </el-form-item>
+                        <el-form-item label="目的地：">
+                            <el-cascader v-model="province" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(province,'province')" :options="optionsShen"  class="optionSelect">
+                                <!--<el-option label="云南省" value="云南省"></el-option>-->
+                            </el-cascader>
+                            <el-cascader v-model="city" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(city,'city')" :options="optionShi" class="optionSelect">
+                                <!--<el-option label="丽江市" value="丽江市"></el-option>-->
+                            </el-cascader>
+                            <el-cascader v-model="area" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(area,'area')" :options="optionQu"  class="optionSelect">
+                            </el-cascader>
+                        </el-form-item>
+                        <el-form-item label="途径点：">
+                            <el-input v-model="createObjintrod.pathPoint" v-on:input ="inputChangeintrod($event,'pathPoint')" style="width:87%;"></el-input>
+                        </el-form-item>
+                        <el-form-item label="活动强度：">
+                            <el-select v-model="createObjintrod.activityIntensity" v-on:change ="inputChangeintrod($event,'activityIntensity')" placeholder="请选择活动强度">
+                                <el-option v-for="(item,index) in typeList1introd" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                        <el-form-item label="装备要求：">
+                            <el-select v-model="createObjintrod.equipmentRequirements" v-on:change="inputChangeintrod($event,'equipmentRequirements')" placeholder="请选择活动装备">
+                                <el-option v-for="(item,index) in EquipmentRequirements" :label="item.name" :value="item.id"></el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-form>
+                </div>
+            </div>
+            <div>
+                <div id="module4" class="information fl" style="width:100%;">
+                    <h2><a name="Amodule4">活动详情</a></h2>
+                    <div >
+                        <!--<form method="post" class="activedetail" >
+                            &lt;!&ndash;<textarea id="mytextarea" v-model="createObjdetail.detailsActivities">Hello, World!</textarea>&ndash;&gt;
+                        </form>-->
+                        <form method="post" class="activedetail" style="margin-left: 5%;">
+                            <div id="mytextarea" style="width:110%;color: black;">
+                                <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div>
+                <div  id="module5" class="information fl costdetailCount">
+                    <h2><a name="Amodule5">费用详情</a></h2>
+                    <div class="baomingcount" >
+                        <div class="clearfix" v-for="(item,index) in costdetail">
+                            <div class="costdetalist">
+                                <div class="title clearfix">
+                                    <h2 class="fl">票种{{index+1}}</h2>
+                                    <span class="DeleteReduce" @click="deleteDate(index)" >一</span>
+                                </div>
+                                <ul class="ticketul clearfix">
+                                    <li>票种名称</li>
+                                    <li>票价（元）</li>
+                                    <li>数量</li>
+                                </ul>
+                                <ul class="clearfix" style="margin-top: 15px;">
+                                    <li style="padding-left: 3%;text-align: left;"><input type="text" placeholder="请填写票种名称" v-model="item.nameInvoice"  :disabled="formDisabled" style="color: #1f1e1e;width: 90%;" v-on:input="inputChangecost(item.nameInvoice,'nameInvoice',index)"></li>
+                                    <li style="padding-left: 3%;text-align: left;"><input type="text" placeholder="请填写票价" v-model="item.ticketPrice" :disabled="formDisabled" style="color: #1f1e1e;width: 90%;" v-on:input="inputChangecost(item.ticketPrice,'ticketPrice',index)"></li>
+                                    <li style="padding-left: 3%;text-align: left;"><input type="text" placeholder="请填写数量" oninput="value=value.replace(/[^\d]/g,'')" v-model="item.numberCount" :disabled="formDisabled" style="color: #1f1e1e;width: 90%;" v-on:input="inputChangecost(item.numberCount,'numberCount',index)"></li>
+                                </ul>
+                                <!--<div class="title"><h2>描述</h2></div>-->
+                                <form method="post" class="activedetail" style="margin-left: 2%;margin-top: 15px;">
+                                    <div :id="'mytextarea'+index" style="width: 119%;color: black;">
+                                        <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+                                    </div>
+                                </form>
+                                <!--<textarea class="desc" v-model="item.describe" :disabled="formDisabled"
+                                          v-on:input="inputChangecost(item.describe,'describe',index)"></textarea>-->
+                            </div>
+                        </div>
+                    </div>
+                    <input type="button" value="+" class="addbutton" @click="adddata" :disabled="formDisabled" >
+                </div>
+            </div>
+            <div>
+                <div  id="module6" class="information fl costdetailCount" style="width: 100%;">
+                    <h2><a name="Amodule5">退款设置</a></h2>
+                    <div class="baomingcount" >
+                        <div style="margin-top: 10px;">
+                            <div style="float: left;padding: 3px 0px;">报名截止前30天:&nbsp;&nbsp;&nbsp;&nbsp;收取</div>
+                            <input   v-model="createObj.tbActivityRefundSettings[0].serviceCharge" type="text"  class="el-input__inner" style="height: 25px;width: 180px;"> %
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="float: left;padding: 3px 0px;">报名截止前10天:&nbsp;&nbsp;&nbsp;&nbsp;收取</div>
+                            <input   v-model="createObj.tbActivityRefundSettings[1].serviceCharge"  type="text" class="el-input__inner" style="height: 25px;width: 180px;"> %
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="float: left;padding: 3px 0px;">报名截止前3天:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收取</div>
+                            <input   v-model="createObj.tbActivityRefundSettings[2].serviceCharge"  type="text" class="el-input__inner" style="height: 25px;width: 180px;"> %
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div style="float: left;padding: 3px 0px;">报名截止前1天:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;收取</div>
+                            <input   v-model="createObj.tbActivityRefundSettings[3].serviceCharge"  type="text" class="el-input__inner" style="height: 25px;width: 180px;"> %
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+            <div id="module7" class="information fl" style="width:100%; height: 400px;">
+                <h2><a name="Amodule6" >活动须知</a></h2>
+                <div >
+                    <!--<form method="post" class="activedetail" >
+                        &lt;!&ndash;<textarea id="mytextarea" v-model="createObjdetail.detailsActivities">Hello, World!</textarea>&ndash;&gt;
+                    </form>-->
+                    <form method="post" class="activedetail" style="margin-left: 5%;">
+                        <div id="mytextarea_a" style="width:110%;color: black;">
+                            <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        </div>
+
+
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/citys.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=76e7b372802c8e7526fa37f79717c502&plugin=AMap.Autocomplete"></script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<!--<script type="text/javascript" src="../js/swiper.min.js"></script>-->
+<!--<script src='../js/tinymce.min.js' referrerpolicy="origin"></script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<script>
+    tinymce.init({
+        selector: '#mytextarea',
+        height: 380,
+        language: "zh_CN",
+        setup:function(editor){
+            editor.on('input', function(){
+                //活动详情放活动简介里面
+                window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity['detailsActivities']=tinyMCE.activeEditor.getContent();
+                //window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[window.top.scheduleIndex].detailsActivities=tinyMCE.activeEditor.getContent();
+            })
+        }
+    });
+</script>-->
+<script>
+    function isOrPutActivity(){
+        window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity;
+        window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+        window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity;
+        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity;
+        function submit(){
+            if(window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.title ==null){
+                window.parent.Msg('1',"活动标题不能为空！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbActivityBillImageEntity ==null){
+                window.parent.Msg('1',"活动海报不能为空！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity.mandatoryField ==null){
+                window.parent.Msg('1',"报名必填必须选择！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity.collectionPlace ==null){
+                window.parent.Msg('1',"集合地点不能为空！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity.collectionTime ==null){
+                window.parent.Msg('1',"集合时间不能为空！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity.activityStart ==null){
+                window.parent.Msg('1',"活动开始时间不能为空！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity.activityStop ==null){
+                window.parent.Msg('1',"活动结束时间不能为空！");
+                return false;
+            }else if(window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity.activityEnd ==null){
+                window.parent.Msg('1',"活动截止时间不能为空！");
+                return false;
+            }else{
+                return true;
+            }
+
+        }
+        if(submit()){
+           return true;//表示验证不通过
+        }else{
+            return false;//表示验证通过
+        }
+    }
+    Date.prototype.format = function (format) {
+        ;
+        var date = {
+            "M+": this.getMonth() + 1,
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth() + 3) / 3),
+            "S+": this.getMilliseconds()
+        };
+        if (/(y+)/i.test(format)) {
+            format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+        }
+        for (var k in date) {
+            if (new RegExp("(" + k + ")").test(format)) {
+                format = format.replace(RegExp.$1, RegExp.$1.length == 1
+                    ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+            }
+        }
+        return format;
+    }
+    //活动简介
+    var ShenOption={};
+    var ShiOption={};
+    var QuOption={};
+    var collectionTime,activityStart,activityStop,activityEnd;
+    app = new Vue({
+        el: '#activity',
+        data: {
+            input:'',
+            formDisabled:false,
+            imageUrl: ['',''],
+            //typeintrod: "",
+            isCollapse: true,
+            typeList:[],
+            createObj:{},
+
+            //活动报名
+            type: [],
+            typeListbaom:[
+            ],
+            imageUrlbaom: '',
+            createObjbaom:{},
+            //活动简介
+            optionsShen:[],//存放城市数据
+            optionShi:[],
+            optionQu:[],
+            typeintrod:[],//存放玩法
+            typeListintrod:[],
+            typeList1introd:[
+            ],
+            EquipmentRequirements:[],
+            province:"",//省
+            city:"",//市
+            area:"",//区
+            createObjintrod:{},
+            rules2: {
+                char: [
+                    { required: true, message: '请输入活动特色', trigger: 'blur' },
+                ],
+                region: [
+                    { required: true, message: '请选择活动性质', trigger: 'change' }
+                ],
+                date2: [
+                    { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+                ],
+                resource: [
+                    { required: true, message: '请选择活动资源', trigger: 'change' }
+                ],
+                desc: [
+                    { required: true, message: '请填写活动描述', trigger: 'blur' }
+                ]
+            },
+            //活动详情
+            createObjdetail:{},
+            //费用详情
+            imageUrlcost: '',
+            adddataLength:0,
+            costdetail:[],
+            //InvoiceEntiy:{},
+            createObjcost:{},
+        },
+        created(){},
+        mounted(){
+            var map = new AMap.Map("container", {
+                resizeEnable: true
+            });
+            //输入提示
+            var auto = new AMap.Autocomplete({
+                input: "tipinput"
+            });
+            queryDict("17","typeListbaom");
+            queryDict("10","typeList");//查询字典数据
+            this.createObj=window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity;
+            var imgObj=this.createObj.tbActivityBillImageEntity;
+            if(imgObj&&imgObj.length>0){
+                if(imgObj[0]!=null)
+                    if(imgObj[0].type=="1"){
+                        this.imageUrl[0]=joinImgSrc(imgObj[0].projectUrl+imgObj[0].filePathUrl,imgObj[0].fileNameUrl);
+                    }else{
+                        this.imageUrl[1]=joinImgSrc(imgObj[0].projectUrl+imgObj[0].filePathUrl,imgObj[0].fileNameUrl);
+                    }
+                if(imgObj[1]!=null)
+                    if(imgObj[1].type=="1"){
+                        this.imageUrl[0]=joinImgSrc(imgObj[1].projectUrl+imgObj[1].filePathUrl,imgObj[1].fileNameUrl);
+                    }else{
+                        this.imageUrl[1]=joinImgSrc(imgObj[1].projectUrl+imgObj[1].filePathUrl,imgObj[1].fileNameUrl);
+                    }
+            }else{
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbActivityBillImageEntity=[];
+            }
+            if(this.imageUrl[0]=="")
+                this.imageUrl[0]="../img/camera.png";
+            if(this.imageUrl[1]=="")
+                this.imageUrl[1]="../img/camera.png";
+            //////////////////////////////////////////////////////活动报名
+            this.createObjbaom=window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity;
+            this.type=this.createObjbaom.mandatoryField?this.createObjbaom.mandatoryField.split(","):[];//转换玩法数据
+            let synopsis = window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+            this.typeintrod=synopsis.type?synopsis.type.split(","):[];
+            //////////////////////////////////////////////////////活动简介
+
+            let optionShen=[];
+            for(let i=0;i<wuOptions.length;i++){
+                optionShen[i]={};
+                optionShen[i].label=wuOptions[i].label;
+                optionShen[i].value=wuOptions[i].label;
+                ShenOption[wuOptions[i].label]=wuOptions[i].children;
+            }
+            this.optionsShen=optionShen;
+            queryDict("12","typeListintrod");//查询字典数据
+            queryDict("13","typeList1introd");//查询字典数据
+            queryDict("15","EquipmentRequirements");//查询字典数据
+            this.createObjintrod=window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+            //this.typeintrod=this.createObjintrod.typeintrod?this.createObjintrod.typeintrod.split(","):[];//转换玩法数据
+            let destination=this.createObjintrod.destination?this.createObjintrod.destination.split(","):["","",""];//目的地
+            if(destination[0]){
+                this.optionShi=[];
+                ShiOption=[];
+                QuOption=[];
+                for(let i=0;i<ShenOption[destination[0]].length;i++){
+                    this.optionShi[i]={};
+                    this.optionShi[i].label=ShenOption[destination[0]][i].label;
+                    this.optionShi[i].value=ShenOption[destination[0]][i].label;
+                    ShiOption[ShenOption[destination[0]][i].label]=ShenOption[destination[0]][i].children;
+                }
+                this.optionQu=[];
+            }
+            if(destination[1]){
+                this.optionQu=[];
+                QuOption=[];
+                for(let i=0;i<ShiOption[destination[1]].length;i++){
+                    this.optionQu[i]={};
+                    this.optionQu[i].label=ShiOption[destination[1]][i].label;
+                    this.optionQu[i].value=ShiOption[destination[1]][i].label;
+                    QuOption[ShiOption[destination[1]][i].label]=ShiOption[destination[1]][i].children;
+                }
+            }
+            this.province=destination[0];this.city=destination[1];this.area=destination[2];
+
+            ////////////////////////////////////////////////////////////////活动详情
+            this.createObjdetail=window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+
+            /////////////////////////////////////////////////////////////费用详情
+            this.costdetail=window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity;
+
+
+            // this.createObjbaom.collectionTime=new Date(this.createObjbaom.collectionTime).format('yyyy-MM-dd hh:mm:ss');
+            // this.createObjbaom.activityStart=new Date(this.createObjbaom.activityStart).format('yyyy-MM-dd hh:mm:ss');
+            // this.createObjbaom.activityStop=new Date(this.createObjbaom.activityStop).format('yyyy-MM-dd hh:mm:ss');
+            // this.createObjbaom.activityEnd=new Date(this.createObjbaom.activityEnd).format('yyyy-MM-dd hh:mm:ss');
+            setTimeout(function(){
+                window.parent["adjustmentIframe3"](
+                    ""
+                    ,"100%");
+                collectionTime = laydate.render({//集合时间
+                    elem: '#collectionTime',
+                    min:$("#activityEnd").val()==null||$("#activityEnd").val()==""?"1991-10-10":$("#activityEnd").val()//
+                    ,max:$("#activityStart").val()==null||$("#activityStart").val()==""?"2222-10-10":$("#activityStart").val()
+                    ,type: 'datetime'
+                    ,done: function(value, date){
+                        app._data.createObjbaom[this.elem[0].id]=value;
+                        //集合时间要大于开始时间，
+                        let data = date;
+                        data.month=data.month-1;
+                        activityEnd.config.max = data; //开始日选好后，重置结束日的最小日期
+                        activityStart.config.min = data;
+                        if($("#activityEnd").val()!="" && new Date(value).getTime()<new Date($("#activityEnd").val()).getTime()){
+                            $("#activityEnd").val("");
+                        }
+                        if($("#activityStart").val()!="" && new Date(value).getTime()>new Date($("#activityStart").val()).getTime()){
+                            $("#activityStart").val("");
+                        }
+                        //activityEnd.config.start = data //将结束日的初始值设定为开始日
+                        if(!value){
+                            $("#activityEnd").val("");
+                        }
+                    },
+                });
+                activityStart = laydate.render({//活动开始时间
+                    elem: '#activityStart',
+                    max:$("#activityStop").val()==null||$("#activityStop").val()==""?"2222-10-10":$("#activityStop").val()
+                    ,min:$("#collectionTime").val()==null||$("#collectionTime").val()==""?"1991-10-10":$("#collectionTime").val()
+                    ,type: 'datetime'
+                    ,done: function(value, date){
+                        app._data.createObjbaom[this.elem[0].id]=value;
+                        let data = date;
+                        data.month=data.month-1;
+                        activityStop.config.min = data; //开始日选好后，重置结束日的最小日期
+                        collectionTime.config.max = data;
+                        if($("#collectionTime").val()!="" && new Date(value).getTime()<new Date($("#collectionTime").val()).getTime()){
+                            $("#collectionTime").val("");
+                        }
+                        if($("#activityStop").val()!="" && new Date(value).getTime()>new Date($("#activityStop").val()).getTime()){
+                            $("#activityStop").val("");
+                        }
+                        //activityStop.config.start = data //将结束日的初始值设定为开始日
+                        if(!value){
+                            let dataMin = {date: 1, hours: 0, minutes: 0, month: 1, seconds: 0, year: 1991};
+                            let dataMax = {date: 1, hours: 0, minutes: 0, month: 1, seconds: 0, year: 2099};
+                            collectionTime.config.min = dataMin;
+                            collectionTime.config.max = dataMax;
+                        }
+                    },
+                });
+                activityStop = laydate.render({//活动结束时间
+                    elem: '#activityStop',
+                    min:$("#activityStart").val()==null||$("#activityStart").val()==""?"1991-10-10":$("#activityStart").val()
+                    ,type: 'datetime'
+                    ,done: function(value, date){
+                        app._data.createObjbaom[this.elem[0].id]=value;
+                        let data = date;
+                        data.month=data.month-1;
+                        activityStart.config.max = data; //结束日选好后，重置开始日的最大日期
+                        if($("#activityStart").val()!="" && new Date(value).getTime()<new Date($("#activityStart").val()).getTime()){
+                            $("#activityStart").val("");
+                        }
+                        if(!value){
+                            let dataMin = {date: 1, hours: 0, minutes: 0, month: 1, seconds: 0, year: 1991};
+                            let dataMax = {date: 1, hours: 0, minutes: 0, month: 1, seconds: 0, year: 2099};
+                            activityStart.config.min = dataMin;
+                            activityStart.config.max = dataMax;
+                        }
+                    },
+                });
+                activityEnd = laydate.render({//报名截止时间
+                    elem: '#activityEnd',
+                    max:$("#collectionTime").val()==null||$("#collectionTime").val()==""?"2222-10-10":$("#collectionTime").val()
+                    ,type: 'datetime'
+                    ,done: function(value, date){
+                        app._data.createObjbaom[this.elem[0].id]=value;
+                        let data = date;
+                        data.month=data.month-1;
+                        collectionTime.config.min = data; //结束日选好后，重置开始日的最大日期
+                        if($("#collectionTime").val()!="" && new Date(value).getTime()>new Date($("#collectionTime").val()).getTime()){
+                            $("#collectionTime").val("");
+                        }
+                        if(!value){
+                            let dataMin = {date: 1, hours: 0, minutes: 0, month: 1, seconds: 0, year: 1991};
+                            let dataMax = {date: 1, hours: 0, minutes: 0, month: 1, seconds: 0, year: 2099};
+                            activityStop.config.min = dataMin;
+                            activityStop.config.max = dataMax;
+                        }
+                    }
+                });
+            },500);
+            /*var obj=parent.document.getElementById("mCustomScrollbarMenu");
+            var height=obj.offsetHeight-100;
+            parent.document.getElementsByTagName("iframe")[0].height=height;*/
+        },
+        methods: {
+            inputChange(node,tab){
+                //左右导航标题
+                if(tab=="title"){
+                    // window.top.activityCreateList[window.top.activityIndex].txt=node.constructor.valueOf();
+                    window.top.activityCreateList[window.top.activityIndex].txt=node;
+                }
+                //右侧内容标题
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity[tab]=node;
+
+            },
+            handleClick(tab, event) {
+            },
+            handleAvatarSuccess(res, file) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    obj.type="1";
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbActivityBillImageEntity[0]=obj;
+                    this.imageUrl[0] = URL.createObjectURL(file.raw);
+                    this.$forceUpdate();
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                return true;
+            },
+            handleAvatarSuccessLuShu(res, file) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    obj.type="2";
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbActivityBillImageEntity[1]=obj;
+                    this.imageUrl[1] = URL.createObjectURL(file.raw);
+                    this.$forceUpdate();
+                }
+            },
+            beforeAvatarUploadLuShu(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                return true;
+            },
+
+            ////////////////////////////////////////////////////////////活动报名
+            inputChangebaom(node,tab){
+                if(tab == 'mandatoryField')//报名必填
+                {
+                    node=this.type.join(",");
+                    //console.log(this.destinationOp.join(','));//转一个字符
+                }else if(tab == 'type'){//玩法
+                    node=this.type.join(",");
+                    //console.log(this.destinationOp.join(',')); //转一个字符
+                }
+                window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity[tab]=node.getTime?node.getTime():node;
+            },
+
+            ///////////////////////////////////////////////////////////////活动简介
+            addreChange(tab,value,e){
+                if(value=="province"&&tab[0]!=null){
+                    this.optionShi=[];
+                    ShiOption=[];
+                    QuOption=[];
+                    for(let i=0;i<ShenOption[tab[0]].length;i++){
+                        this.optionShi[i]={};
+                        this.optionShi[i].label=ShenOption[tab[0]][i].label;
+                        this.optionShi[i].value=ShenOption[tab[0]][i].label;
+                        ShiOption[ShenOption[tab[0]][i].label]=ShenOption[tab[0]][i].children;
+                    }
+                    this.optionQu=[];
+                }else if(value=="city"){
+                    this.optionQu=[];
+                    QuOption=[];
+                    for(let i=0;i<ShiOption[tab[0]].length;i++){
+                        this.optionQu[i]={};
+                        this.optionQu[i].label=ShiOption[tab[0]][i].label;
+                        this.optionQu[i].value=ShiOption[tab[0]][i].label;
+                        QuOption[ShiOption[tab[0]][i].label]=ShiOption[tab[0]][i].children;
+                    }
+                }else if(value=="area"){
+
+                }
+                let node = this.province+","+this.city+","+this.area;
+                window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity.destination=node;
+            },inputChangeintrod(node,tab){
+                if(tab == 'destination')//目的地
+                {
+                    node = this.province+","+this.city+","+this.area;
+                    //console.log(this.destinationOp.join(','));//转一个字符
+                }else if(tab == 'typeintrod'){//玩法
+                    node=this.typeintrod.join(",");
+                    tab="type";
+                    //console.log(this.destinationOp.join(',')); //转一个字符
+                }
+                window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[tab]=node;
+            },
+
+            ////////////////////////////////////////////////////////////费用详情
+            adddata:function(){
+                let that = this;
+                var newitems = new TbCtivityInvoiceEntity();
+                that.costdetail.push(newitems)//往items中添加newitems
+                setTimeout(function(){
+                    describeNode[app._data.costdetail.length-1] = new E('#mytextarea'+(app._data.costdetail.length-1));
+                    describeNode[app._data.costdetail.length-1].customConfig.uploadImgShowBase64 = true;
+                    describeNode[app._data.costdetail.length-1].customConfig.uploadImgServer = "/AmoskiUser/ActivityCreate/saveFileImage"; //上传URL
+                    describeNode[app._data.costdetail.length-1].customConfig.uploadFileName = 'myFileName';
+                    describeNode[app._data.costdetail.length-1].customConfig.uploadImgHooks = {
+                        customInsert: function (insertImg, result, editor) {
+                            var url =result.data;
+                            insertImg("/AmoskiWebHtmlUser/ActivityAlipayErrorCallback/getFile?filePath="+result.resultData[0].fileNameUrl);
+                        }
+                    }
+                    describeNode[app._data.costdetail.length-1].create();
+                    //describeNode[app._data.costdetail.length-1].txt.html(app._data.costdetail[i].describe);
+                },500);
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity=that.costdetail;
+            },
+            deleteDate(index){
+                if(this.formDisabled){
+                    return;
+                }
+                this.costdetail.splice(index,1);
+                describeNode.splice(index,1);
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity=that.costdetail;
+            },
+            inputChangecost(node,tab,index){
+                //费用详情在活动基础下 （费用详情 = 活动票种表）
+                window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.tbCtivityInvoiceEntity[index][tab]=node;
+            },
+
+
+        }
+    })
+    lookDisabled();//如果是查看需要禁用表单
+
+
+</script>
+<script type="text/javascript">
+    $(".moduleWarp").scroll (function(evt){ //绑定scroll事件
+        var t = $(".moduleWarp").scrollTop(); //获取滚动距离
+        for(var i=5;i>=1;i--){
+            var top = $('#module'+i).offset().top;
+            if(t-(150*((i-1)*2))>=top){
+                $(".baseInfor li.active").removeClass('active')
+                $('.baseInfor li').eq(i-1).addClass('active');
+                break;
+            }
+        }
+
+    });
+</script>
+<script type="text/javascript" src="../js/wangEditor.min.js"></script>
+<script type="text/javascript">
+    var editor,editor_a,describeNode=[];
+
+    var E = window.wangEditor;
+    setTimeout(function(){
+        editor = new E('#mytextarea');
+        editor_a = new E('#mytextarea_a');
+        // 或者 var editor = new E( document.getElementById('editor') )
+        function all(_editor, arg){
+            _editor.customConfig.onchange = function (html) {
+                // html 即变化之后的内容
+                window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[arg]=html;
+            }
+            _editor.customConfig.onchangeTimeout = 200; // 单位 ms
+            _editor.customConfig.uploadImgShowBase64 = true;
+            _editor.customConfig.uploadImgServer = "/AmoskiUser/ActivityCreate/saveFileImage"; //上传URL
+            _editor.customConfig.uploadFileName = 'myFileName';
+            _editor.customConfig.uploadImgHooks = {
+                customInsert: function (insertImg, result, editor) {
+                    var url =result.data;
+                    insertImg("/AmoskiWebHtmlUser/ActivityAlipayErrorCallback/getFile?filePath="+result.resultData[0].fileNameUrl);
+                }
+            }
+            _editor.create();
+            _editor.txt.html(window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[arg]);
+        }
+        all(editor,"detailsActivities");
+        all(editor_a,"activityNotice");
+
+        for(let i=0;i<app._data.costdetail.length;i++){
+            describeNode[i] = new E('#mytextarea'+i);
+            describeNode[i].customConfig.uploadImgShowBase64 = true;
+            describeNode[i].customConfig.uploadImgServer = "/AmoskiUser/ActivityCreate/saveFileImage"; //上传URL
+            describeNode[i].customConfig.uploadFileName = 'myFileName';
+            describeNode[i].customConfig.uploadImgHooks = {
+                customInsert: function (insertImg, result, editor) {
+                    var url =result.data;
+                    insertImg("/AmoskiWebHtmlUser/ActivityAlipayErrorCallback/getFile?filePath="+result.resultData[0].fileNameUrl);
+                }
+            }
+            describeNode[i].create();
+            describeNode[i].txt.html(app._data.costdetail[i].describe);
+        }
+    },500);
+    function onlocadWindow(){
+        for(let i=0;i<window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.
+            tbCtivityInvoiceEntity.length;i++){
+            window.top.activityCreateList[window.top.activityIndex].tbActivityBasicsEntity.
+                tbCtivityInvoiceEntity[i].describe=describeNode[i].txt.html();
+        }
+
+    }
+    window.onbeforeunload= function(event) {
+        onlocadWindow();
+        //return confirm("确定离开此页面吗？");
+    }
+</script>
+</body>
+</html>

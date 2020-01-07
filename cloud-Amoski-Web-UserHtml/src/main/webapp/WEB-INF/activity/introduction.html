@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+</head>
+<body>
+<div id="introductionpage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <my-aisde></my-aisde>
+        <div class="information inforCount fl">
+            <h2>活动简介</h2><!--:rules="rules"-->
+            <el-form ref="form" :model="createObjintrod"  label-width="80px" size="mini" class="baomingcount" :disabled="formDisabled" >
+                <el-form-item label="玩法：">
+                    <el-checkbox-group v-model="type" v-on:change="inputChangeintrod($event,'typeintrod')">
+                        <el-checkbox-button name="type" v-for="(item,index) in typeListintrod" :label="item.name" :value="item.id" ></el-checkbox-button>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="目的地：">
+                    <el-cascader v-model="province" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(province,'province')" :options="optionsShen"  class="optionSelect">
+                        <!--<el-option label="云南省" value="云南省"></el-option>-->
+                    </el-cascader>
+                    <el-cascader v-model="city" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(city,'city')" :options="optionShi" class="optionSelect">
+                        <!--<el-option label="丽江市" value="丽江市"></el-option>-->
+                    </el-cascader>
+                    <el-cascader v-model="area" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(area,'area')" :options="optionQu"  class="elInput">
+                    </el-cascader>
+                </el-form-item>
+                <el-form-item label="途径点：">
+                    <el-input v-model="createObjintrod.pathPoint" v-on:input ="inputChangeintrod($event,'pathPoint')" style="width:87%;"></el-input>
+                </el-form-item>
+                <el-form-item label="活动强度：">
+                    <el-select v-model="createObjintrod.activityIntensity" v-on:change ="inputChangeintrod($event,'activityIntensity')" placeholder="请选择活动强度">
+                        <el-option v-for="(item,index) in typeList1introd" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="装备要求：">
+                    <el-select v-model="createObjintrod.equipmentRequirements" v-on:change="inputChangeintrod($event,'equipmentRequirements')" placeholder="请选择活动装备">
+                        <el-option v-for="(item,index) in typeList1introd" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/citys.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script>
+    var ShenOption={};
+    var ShiOption={};
+    var QuOption={};
+    var app = new Vue({
+        el: '#introductionpage',
+        data: {
+            formDisabled:false,
+            optionsShen:[],//存放城市数据
+            optionShi:[],
+            optionQu:[],
+            typeintrod:[],//存放玩法
+            typeListintrod:[],
+            typeList1introd:[
+            ],
+            province:"",//省
+            city:"",//市
+            area:"",//区
+            createObjintrod:{},
+            rules: {
+                char: [
+                    { required: true, message: '请输入活动特色', trigger: 'blur' },
+                ],
+                region: [
+                    { required: true, message: '请选择活动性质', trigger: 'change' }
+                ],
+                date2: [
+                    { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+                ],
+                resource: [
+                    { required: true, message: '请选择活动资源', trigger: 'change' }
+                ],
+                desc: [
+                    { required: true, message: '请填写活动描述', trigger: 'blur' }
+                ]
+            },
+        },
+        mounted(){
+            let optionShen=[];
+            for(let i=0;i<wuOptions.length;i++){
+                optionShen[i]={};
+                optionShen[i].label=wuOptions[i].label;
+                optionShen[i].value=wuOptions[i].label;
+                ShenOption[wuOptions[i].label]=wuOptions[i].children;
+            }
+            this.optionsShen=optionShen;
+            queryDict("12","typeListintrod");//查询字典数据
+            queryDict("13","typeList1introd");//查询字典数据
+            this.createObjintrod=window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+            this.typeintrod=this.createObjintrod.typeintrod?this.createObjintrod.typeintrod.split(","):[];//转换玩法数据
+            let destination=this.createObjintrod.destination?this.createObjintrod.destination.split(","):["","",""];//目的地
+            if(destination[0]!=null){
+                this.optionShi=[];
+                ShiOption=[];
+                QuOption=[];
+                for(let i=0;i<ShenOption[destination[0]].length;i++){
+                    this.optionShi[i]={};
+                    this.optionShi[i].label=ShenOption[destination[0]][i].label;
+                    this.optionShi[i].value=ShenOption[destination[0]][i].label;
+                    ShiOption[ShenOption[destination[0]][i].label]=ShenOption[destination[0]][i].children;
+                }
+                this.optionQu=[];
+            }
+            if(destination[1]!=null){
+                this.optionQu=[];
+                QuOption=[];
+                for(let i=0;i<ShiOption[destination[1]].length;i++){
+                    this.optionQu[i]={};
+                    this.optionQu[i].label=ShiOption[destination[1]][i].label;
+                    this.optionQu[i].value=ShiOption[destination[1]][i].label;
+                    QuOption[ShiOption[destination[1]][i].label]=ShiOption[destination[1]][i].children;
+                }
+            }
+            this.province=destination[0];this.city=destination[1];this.area=destination[2];
+        },
+        methods:{
+            addreChange(tab,value,e){
+                if(value=="province"&&tab[0]!=null){
+                    this.optionShi=[];
+                    ShiOption=[];
+                    QuOption=[];
+                    for(let i=0;i<ShenOption[tab[0]].length;i++){
+                        this.optionShi[i]={};
+                        this.optionShi[i].label=ShenOption[tab[0]][i].label;
+                        this.optionShi[i].value=ShenOption[tab[0]][i].label;
+                        ShiOption[ShenOption[tab[0]][i].label]=ShenOption[tab[0]][i].children;
+                    }
+                    this.optionQu=[];
+                }else if(value=="city"){
+                    this.optionQu=[];
+                    QuOption=[];
+                    for(let i=0;i<ShiOption[tab[0]].length;i++){
+                        this.optionQu[i]={};
+                        this.optionQu[i].label=ShiOption[tab[0]][i].label;
+                        this.optionQu[i].value=ShiOption[tab[0]][i].label;
+                        QuOption[ShiOption[tab[0]][i].label]=ShiOption[tab[0]][i].children;
+                    }
+                }else if(value=="area"){
+
+                }
+                let node = this.province+","+this.city+","+this.area;
+                window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity.destination=node;
+            },inputChangeintrod(node,tab){
+                if(tab == 'destination')//目的地
+                {
+                    node = this.province+","+this.city+","+this.area;
+                    //console.log(this.destinationOp.join(','));//转一个字符
+                }else if(tab == 'typeintrod'){//玩法
+                    node=this.typeintrod.join(",");
+                    //console.log(this.destinationOp.join(',')); //转一个字符
+                }
+                window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity[tab]=node;
+            },
+        }
+    })
+    lookDisabled();//如果是查看需要禁用表单
+</script>
+</body>
+</html>

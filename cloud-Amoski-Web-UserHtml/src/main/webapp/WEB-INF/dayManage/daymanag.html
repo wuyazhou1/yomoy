@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+<!--    <script type="text/javascript" src="../js/tinymce.min.js" referrerpolicy="origin"></script>
+    <script>
+        tinymce.init({
+            selector: '#mytextarea',
+            height: 300,
+            readonly: window.top.lookActivity,
+            setup: function(editor) {
+                editor.on('input', function() {
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].introduce=tinyMCE.activeEditor.getContent();
+                })
+            },
+        });
+    </script>-->
+    <style>
+        .w-e-text-container{
+            z-index: 100!important;
+        }
+        .w-e-toolbar .w-e-menu{
+            z-index: 100!important;
+        }
+        .selectionAction{
+            background: #ffffcc!important;
+        }
+        .laydate-time-list ol{height: 181px; overflow: hidden;}
+        .laydate-time-list>li:hover ol{
+            -webkit-overflow-scrolling: touch;
+            overflow-x: scroll;
+            white-space: nowrap;
+        }
+
+    </style>
+</head>
+<body id="mybody">
+
+<div id="daymanagePage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center restrictCount clearfix">
+        <my-aisde-day></my-aisde-day>
+        <div class="information fl" >
+            <!--<div align="center" style="width: 70%;height: 100%;position: absolute;z-index: 1000;background: white;" @click="richengtupianClick()"  v-show="RiChengTuPian" >-->
+            <div align="center" style="width: 60%;height: 100%;position: absolute;z-index: 500;background: white;"  v-show="RiChengTuPian" >
+                <img src="/AmoskiWebHtmlUser/img/richengtiaomingtupian.png" style="margin-top: 85px;width: 33%;">
+                <div style="margin-top: -20px;">你还没有活动日程</div>
+            </div>
+            <h2 style="margin-left: 10%;">日程安排</h2>
+            <div>
+                <form method="post" class="activedetail" >
+                    <div id="mytextarea" style="width:104%;color: black;margin-left: -1%;">
+                        <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+                    </div>
+                </form>
+                <ul class="dayUl" style="margin-left: 10%;">
+                    <li class="clearfix" v-for="(item,index) in mealall">
+                        <div class="clearfix">
+                            <div class="fl">
+                                <div class="clearfix">
+                                    <div class="fl clearfix"  :data="index" >
+                                        <input type="text" v-model="item.startTime" onclick="onTimeClick()" readonly onblur="onTimeblur()"   placeholder="起始时间"  class="el-input__inner"  style="margin-left: 6px;"  :id="'startTime'+index">
+                                        <input type="text" v-model="item.endTime" onclick="onTimeClick()" readonly  onblur="onTimeblur()"  placeholder="结束时间" class="el-input__inner"  style="margin-left: 6px;"  :id="'endTime'+index">
+                                    </div>
+                                    <div class="fl descms">
+                                        <span class="fl">描述</span>
+                                        <input type="text" placeholder="请输入早餐，中餐，晚餐" :disabled="formDisabled"  v-on:input="inputChange(index,$event.currentTarget.value,'introduce',item)"  v-model="item.mealFood" class="eactValue">
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="fl descms" style="float: right;width: 50%;margin-top: 10px;">
+                                        <span class="fl">验票 </span>
+                                        <span style="background: white;padding: 4px 9px;margin-left: 10px;border: 1px solid #d9e0e4;" @click="inspectTicketClick(index,'1')" :class="item.inspectTicket==null||item.inspectTicket==2?'':'selectionAction'" >是</span>
+                                        <span style="background: white;padding: 4px 9px;margin-left: 10px;border: 1px solid #d9e0e4;" @click="inspectTicketClick(index,'2')" :class="item.inspectTicket==null||item.inspectTicket==2?'selectionAction':''">否</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="fl reduceW" @click="deletedDay(index,item)" :disabled="formDisabled">
+                                <span class="reduceIcon"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <p class="dayaddbutton" @click="formDisabled?'':addDay()"  style="margin-left: 10%;"><img src="../img/addIcon.png" alt="" title=""></p>
+            </div>
+        </div>
+        <menu-right @funmeallist="changemealList"  @displaynone="displayNoneClick" :option="mealList" ref="refName" ></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../laydate/laydate.js"></script> <!-- 改成你的路径 -->
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<script type="text/javascript" src="../js/aisdeDay.js"></script>
+<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+
+<script>
+
+    function onTimeClick(){
+        window.parent.mCustomScrollbarMenuLoad(true);
+    }
+    function onTimeblur() {
+        //alert(1);
+        window.parent.$("#mCustomScrollbarMenu").mCustomScrollbar("update");
+
+    }
+
+    function onlocadWindow(){
+        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].introduce=editor.txt.html();
+    }
+    window.onbeforeunload= function(event) {
+        onlocadWindow();
+    }
+
+    /*window.onerror = function(errorMessage, scriptURI, lineNumber,columnNumber,errorObj) {
+        ;
+        console.log("错误信息：" , errorMessage);
+        console.log("出错文件：" , scriptURI);
+        console.log("出错行号：" , lineNumber);
+        console.log("出错列号：" , columnNumber);
+        console.log("错误详情：" , errorObj);
+    }*/
+
+    /*window.onerror = function(msg, url, row,col) {
+        ;
+        var txt = '<div style="color: rgb(232, 232, 232); line-height: 3.2; white-space: pre; font-family: Menlo, Consolas, monospace; font-size: 13px; position: fixed; z-index: 9999; padding: 10px; left: 0px; right: 0px; top: 0px; bottom: 0px; overflow: auto; background: rgba(0, 0, 0, 0.85098);">';
+        txt += '<span style="background-color:#E36049; color:#fff; padding:2px 4px; border-radius: 2px">ERROR</span> in ' + url + '\n';
+        txt += ' <span style="color:#E36049;">✘</span> <u><span style="color:#6D7891;">' + msg + '</span></u>  in line ' + row + ':' + col;
+        txt += '</div>';
+        document.body.innerHTML = txt;
+        return true;  //加上这句控制台就不会报错
+    }*/
+    function laydateRender(){
+        setTimeout(function(){
+            for(let i=0;i<window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndexChecked].tbActivityTimeHistoryEntity.length;i++){
+                laydate.render({
+                    elem: '#startTime'+i
+                    ,type: 'time'
+                    ,btns: ['clear', 'confirm']
+                    ,done: function(value, date){
+                        app._data.mealall[this.elem[0].id.substring(9)][this.elem[0].id.substring(0,9)]=value;
+                        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[this.elem[0].id.substring(9)].startTime=value;
+                        //window.parent.mCustomScrollbarMenuLoadFalse();
+                    }
+                });
+                laydate.render({
+                    elem: '#endTime'+i
+                    ,type: 'time'
+                    ,btns: ['clear', 'confirm']
+                    ,done: function(value, date){
+                        app._data.mealall[this.elem[0].id.substring(7)][this.elem[0].id.substring(0,7)]=value;
+                        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[this.elem[0].id.substring(7)].stopTime=value;
+                        //window.parent.mCustomScrollbarMenuLoadFalse();
+                    }
+                });
+            }
+            app.$forceUpdate();
+            try {
+                window.event? window.event.cancelBubble = true : e.stopPropagation();
+            }catch (e) {
+                console.log(e)
+            }
+
+            //window.parent.mCustomScrollbarMenuLoad(true);
+        },500);
+    }
+
+
+    var app = new Vue({
+        el: '#daymanagePage',
+        data: {
+            RiChengTuPian:true,
+            id : '',
+            mangerOption:{
+                visible:false,
+                dia:'ccccvv',
+            },
+            curIndex:0,
+            value1: '',
+            value2: '',
+            mealcur:'',
+            mealall:[],
+            formDisabled:true,
+            mealList:[
+
+            ],
+            curNum:'1',//默认有一条数据
+        },
+        mounted(){
+            let bl=null;
+            if(bl==null||bl==undefined){
+                bl=window.top.lookActivity;
+            }
+            this.formDisabled=bl;
+            if(window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity.length>0&&
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[0].destination!=null&&
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[0].placeDeparture!=null){
+                this.RiChengTuPian=false;
+            }
+            laydateRender();
+        },
+        methods: {
+            richengtupianClick(){
+                this.$refs.refName.adddayClick();
+            },
+            inspectTicketClick(index,data){
+                this.mealall[index].inspectTicket=data
+
+                window.top.activityCreateList[window.top.activityIndex].
+                    tbActivityScheduleEntity[window.top.scheduleIndex].
+                    tbActivityTimeHistoryEntity[index].inspectTicket=data;
+                app.$forceUpdate();
+            },
+            displayNoneClick(){
+                //document.getElementById("richengtupian").style.display="none";
+                this.RiChengTuPian=false;
+            },
+            changemealList(data,index){
+                if(data)
+                {
+                    this.mealall = data;
+                }else{
+                    // this.mealall = this.mealList[0];
+                    //this.mealall = this.mealList[0];
+                }
+                this.curIndex = index;
+                this.curNum=window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity.length-1;
+                setTimeout(function(){
+                    window.parent["adjustmentIframe2"](
+                        (window.outerHeight+(app.mealall.length*200))+"px"
+                        ,"100%");
+                },500);
+            },textareaChange(nodes,tab){
+                console.log("aaa");
+                //window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].introduce
+            },selectSub(index,e,text,node){
+                let cls=e.target.className;
+                console.log(cls);
+                if(cls!="active"){//选中状态
+                    e.target.className='active';
+                    //获取当前的时辰类型
+                    let value = window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[node.id].introduceType;
+                    //判断时辰是否为空
+                    if(value==null){
+                        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[node.id].introduceType=","+text;
+                    }else{
+                        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[node.id].introduceType=value+","+text;
+                    }
+                }else{//未选中状态
+                    e.target.className='';
+                    //获取当前的时辰类型
+                    let value = window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[node.id].introduceType;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[node.id].introduceType=value.replace(","+text,"");
+                }
+            },
+            inputChange(index,value,tab,node){
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[index][tab]=value;
+            },
+            addDay(){
+                if(window.top.scheduleIndex==null
+                    /*|| this.mealall.length>=3 */ ){
+                    return;
+                }
+                if(this.curIndex !== 'undefined'){
+                    let tTbActivityTimeHistoryEntity = new TbActivityTimeHistoryEntity();
+                    tTbActivityTimeHistoryEntity.scheduleId=window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].id;
+                    tTbActivityTimeHistoryEntity.basicsId=window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].basicsId;
+                    let tbActivityTimeHistoryEntityList = window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity;
+                    if(tbActivityTimeHistoryEntityList.length==0){
+                        tTbActivityTimeHistoryEntity.id="#1"
+                    }else{
+                        if(isNaN(tbActivityTimeHistoryEntityList[tbActivityTimeHistoryEntityList.length-1].id)
+                            ||isNaN(tbActivityTimeHistoryEntityList[tbActivityTimeHistoryEntityList.length-1].id.toString().substring(1))){
+                            tTbActivityTimeHistoryEntity.id="#1";
+                        }else{
+                            tTbActivityTimeHistoryEntity.id="#"+(parseInt(tbActivityTimeHistoryEntityList[tbActivityTimeHistoryEntityList.length-1].id.toString().substring(1))+1);
+                        }
+                    }
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity.push(tTbActivityTimeHistoryEntity);
+
+                    console.log();
+                    let newmeal = {
+                        introduce:window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].introduce,
+                        id:window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity.length-1 ,
+                        startTime : '' ,
+                        endTime : '' ,
+                        mealFood : "" ,
+                        comeon:{name:'加油',value:''},
+                        rest:{name:'休息',value:''},
+                        riding:{name:'骑行',value:''},
+                        breakfast:{name:'早餐',value:''},
+                        lunch:{name:'午餐',value:''},
+                        dinner:{name:'晚餐',value:''},
+                        accommodation:{name:'住宿',value:''},
+                        play:{name:'游玩',value:''},
+                    };
+                    this.mealall.push(newmeal);
+
+                    setTimeout(function(){
+                        let i= app._data.mealall.length-1;
+                        laydate.render({
+                            elem: '#startTime'+i
+                            ,type: 'time'
+                            ,btns: ['clear', 'confirm']
+                            ,done: function(value, date){
+                                app._data.mealall[this.elem[0].id.substring(9)][this.elem[0].id.substring(0,9)]=value;
+                                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[this.elem[0].id.substring(9)].startTime=value;
+                                //window.parent.mCustomScrollbarMenuLoadFalse();
+                            }
+                        });
+                        laydate.render({
+                            elem: '#endTime'+i
+                            ,type: 'time'
+                            ,btns: ['clear', 'confirm']
+                            ,done: function(value, date){
+                                app._data.mealall[this.elem[0].id.substring(7)][this.elem[0].id.substring(0,7)]=value;
+                                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[this.elem[0].id.substring(7)].stopTime=value;
+                                //window.parent.mCustomScrollbarMenuLoadFalse();
+                            }
+                        });
+                    },500);
+                    /*if(this.curNum< 3){
+                        this.curNum++;
+                        //this.mealList[this.curIndex].push(newmeal);
+                        this.mealall.push(newmeal);
+                    }*/
+                }
+                //;
+                //window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[index][tab]=nodes;
+                setTimeout(function(){
+                    window.parent["adjustmentIframe2"](
+                        (window.outerHeight+(app.mealall.length*200))+"px"
+                        ,"100%");
+                },500);
+            },
+            deletedDay(index,nodes){
+               // debugger;
+                // console.log(index);
+                // console.log(nodes);
+
+                let TimeHistory = window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity[index].id;
+
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].tbActivityTimeHistoryEntity.splice(index,1);
+                // console.log(index);
+                if(this.curNum>0)
+                {
+                    this.curNum = 0;
+                }
+                 this.mealList[this.curIndex].splice(index,1)
+                //delete this.mealList[this.curIndex][index];
+
+                this.curNum--;
+            },
+        }
+    })
+</script>
+<script type="text/javascript" src="../js/wangEditor.min.js"></script>
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var editor = new E('#mytextarea');
+    // 或者 var editor = new E( document.getElementById('editor') )
+    editor.customConfig.onfocus = function (html) {
+        // html 即变化之后的内容
+        window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].introduce=html;
+    }
+    editor.customConfig.onchangeTimeout = 1500 // 单位 ms
+    editor.customConfig.uploadImgShowBase64 = true
+    editor.create();
+    editor.txt.html(window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[window.top.scheduleIndex].introduce);
+</script>
+<script>
+    $(function (){
+        $(document).on("click", "#bt_rc", function(){
+            $(".schedule_min").hide();
+            $(this).siblings(".schedule_min").show();
+        });
+        $(document).on("mouseleave", ".schedule_min", function(){
+            $(".schedule_min").hide();
+        });
+    });
+</script>
+</body>
+</html>

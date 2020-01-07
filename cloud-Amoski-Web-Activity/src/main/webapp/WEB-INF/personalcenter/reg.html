@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div id="app">
+    {{ message }}
+    <div  class="login" >
+        <header class="head"><img src="../../assets/img/return.png"  @click="routerBack()" alt="">登录</header>
+
+        <!-- 头像部分 -->
+        <div class="headPortrait">
+            <img src="../../assets/img/person_img02.png" alt="">
+        </div>
+        <!--按钮组-->
+        <div class="weui-tab">
+            <div class="btn-group btn-group-lg" role="group" aria-label="" style="padding-bottom:15px;">
+                <div  id="tb2" class="weui-navbar__item  weui-bar__item--on"  href="#tab2"><div  @click="changeBottom(1)" :class="{buttomClass: showBottom}">快速登录</div></div>
+                <div  id="tb1" class=" weui-navbar__item "  href="#tab1"><div @click="changeBottom(2)"  :class="{buttomClass: !showBottom}">密码登录</div></div>
+
+            </div>
+
+            <div class="weui-tab__bd">
+                <div id="tab1" class="weui-tab__bd-item ">
+                    <div class="weui-cells">
+                        <div class="weui-cell" style="padding-top:20px;">
+                            <div class="weui-cell__hd"><img src="../../assets/img/cellphone.png" style="margin-left:15px;margin-right:15px;margin-top:5px;" height="23" width="17"></div>
+                            <div class="weui-cell__bd">
+                                <p><input placeholder="请输入手机号" style="border:none;" v-model="registerInfo.mobile"required @keyup="" maxlength="11" /></p>
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"><img src="../../assets/img/codedlock.png" style="margin-left:15px;margin-right:15px;margin-top:3px;" height="20" width="16" alt=""></div>
+                            <div class="weui-cell__bd">
+                                <p><input placeholder="请输入密码" type="password" style="border:none;" v-model="registerInfo.password"/></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button style="outline:none" id="showModel" :class="{gray:!show}" class="btn btn1 btn-block btnBlue" @click="loginPage();"><span style="margin-right:3px;">登</span>录</button>
+
+                    <p class="loginMessage"></p>
+
+                </div>
+                <div id="tab2" class="weui-tab__bd-item weui-tab__bd-item--active">
+                    <div class="weui-cells">
+                        <div class="weui-cell" style="padding-top:20px;">
+                            <div class="weui-cell__hd"><img src="../../assets/img/cellphone.png" style="margin-left:15px;margin-top:5px;margin-right:15px;" height="23" width="17"></div>
+                            <div class="weui-cell__bd">
+                                <p><input placeholder="请输入手机号" v-model="mobile2" style="border:none;" maxlength="11" /></p>
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"> <img src="../../assets/img/yanzheng.png" style="margin-left:15px;margin-right:15px;" height="19" width="17" alt=""></div>
+                            <div class="weui-cell__bd">
+                                <p style="float:left;"><input placeholder="图形验证码" style="border:none;width:148px;" v-model="imageCode"/></p>
+                                <p style="float:right;margin-right:20px;margin-top:7px;margin-bottom:5px;">
+                                    <!--  <button id="codeBtn" class="btn btn2 btn-default" :disabled="showVal" v-show="!showVal">
+                                       <span   @click="validateCode();" style="color:#56bcff;">{{verificationText}}</span>
+                                     </button> -->
+                                    <img :src="imageSrc" alt="" class="imgCode" @click="pictureCode()">
+                                    <!--   <button class="btn btn-default" style="display:block;width:105px;border:none;background:#e6e6e6;color:#56bcff" :disabled="!showVal"  v-show="showVal">
+                                        <span>{{count}}s</span>
+                                      </button> -->
+                                </p>
+                            </div>
+                        </div>
+                        <div class="weui-cell">
+                            <div class="weui-cell__hd"> <img src="../../assets/img/validate.png" style="margin-left:15px;margin-right:15px;" height="19" width="17" alt=""></div>
+                            <div class="weui-cell__bd">
+                                <p style="float:left;"><input placeholder="请输入验证码" style="border:none;width:148px;" v-model="checkCode"/></p>
+                                <p>
+                                    <!--      <div id="codeBtn" class="btn btn2 btn-default" v-show="!showVal">
+                                           <span   @click="validateCode();" style="color:#56bcff;">{{verificationText}}</span>
+                                         </div>
+                                         <div class="btn btn3 btn-default" @click="clicked()" v-show="showVal">
+                                           <span>{{count}}s</span>
+                                         </div> -->
+                                    <span :class="{reminder: noclick,clickReminder: click}" @click="validateCode()" >{{verificationText}}</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <p style="margin-top:10px;"></p> -->
+                    <button style="outline:none" id="showModel" :class="{gray:!show}" class="btn btn1 btn-block btnBlue" @click="quickLogin();">确 定</button>
+                    <p class="loginMessage"></p>
+                    <!--添加验证-->
+
+                </div>
+            </div>
+        </div>
+        <div id="modal" class="modal" v-if="has">
+            <div class="modal-content1">
+                <div class="succeed">
+                    <iframe :src="protocolSrc" width="100%" height="9000px" scrolling="no" frameborder="0"> </iframe>
+                </div>
+
+            </div>
+            <img  class="cross1" src="../../assets/img/cross.png" alt="" @click="clickCross()">
+        </div>
+
+
+        <router-link to="/forgetpwd" style="text-decoration:none;"><span class="pwd">忘记密码</span></router-link>
+        <div class="registClass"><router-link to="/register" style="color: #56bcff; text-decoration:none;">注册新用户</router-link></div>
+        <div id="modalReminder" :class="{modalReminder: confirm,modalReminder2: confirm2}"v-show="confirm">{{content}}</div>
+        <div class="protocol">
+            <img src="../../assets/img/No option .png" height="20" width="20" v-if="!show" alt="" @click="clickProtocol">
+            <img src="../../assets/img/option .png" height="20" width="20" alt="" v-if="show" @click="clickProtocol">
+            <span class="one">注册登录即视为同意</span>
+            <span class="two" @click="getProtocol()">《用户注册协议》</span>
+        </div>
+    </div>
+</div>
+
+<script src="js/vue2.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/adaptive.js"></script>
+<script src="js/axios.min.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+
+            registerInfo : {
+                mobile:"",
+                password:""
+            },
+            mobile2:"",
+            checkCode:"",
+            imageCode:'',
+            imageCodeKey: '',
+            bqsTokenKey:"",
+            _saber:"",
+            token:"",
+            show: true,
+            has: false,
+            showVal:false,
+            count:120,
+            content: '',
+            confirm: false,
+            verificationText: '发送验证码',
+            has: false,
+            protocolSrc: '',
+            showBottom: true,
+            confirm2: false,
+            imageSrc: '',
+            timer: '',
+            noclick:  true,
+            click: false,
+            time: '',
+            clickMore: false,
+        },
+        methods:{
+
+            changeBottom: function (item) {
+                if (item == '2') {
+                    this.showBottom = false;
+                } else {
+                    this.showBottom = true;
+                }
+            },
+            // 图形验证码接口
+            pictureCode: async function () {
+                var that = this;
+                var result = await  that.API.post("/gateway/gateway",
+                    {channelNumber:"03",
+                        mechanismNumber:"02",
+                        serviceId:"JUNCAI0046",
+                        versionNumber:"V1.0",
+
+                    });
+
+                if (result.code == '000000') {
+                    that.imageSrc = 'data:image/png;base64,' + result.data.imgCodeString;
+                    that.imageCodeKey = result.data.imgCodeKey;
+                }
+
+            },
+            //点击用户注册协议
+            getProtocol: async function () {
+                var that = this;
+                var result = await  that.API.post("/gateway/gateway",
+                    {channelNumber:"03",
+                        mechanismNumber:"02",
+                        serviceId:"JUNCAI0040",
+                        versionNumber:"V1.0",
+                        data:{
+                            fileType: 'AG01',
+                            mobile:'111111111111111111111111',
+                            requestType:"2"
+                        }
+                    });
+                // console.log('点击用户协议');
+                // console.log(result);
+                if (result.code === "000000") {
+                    that.has = true;
+                    that.protocolSrc = result.data.filePath;
+                }
+            },
+            routerBack()
+            {
+                this.$router.go(-1);
+            },
+            //判断对勾是否显示
+            clickProtocol: function () {
+                var _this = this;
+                if (_this.show) {
+                    _this.show = false;
+                } else{
+                    _this.show = true;
+                }
+            },
+            //设置定时器，使弹出提醒的confirm为false
+            timeOut: function () {
+                var _this = this;
+                setTimeout(function(){
+                    _this.confirm = false;
+                },5000)
+            },
+            //密码登录
+            loginPage:function(){
+                var _this=this;
+                //手机号验证
+                var myPhone=_this.registerInfo.mobile;
+                var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+                //密码验证
+                var pwd=_this.registerInfo.password;
+                var reg = /^[a-zA-Z0-9]{6,}$/;
+                if (_this.show) {
+                    if (!_this.registerInfo.mobile) {
+                        _this.confirm = true;
+                        _this.content = "请输入手机号";
+                        _this.timeOut();
+                    } else if(!myreg.test(myPhone)){
+                        _this.confirm = true;
+                        _this.content = '请输入正确手机号';
+                        _this.timeOut();
+                    } else if(!_this.registerInfo.password){
+                        _this.confirm = true;
+                        _this.content = "请输入密码";
+                        _this.timeOut();
+                    } else if(pwd.length < 6){
+                        _this.confirm = true;
+                        _this.confirm2 = false;
+                        _this.content = '密码不能少于6位';
+                        _this.timeOut();
+
+                    }
+                    //验证通过，调接口
+                    else{
+                        _this.API.post("/gateway/gateway",
+                            {
+                                channelNumber:"03",
+                                mechanismNumber:"02",
+                                serviceId:"JUNCAI0003",
+                                versionNumber:"V1.0",
+                                data:
+                                    {
+                                        bqsTokenKey:'d7441f51-74e9-44bd-97f8-677c1f9a1271',
+                                        mobile:this.registerInfo.mobile,
+                                        password:this.registerInfo.password,
+                                        token:this.token
+                                    }
+                            })
+                            .then(function(res){
+                                // console.log(res);
+
+                                if(res.code == "000000"){
+                                    _this.token=res.data.token;
+                                    _this.mobile=res.data.mobile;
+                                    sessionStorage.setItem('id',_this.mobile);
+                                    if (sessionStorage.getItem('token')) {
+                                        sessionStorage.removeItem('token');
+                                        sessionStorage.setItem('token',_this.token);
+                                    } else {
+                                        sessionStorage.setItem('token',_this.token);
+                                    }
+
+                                    // _this.$router.push({path:'/personCenter',query:{token:_this.token}});
+                                    _this.$router.push({path:'/Index'});
+
+                                } else if(res.code == '100004') {
+                                    _this.confirm = true;
+                                    _this.confirm2 = true;
+                                    _this.content = '用户名或密码不正确请重新输入';
+                                    _this.timeOut();
+                                } else {
+                                    _this.confirm = true;
+                                    _this.confirm2 = true;
+                                    _this.content = res.message;
+                                    _this.timeOut();
+                                }
+                            });
+                    }
+                }
+            },
+            //发送验证码
+            validateCode:function(){
+
+
+                var _this=this;
+                if(_this.mobile2==""){
+                    _this.confirm = true;
+                    _this.content = "请输入手机号";
+                    _this.timeOut();
+                    _this.showVal=false;
+                } else{
+                    if (_this.imageCode == '') {
+                        _this.confirm = true;
+                        _this.content = "请输入图形验证码";
+                        _this.timeOut();
+                        _this.showVal=false;
+                    } else {
+                        // console.log(_this.clickMore);
+                        if (!_this.clickMore) {
+                            _this.API.post("/gateway/gateway",{
+                                channelNumber:"03",
+                                mechanismNumber:"02",
+                                serviceId:"JUNCAI0001",
+                                versionNumber:"V1.0",
+                                data:
+                                    {
+                                        mobile: _this.mobile2,
+                                        requestType: "2",
+                                        imgCode: _this.imageCode,
+                                        imgCodeKey: _this.imageCodeKey,
+                                    }
+                            })
+                                .then(function(res){
+                                    // console.log(_this.showVal);
+                                    if(res.code=="000000"){
+                                        // _this.showVal=true;
+                                        _this.clickMore = true;
+                                        _this.time = 120;
+                                        if (!_this.timer) {
+                                            _this.timer=setInterval(function(){
+                                                _this.click = true;
+                                                _this.verificationText = _this.time + 's';
+                                                _this.time -- ;
+                                                if(_this.time<=0){
+                                                    _this.click=false;
+                                                    clearInterval(_this.timer);
+                                                    _this.timer = '';
+                                                    _this.verificationText = '发送验证码';
+                                                    _this.clickMore = false;
+                                                    // _this.time=120;
+                                                    _this.pictureCode();
+                                                }
+                                            },1000)
+                                        }
+                                        _this.confirm = true;
+                                        _this.content = res.message;
+                                        _this.timeOut();
+                                    }else{
+                                        _this.confirm = true;
+                                        _this.content = res.message;
+                                        _this.timeOut();
+
+                                    }
+                                })
+                        }
+
+
+
+                    }
+
+                }
+            },
+            clickCross: function () {
+                this.has = false;
+            },
+            //快速登录
+            quickLogin:function(){
+                var _this=this;
+                //手机号验证
+                var myPhone2=_this.mobile2;
+                var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+                if (_this.show) {
+                    if (!_this.mobile2) {
+                        _this.confirm = true;
+                        _this.content = "请输入手机号";
+                        _this.timeOut();
+                    }else if(!myreg.test(myPhone2)){
+                        _this.confirm = true;
+                        _this.content = '请输入正确手机号';
+                        _this.timeOut();
+                    }else if(!_this.imageCode){
+                        _this.confirm = true;
+                        _this.content = "请输入图片验证码";
+                        _this.timeOut();
+                    }else if(!_this.checkCode){
+                        _this.confirm = true;
+                        _this.content = "请输入验证码";
+                        _this.timeOut();
+                    }
+                    else{
+                        var sourceid = sessionStorage.getItem('sourceid');
+
+                        _this.API.post("/gateway/gateway",{
+                            channelNumber:"03",
+                            mechanismNumber:"02",
+                            serviceId:"JUNCAI0002",
+                            versionNumber:"V1.0",
+                            data:
+                                {
+                                    bqsTokenKey:"d7441f51-74e9-44bd-97f8-677c1f9a1271",
+                                    checkCode:this.checkCode,
+                                    mobile:this.mobile2,
+                                    token:this.token,
+                                    source: sourceid,
+                                },
+
+                        })
+                            .then(function(res){
+                                if(res.code=="100005"){
+                                    _this.confirm = true;
+                                    _this.content = "验证码错误";
+                                    _this.timeOut();
+                                } else if(res.code=="000000"){
+
+                                    _this.mobile2=res.data.mobile;
+                                    _this.token=res.data.token;
+                                    if (sessionStorage.getItem('id')) {
+                                        sessionStorage.removeItem('id');
+                                        sessionStorage.setItem('id',_this.mobile2);
+                                    } else {
+                                        sessionStorage.setItem('id',_this.mobile2);
+                                    }
+                                    if (sessionStorage.getItem('token')) {
+                                        sessionStorage.removeItem('token');
+                                        sessionStorage.setItem('token',_this.token);
+                                    } else {
+                                        sessionStorage.setItem('token',_this.token);
+                                    }
+
+                                    _this.$router.push({path:'/Index'});
+                                }else{
+                                    _this.confirm = true;
+                                    _this.confirm2 = true;
+                                    _this.content = res.message;
+                                    _this.timeOut();
+                                }
+                            })
+                    }
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

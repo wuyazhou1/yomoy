@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/refundticket.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/swiper.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <style>
+        .swiper-container {
+            width: 100%;
+            height: 100%;
+        }
+        .swiper-slide{
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+            /* Center slide text vertically */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            transition: 300ms;
+            transform: scale(0.8);
+        }
+        .swiper-slide-active,.swiper-slide-duplicate-active{
+            transform: scale(1);
+        }
+    </style>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<div id="refundticket" v-cloak>
+    <div class="orderHeader refundPickerHeader clearfix colorff">
+        <div class="pt10 pb10 clearfix refundPicker" v-show="appplate">
+            <span class="w24 arrowIcon fl ml10" onclick="backUrl('roadbookActivitype/eticket/eticketList.html',true)">
+                <a href="javascript:void(0);"><img src="../img/arrowLeftf.png" alt="" title=""></a>
+            </span>
+            <span class="enrollees f18 colorff textAlign displayinlik">电子票</span>
+        </div>
+        <!-- Swiper -->
+        <e-tick :option="reundData"></e-tick>
+    </div>
+    <div class="maineticket">
+        <h2 class="mt22 f22">{{verifiCode}}</h2>
+        <!--<div class="mt6"><img src="../img/Bitmap.jpg" alt="" title=""></div>-->
+        <input id="text" type="text" :value="verifiCode" style="width:80%;visibility: hidden;height:0;line-height:0;padding:0;margin:0;" />
+        <div id="qrcode" class="mt6 wh180 textAlign" style="margin:0 auto;"></div>
+
+        <h3 class="f22">{{valdCode}}</h3>
+        <!--<p class="mt10 color9797">D2 中餐 2019-08-05 19:20-19:30</p>-->
+        <!--<ul class="arrangeList mt20" v-show="chargeShow">-->
+        <ul class="arrangeList mt20" v-show="false">
+            <li class="clearfix" v-for="(item,index) in ArangeList">
+                <span class="s_1 fl">{{item.time}}</span>
+                <span class="s_2 fl">{{item.txt}}</span>
+                <span class="s_3 fr mr15 wh16"><img :src="item.imgurl" alt="" title=""></span>
+            </li>
+        </ul>
+        <p v-if="chargeShow" class="mt15" @click="inspectTicket()">
+            <a href="#">收起 <img src="../img/arrowTop.jpg" class="ml5"></a>
+        </p>
+        <p v-else class="mt15" @click="inspectTicket()" v-show="false">
+            <a href="#">验票详情 <img src="../img/arrowBottom.jpg" class="ml5"></a>
+        </p>
+    </div>
+    <!--<ul class="tickliList mt20">-->
+        <!--<li class="clearfix">-->
+            <!--<span class="fl wh24 ml15"><img src="../img/mapIcon.png" alt="" title=""></span>-->
+            <!--<span class="fl ml10 f15">查看活动路书</span>-->
+            <!--<span class="fr mr15 wh16"><img src="../img/personarrow.png"></span>-->
+        <!--</li>-->
+        <!--<li class="clearfix">-->
+            <!--<span class="fl wh24 ml15"><img src="../img/picIcon.png" alt="" title=""></span>-->
+            <!--<span class="fl ml10 f15">查看活动相片</span>-->
+            <!--<span class="fr mr15 wh16"><img src="../img/personarrow.png"></span>-->
+        <!--</li>-->
+    <!--</ul>-->
+
+    <footer class=" pt10  mt22 clearfix paymentFooter" v-if="tel == tellphone">
+        <a href="javascript:void(0)" class="ticketBtn f15 displayinlik" @click="RoadgoActivity(reundData[0].basicsId)">查看活动路书</a>
+        <a href="javascript:void(0)" @click.stop="goactivety(reundData[0].basicsId,reundData[0].title)" class="ticketBtn f15 displayinlik">查看活动相片</a>
+    </footer>
+    <footer class=" pt10  mt22 clearfix paymentFooter" v-else>
+        <a href="javascript:void(0)" class="ticketBtn f15 displayinlik" >联系客服</a>
+        <a href="javascript:void(0)" class="ticketBtn f15 displayinlik">转赠电子票</a>
+    </footer>
+
+</div>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/swiper.min.js"></script>
+<script src="../js/eticket.js"></script>
+<script src="../js/jquery.min.js"></script>
+<script src="../js/qrcode.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#refundticket',
+        data: {
+            chargeShow:false,
+            ArangeList:[
+                {
+                    time:'08-05 19:20-19:30',
+                    txt:'景区门票',
+                    imgurl:'../img/successt.png'
+                },
+                {
+                    time:'08-05 19:20-19:30',
+                    txt:'中餐',
+                    imgurl:'../img/successt.png'
+                },
+                {
+                    time:'08-05 19:20-19:30',
+                    txt:'晚餐',
+                    imgurl:'../img/errort.png'
+                },
+                {
+                    time:'08-05 19:20-19:30',
+                    txt:'入住',
+                    imgurl:'../img/successt.png'
+                }
+            ],
+            tabIndexcur:1,
+            eticketList:[
+               [],
+            ],
+            reundData:{},
+            Id:'',
+            vaildarr:['0','成功','已使用','已失效','无效'],
+            orderId:'',
+            activeIndexcur:0,//当前轮播索引
+            verifiCode:'',
+            valdCode:'',
+            tellphone:'',
+            tel:'',
+            qrcode:'',
+            activityStartDay:'',
+        },
+        created(){
+            //获取地址栏id;
+            let Request = new Object();
+            Request = GetRequest();
+            this.Id = Request.id;
+            this.orderId  = Request.orderid;
+            this.activityStartDay = Request.activityStart;
+            console.log(this.activityStartDay);
+        },
+        mounted(){
+            let _this = this;
+            let tabcur = window.sessionStorage.getItem('tabIndexCur');
+            _this.tel =  window.sessionStorage.getItem('tel');;//本地手机
+            if(JSON.parse(tabcur)){
+                this.tabIndexcur = tabcur;
+                console.log(this.tabIndexcur);
+            }else{
+                this.tabIndexcur = 1;
+            }
+            _this.etickList();
+
+        },
+        methods: {
+            inspectTicket(){//详情切换
+                this.chargeShow = !this.chargeShow;
+            },
+            etickList(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    // console.log(_this.orderId);
+                    const data = {};
+                    if(_this.orderId)//从已付款里链接进来时为orderId;
+                    {
+                        data.orderId = _this.Id
+                    }else{
+                        data.id = _this.Id
+                    }
+                    postData(data,'AmoskiActivity/activityOrderManage/queryElectronicTicketDetail').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            _this.reundData = result;
+                            _this.$nextTick(function(){
+                                _this.verifiCode= _this.reundData[_this.activeIndexcur].verificationCode;
+                                _this.valdCode = _this.reundData[_this.activeIndexcur].validCode;
+                                _this.tellphone = _this.reundData[_this.activeIndexcur].signUpTel;
+                                // console.log( _this.tellphone);
+                                // _this.tellphone = _this.reundData[_this.activeIndexcur].tl;
+                                _this.makeCode();
+                                _this.swperLoop2();
+                            })
+                            // console.log(_this.reundData);
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            },
+            makeCode(){
+                document.getElementById("qrcode").innerHTML="";
+                this.qrcode = new QRCode(document.getElementById("qrcode"), {
+                    width : 180,
+                    height : 180
+                });
+
+                /*var elText = document.getElementById("text");
+                if (!elText.value) {
+                    alert("Input a text");
+                    elText.focus();
+                    return;
+                }*/
+                this.qrcode.makeCode(this.verifiCode);
+
+            },
+            goactivety(id,title){
+                window.location.href = '/AmoskiWebActivity/personalcenter/album/shopalbum.html?id='+id+'&TitleTxt='+title+'&activity=false'+'&ImgUrl=AmoskiActivity/appRidingGuideManage/getActivityImages?code='+id+'&platform=wx';
+            },
+            RoadgoActivity(id){
+                window.location.href = '/AmoskiWebActivity/personalcenter/roadBook/activity/index.html?id='+id+'&activityStart='+this.activityStartDay+'&id2='+this.Id+'&goTo=1';
+            },
+           swperLoop2(){
+                let _this = this;
+               var swiper = new Swiper('.swiper-container',{
+                   // slidesPerView: 3,
+                   // spaceBetween: 30,
+                   // centeredSlides: true,
+                   // loop: true,
+                   pagination: {
+                        el: '.swiper-pagination',
+                        clickable: true,
+                   },
+                   on: {
+                       transitionEnd: function(){
+                           _this.activeIndexcur = this.activeIndex;
+                           console.log(_this.activeIndexcur);
+                           _this.$nextTick(function(){
+                               _this.verifiCode= _this.reundData[_this.activeIndexcur].verificationCode;
+                               console.log( _this.verifiCode);
+                               console.log(_this.activeIndexcur);
+                               _this.valdCode = _this.reundData[_this.activeIndexcur].validCode;
+                               _this.makeCode();
+                           })
+                           // app._data.reundList = app._data.reundData.list[this.activeIndex];
+                       },
+                   }
+               });
+            }
+        }
+    })
+</script>
+</body>
+</html>

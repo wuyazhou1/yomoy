@@ -1,0 +1,127 @@
+spring:
+ profiles:
+  active: uat
+ application:
+  name: gateway
+ http:
+  multipart:
+   max-file-size: 100Mb
+   max-request-size: 100Mb
+ boot:
+  admin:
+   url: http://localhost:8761/admin
+server:
+ port: 80 #指定该Eureke实例的端口
+zuul:
+ routes:
+  AmoskiJG:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiJG/**
+   service-id: AmoskiJG
+   #url: http://localhost:1024
+  AmoskiUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiUser/**
+   service-id: AmoskiUser
+   # url: http://localhost:7061
+  AmoskiWebUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebUser/**
+   service-id: AmoskiWebUser
+   # url: http://localhost:7061
+  AmoskiActivity:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiActivity/**
+   service-id: AmoskiActivity
+   sensitiveHeaders: "*"
+   # url: http://localhost:7061
+  AmoskiWebActivity:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebActivity/**
+   service-id: AmoskiWebActivity
+   sensitiveHeaders: "*"
+  AmoskiLocalUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiLocalUser/**
+   service-id: AmoskiLocalUser
+   # url: http://localhost:7061
+  AmoskiGoods:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiGoods/**
+   service-id: AmoskiGoods
+   # url: http://localhost:7061
+  AmoskiRiding:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiRiding/**
+   service-id: AmoskiRiding
+   sensitiveHeaders: "*"
+   # url: http://localhost:7061
+  AmoskiWebRiding:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebRiding/**
+   service-id: AmoskiWebRiding
+   # url: http://localhost:7061
+  AmoskiRidingTeam:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiRidingTeam/**
+   service-id: AmoskiRidingTeam
+   # url: http://localhost:7061
+  AmoskiWebHtmlUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebHtmlUser/**
+   service-id: AmoskiWebHtmlUser
+   # url: http://localhost:7061
+  XiangAmoskiWebHtmlUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /XiangAmoskiWebHtmlUser/**
+   service-id: XiangAmoskiWebHtmlUser
+   # url: http://localhost:7061
+  WuAmoskiWebHtmlUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /WuAmoskiWebHtmlUser/**
+   service-id: WuAmoskiWebHtmlUser
+   # url: http://localhost:7061
+ host:
+  socket-timeout-millis: 3600000
+  connect-timeout-millis: 3600000
+eureka:
+ client:
+  serviceUrl:
+   defaultZone: http://localhost:8761/eureka/
+   #defaultZone: http://192.168.5.178:8761/eureka/
+ instance:
+  preferIpAddress: true
+  instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+  leaseRenewalInseconds: 1
+  leaseExpirationDurationInseconds: 3
+feign:
+ hystrix:
+  enabled: true
+hystrix:
+ command:
+  default:
+   execution:
+    isolation:
+     thread:
+      timeoutInMilliseconds: 600000
+ribbon:
+ ReadTimeout: 3600000
+ ConnectTimeout: 360000
+url:
+ no-token: /login,/logOut/*
+logging:
+ level: info
+ config: classpath:logback-boot.xml

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<section class="warpper clearfix" id="administration">
+    <div class="sidebar fl">
+        <el-row class="tac">
+            <el-col :span="24">
+                <h5>自定义颜色</h5>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        @open="handleOpen"
+                        @close="handleClose"
+                        background-color="#545c64"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>系统管理</span>
+                        </template>
+                        <el-menu-item-group>
+                            <el-menu-item index="1-1">部门管理</el-menu-item>
+                            <el-menu-item index="1-2">用户管理</el-menu-item>
+                            <el-menu-item index="1-3">会员管理</el-menu-item>
+                            <el-menu-item index="1-4">角色管理</el-menu-item>
+                            <el-menu-item index="1-5">菜单管理</el-menu-item>
+                            <el-menu-item index="1-6">字典类型管理</el-menu-item>
+                            <el-menu-item index="1-7">字典管理</el-menu-item>
+                            <el-menu-item index="1-8">禁限管理</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-menu-item index="2" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">活动管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">商城管理</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-row>
+    </div>
+    <div class="counRight fr">
+        <div class="title"><h2>禁限管理</h2></div>
+        <div class="explain clearfix">
+            <span class="limit borderN">编辑政策</span>
+            <el-button type="primary" class="fr" icon="el-icon-search" size="mini" @click="goList">返回列表</el-button>
+        </div>
+        <ul class="policyList">
+            <li class="clearfix">
+                <span class="s_1 fl">城市名称</span>
+                <span class="s_2 fl">{{LocalcityName}}</span>
+            </li>
+            <li>
+                <span class="s_1">政策描述</span>
+                <textarea v-model="policyDesc">湘江以西区域：</textarea>
+            </li>
+        </ul>
+        <div class="clearfix buttonList">
+            <el-button type="primary" size="mini" @click="savePlicyinfo()">确认</el-button>
+            <el-button type="info" plain size="mini">取消</el-button>
+        </div>
+<!--        <div class="clearfix">-->
+<!--            <span class="fl">城市名称</span>-->
+<!--            <span class="fl">长沙</span>-->
+<!--        </div>-->
+    </div>
+</section>
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="js/flexible.js"></script>
+<script>
+    var app = new Vue({
+        el: '#administration',
+        data: {
+            LocalcityName:'',
+            LocalcityCode:'',
+            LocalcityCode:'',
+            policyDesc:'',
+        },
+        mounted(){
+            let _this = this;
+            _this.LocalcityName = window.sessionStorage.getItem('LocalcityName')
+            _this.LocalcityCode = window.sessionStorage.getItem('LocalcityCode')
+            _this.Localid = window.sessionStorage.getItem('Localid')
+            _this.policyDesc = window.sessionStorage.getItem('Localdesc')
+            if( _this.policyDesc == 'null' ||  _this.policyDesc == "")
+            {
+                _this.policyDesc = "";
+            }
+        },
+        methods:{
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            savePlicyinfo(){
+                let _this = this;
+                const data = {
+                    id:_this.Localid,
+                    policyDesc:_this.policyDesc,
+                    cityCode:_this.LocalcityCode
+                };
+                postData(data,'AmoskiRiding/forbidRidingManage/savePolicyInfo').then(response => {
+                    if (response.code == 0){
+                        this.$message({
+                            type: 'success',
+                            message: '提交成功!'
+                        });
+                        window.location.href = 'index.html';
+                        //resolve(result)
+                    } else {
+                        console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                   // reject(error)
+                })
+            },
+            goList(){
+                window.location.href = 'index.html';
+            }
+        }
+    })
+</script>
+</body>
+</html>

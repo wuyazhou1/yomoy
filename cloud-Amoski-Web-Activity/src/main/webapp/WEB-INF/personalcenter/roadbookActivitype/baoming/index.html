@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="routeBaom" v-cloak>
+    <div class="pictureLoop">
+        <div class="mui-slider">
+            <div class="mui-slider-group mui-slider-loop" @click="sliderDetail">
+                <!--支持循环，需要重复图片节点-->
+                <div class="mui-slider-item mui-slider-item-duplicate"v-for="(item,index) in sliderItemList"><a href="#"><img :src="item.ImgUrl" /></a></div>
+            </div>
+            <div class="mui-slider-indicator">
+                <div class="mui-indicator mui-active"></div>
+                <div class="mui-indicator"></div>
+            </div>
+        </div>
+    </div>
+    <div class="routeCount">
+        <h2 class="ml15 mr15 f18 pt13 color38 lh30">骑视：英国一地8天轻奢深度游，经典线路，小团出行</h2>
+        <ul class="DaysList clearfix">
+            <li v-for="(item,index) in DaysList">
+                <span>{{item.title}}</span>
+                <strong>{{item.txt}}</strong>
+            </li>
+        </ul>
+        <section class="Activity">
+        <h3 class="mt20 ml15 color6f f12" >活动参与</h3>
+        <div class="clearfix mt10 pb30">
+            <strong class="ml15 fl color59 f15 mt10">129937人报名 </strong>
+            <div class="ActiviImglist fr">
+                <ul class="clearfix fl">
+                    <li v-for="(item,index) in ActiviImglist" @click="Goperson"><img :src="item.Imgpath" alt="" title=""></li>
+                </ul>
+                <span class="More fl"><img src="../img/moreIcon.png" alt="" title=""></span>
+                <span class="fl ArrorIcon"><img src="../img/arrorRight.png" alt="" title=""></span>
+            </div>
+        </div>
+    </section>
+    </div>
+    <footer-bottom></footer-bottom>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/footer.js"></script>
+<script type="text/javascript">
+    window.onload = function (){
+        var gallery = mui('.mui-slider');
+        gallery.slider({
+            interval:3000//自动轮播周期，若为0则不自动播放，默认为0；
+        });
+    }
+    var app = new Vue({
+        el:'#routeBaom',
+        data:{
+            indexcur:0,
+            DaysList:[
+                {
+                    title:'天数',
+                    txt:'8天',
+                },
+                {
+                    title:'玩法',
+                    txt:'探险、主题活动',
+                },
+                {
+                    title:'人数',
+                    txt:'1-10人',
+                }
+            ],
+            ActiviImglist:[
+                {
+                    Imgpath:'../img/ActivityImg1.jpg',
+                },
+                {
+                    Imgpath:'../img/ActivityImg1.jpg',
+                },
+                {
+                    Imgpath:'../img/ActivityImg1.jpg',
+                }
+            ],
+            sliderItemList:[//图片轮播
+                {
+                    ImgUrl:'../img/sliderImg1.jpg',
+                },
+                {
+                    ImgUrl:'../img/sliderImg1.jpg',
+                }
+            ]
+        },
+        mounted(){
+            this.baomInfor();
+        },
+        methods:{
+            sliderDetail(){
+                window.location.href = 'detail.html';
+            },
+            Goperson(){
+                window.location.href = 'personnel.html';
+            },
+            baomInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'fffffffffff').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result && result.length>0)
+                            {
+
+                            }
+                            resolve(result)
+                        } else {
+                           // reject('error')
+                        }
+                    }).catch(error => {
+                       // reject(error)
+                    })
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+</head>
+<body>
+<section class="warpper clearfix" id="forbidden">
+    <div class="sidebar fl">
+        <el-row class="tac">
+            <el-col :span="24">
+                <h5>自定义颜色</h5>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        @open="handleOpen"
+                        @close="handleClose"
+                        background-color="#545c64"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>系统管理</span>
+                        </template>
+                        <el-menu-item-group>
+                            <el-menu-item index="1-1">部门管理</el-menu-item>
+                            <el-menu-item index="1-2">用户管理</el-menu-item>
+                            <el-menu-item index="1-3">会员管理</el-menu-item>
+                            <el-menu-item index="1-4">角色管理</el-menu-item>
+                            <el-menu-item index="1-5">菜单管理</el-menu-item>
+                            <el-menu-item index="1-6">字典类型管理</el-menu-item>
+                            <el-menu-item index="1-7">字典管理</el-menu-item>
+                            <el-menu-item index="1-8">禁限管理</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-menu-item index="2" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">活动管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">商城管理</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-row>
+    </div>
+    <div class="counRight fr">
+        <div class="title"><h2>禁限管理</h2></div>
+        <div class="explain clearfix">
+            <span class="limit fl">禁限城市列表</span>
+            <ul class="List">
+                <li>城市</li>
+                <li @click="whole()">全部</li>
+                <li @click="prohibit()"><a href="javascript:void(0)">禁</a></li>
+                <li @click="prohibitno()"><a href="javascript:void(0)">不禁</a></li>
+            </ul>
+            <input type="text" class="Inputtxt" v-model="cityName">
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="queryAllCityForbidInfo()">查询</el-button>
+            <el-button type="primary" size="mini" @click="dialogFormVisible = true">添加禁限城市</el-button>
+
+            <el-dialog title="添加禁限城市" :visible.sync="dialogFormVisible" style="width:80%;margin:0 auto;overflow:hidden;">
+                <el-form :model="form">
+                    <el-form-item label="选择地区：">
+                        <el-select size="small"
+                                   v-model="selectProv"
+                                   placeholder="请选择省份"
+                                   v-on:change="getProv($event)" style="width:30%;">
+                            <el-option
+                                    v-for="item in provs"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                        <el-select size="small"
+                                   v-model="selectCity"
+                                   placeholder="请选择城市"
+                                   v-on:change="getCity($event)" style="width:30%;margin-left:2%;">
+                            <el-option
+                                    v-for="item in citys"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                    <el-button @click="dialogFormVisible = false">取 消</el-button>
+                    <el-button type="primary" @click="submitaddress()">确 定</el-button>
+                </div>
+            </el-dialog>
+
+
+            <a href="javascript:void(0);" @click="viewmap()" class="fr">查看地图</a>
+        </div>
+        <div>
+            <el-table
+                    ref="multipleTable"
+                    :data="tableData3"
+                    tooltip-effect="dark"
+                    style="width: 100%"
+                    v-loading="listLoading"
+                    highlight-current-row = "true"
+                    @row-click="rowclickdata"
+            >
+<!--                <el-table-column-->
+<!--                        type="selection"-->
+<!--                        width="55">-->
+<!--                </el-table-column>-->
+                <el-table-column
+                        prop="cityName"
+                        label="城市"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        prop="status"
+                        label="仅限区"
+                        width="80"
+                        show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column
+                        prop="policyDesc"
+                        label="政策"
+                        width="100"
+                        show-overflow-tooltip>
+                </el-table-column>
+                <el-table-column
+                        prop="updateTime"
+                        label="修改时间"
+                        width="100"
+                        show-overflow-tooltip>
+                    <template slot-scope="scope">
+                        <span>{{getFmtTime(scope.row.updateTime) | parseTime('{y}-{m}-{d}')}}</span>
+                    </template>
+                </el-table-column>
+                <el-table-column label="操作">
+                    <template slot-scope="scope">
+                        <el-button
+                                size="mini"
+                                @click="handleEdit(scope.$index, scope.row)">编辑政策</el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="handleAdd(scope.$index, scope.row)">添加禁限区</el-button>
+                        <el-button
+                                size="mini"
+                                type="danger"
+                                @click="open2(scope.$index, scope.row)">消禁</el-button>
+                    </template>
+                </el-table-column>
+            </el-table>
+
+            <div class="block pagintionhandle">
+                <el-pagination
+                        v-show="total>0"
+                        @size-change="handleSizeChange"
+                        @current-change="handleCurrentChange"
+                        :current-page="page"
+                        :page-sizes="[10,20,30, 50]"
+                        :page-size="pageSize"
+                        layout="total, sizes, prev, pager, next, jumper"
+                        :total="total">
+                </el-pagination>
+            </div>
+
+        </div>
+    </div>
+</section>
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/city.js"></script>
+<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-ui@2.6.3/lib/index.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/element-china-area-data@4.1.2/dist/app.min.js"></script>
+<script src="js/flexible.js"></script>
+<script>
+    var app = new Vue({
+        el: '#forbidden',
+        data: {
+            listLoading: true,//loading
+            tableData3:'',
+            currentPage4: 4,
+            total: null,
+            page:'1',
+            pageSize:'10',
+            cityName:'',//城市名称
+            status:'',//禁用/不禁用
+            cityCode:'',
+            pagemap:{
+                paging: true,
+                pageNum: 1,
+                pageSize: 20
+            },
+            gridData: [{
+                date: '2016-05-02',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-04',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }, {
+                date: '2016-05-03',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1518 弄'
+            }],
+            dialogTableVisible: false,
+            dialogFormVisible: false,
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            formLabelWidth: '120px',
+            options: regionData,
+            selectedOptions: [],
+            provs:propsdata ,
+            citys: [],
+            selectProv: '',
+            selectCity: '',
+            Localcitydesc:'',
+        },
+        mounted(){
+            this.queryAllCityForbidInfo();
+        },
+        methods:{
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleSizeChange(val) {
+                this.pageSize = val;
+                this.queryAllCityForbidInfo();
+                console.log(`每页 ${val} 条`);
+            },
+            handleCurrentChange(val){
+                this.page = val;
+                this.queryAllCityForbidInfo();
+                console.log(`当前页: ${val}`);
+            },
+            handleEdit(index,row){
+                console.log(row)
+                window.sessionStorage.setItem('LocalcityName',row.cityName)
+                window.sessionStorage.setItem('LocalcityCode',row.cityCode)
+                window.sessionStorage.setItem('Localid',row.id)
+                window.sessionStorage.setItem('Localdesc',row.policyDesc)
+                window.location.href = 'administration.html'
+            },
+            handleAdd(index,row){
+                window.sessionStorage.setItem('LocalcityName',row.cityName)
+                window.sessionStorage.setItem('LocalcityCode',row.cityCode)
+                window.sessionStorage.setItem('Localid',row.id)
+                window.location.href = 'restrictedarea.html';
+            }
+            ,open2(index,row) {
+                console.log(row.cityCode);
+                let _this = this;
+                this.$confirm('取消禁限区将删除当前城市所有禁限数据?', '提示', {
+                    confirmButtonText: '确定',
+                    cancelButtonText: '取消',
+                    type: 'warning'
+                }).then(() => {
+                    // let _this = this;
+                    const data = {
+                        forbidId:row.id,
+                        cityCode:row.cityCode,
+                    };
+                    postData(data,'AmoskiRiding/forbidRidingManage/cancelForbidErea').then(response => {
+                        if (response.code == 0){
+                            console.log('xxxxxxxxxxxxxxxxxx');
+                            _this.queryAllCityForbidInfo();
+                            this.$message({
+                                type: 'success',
+                                message: '删除成功!'
+                            });
+                            //resolve(result)
+                        } else {
+                            console.log('fffffffffffffff');
+                           // reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+
+                }).catch(() => {
+
+                    this.$message({
+                        type: 'info',
+                        message: '已取消删除'
+                    });
+
+                });
+            },
+            queryAllCityForbidInfo(){
+                let _this = this;
+                const data = {
+                    page:_this.page,
+                    limit:_this.pageSize,
+                    cityName:_this.cityName,
+                    status:_this.status,
+                };
+                postData(data,'AmoskiRiding/forbidRidingManage/queryAllCityForbidInfo').then(response => {
+                    if (response.code == 0){
+                        const result = response.data.data;
+                        _this.tableData3 = result;
+                        console.log('fffffffffffff');
+                        console.log(result);
+
+                        _this.total = response.data.recordsTotal;
+                        _this.listLoading = false
+                        resolve(result)
+                    } else {
+                      //  reject('error')
+                    }
+                }).catch(error => {
+                   // reject(error)
+                })
+            },
+            prohibit(){
+                let _this = this;
+                _this.status = 1;
+            },
+            prohibitno(){
+                let _this = this;
+                _this.status = 0;
+            },
+            whole(){
+                let _this = this;
+                _this.cityName = "";
+                _this.status = '';
+            },
+            handleChange (value) {
+                console.log(value);
+            },
+
+            getProv: function (prov) {
+                let tempCity=[];
+                this.citys=[];
+                this.selectCity='';
+                let allCity= provice;
+                for (var val of allCity){
+                    if (prov == val.prov){
+                        console.log(val);
+                        tempCity.push({label: val.label, value: val.label})
+                    }
+                }
+                this.citys = tempCity;
+            }
+            ,
+            getCity: function (city) {
+                console.log(city);
+                console.log(this.selectCity)
+            },
+            submitaddress(){
+                let _this = this;
+                _this.dialogFormVisible = false;
+                console.log(_this.selectProv);
+                console.log(_this.selectCity);
+                const data = {
+                    cityName:_this.selectCity,
+                    cityCode:_this.selectCity,
+                };
+                postData(data,'AmoskiRiding/forbidRidingManage/addCityForbidInfo').then(response => {
+                    if (response.code == 0){
+                        this.$message({
+                            type: 'success',
+                            message: '添加成功!'
+                        });
+                        _this.queryAllCityForbidInfo()//刷新列表
+                        //resolve(result)
+                    }else if(response.code == 20001){
+                        this.$message({
+                            type: 'error',
+                            message: response.msg
+                        });
+                    }
+                    else {
+                        console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                    reject(error)
+                })
+
+            },
+            viewmap(){
+                let _this = this;
+                let tableData3warp = _this.tableData3;
+
+                if(!_this.LocalcityCode){
+                    for(var i=0;i<tableData3warp.length;i++)
+                    {
+                        _this.LocalcityCode =  tableData3warp[0].cityCode;
+                        _this.Localcitydesc =  tableData3warp[0].policyDesc;
+                    }
+                }else{
+                    _this.LocalcityCode = _this.LocalcityCode;
+                }
+
+
+               // return false;
+                window.sessionStorage.setItem('LocalcityCode',_this.LocalcityCode)
+                window.sessionStorage.setItem('LocalcityName',_this.LocalcityName)
+                window.sessionStorage.setItem('Localcitydesc',_this.Localcitydesc)
+                window.location.href = 'map.html';
+            },
+            rowclickdata(row, event, column){
+                let _this = this;
+                _this.LocalcityCode = row.cityCode;
+               _this.LocalcityName = row.cityName;
+               _this.Localcitydesc = row.policyDesc;
+
+               // window.sessionStorage.setItem('LocalcityCode',row.cityCode)
+                //console.log(row.cityCode);
+            }
+
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,99 @@
+spring:
+ redis:
+  database: 0
+  pool:
+   max-idle: 100
+   min-idle: 50
+   max-total: 1000
+   max-max-active: 4
+   max-wait-millis: -1
+  timeout: 3600
+  cluster:
+   #nodes: 122.114.59.76:7000,122.114.59.76:7001,122.114.59.76:7002,122.114.59.76:7003,122.114.59.76:7004,122.114.59.76:7005
+   nodes: 192.168.5.199:7000,192.168.5.199:7001,192.168.5.199:7002,192.168.5.199:7003
+   # 执行命令超时时间
+   command-timeout: 20000
+   # 重试次数
+   max-attempts: 5
+   # 跨集群执行命令时要遵循的最大重定向数量
+   max-redirects: 3
+   # 连接池最大连接数（使用负值表示没有限制）
+   max-active: 150
+   # 连接池最大阻塞等待时间（使用负值表示没有限制）
+   max-wait: -1
+   # 连接池中的最大空闲连接
+   max-idle: 30
+   # 连接池中的最小空闲连接
+   min-idle: 10
+   # 是否在从池中取出连接前进行检验,如果检验失败,则从池中去除连接并尝试取出另一个
+   test-on-borrow: true
+   #reids默认时间 3600
+   default-time: 3600
+ mvc:
+  view:
+   prefix: /WEB-INF/jsp/
+   suffix: .jsp
+   static-path-pattern: /webapp/WEB-INF/jsp/**
+ http:
+  encoding:
+   force: true
+   charset: UTF-8
+   enabled: true
+ profiles:
+  active: dev
+ dsuser:
+  #url: jdbc:oracle:thin:@116.255.186.112:1521:orcl #正式服务器
+  url: jdbc:oracle:thin:@192.168.5.163:1521:orcl
+  username: amoski_riding
+  password: YW1vc2tpX3JpZGluZw=
+  #password: d3VzaXlhb21heXVxaW5nbG9uZ2Rhbg==
+  driver-class-name: oracle.jdbc.OracleDriver
+  max-active: 50
+  max-idle: 50
+  min-idle: 60000
+  initial-size: 10
+  validation-query: select 1 from dual
+  test-on-borrow: true
+  test-on-return: true
+  test-while-idle: true
+ application:
+  name: AmoskiRiding
+ boot:
+  admin:
+   context-path: /admin
+server:
+ port: 8888 #指定该Eureke实例的端口
+eureka:
+ instance:
+  preferIpAddress: true
+  instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+  leaseRenewalInseconds: 1
+  leaseExpirationDurationInseconds: 3
+ client:
+  serviceUrl:
+   #defaultZone: http://localhost:8761/eureka/
+   defaultZone: http://localhost:8761/eureka/
+   #defaultZone: http://localhost:8761/eureka/
+#   defaultZone: http://192.168.5.177:8761/eureka/
+#   defaultZone: http://localhost:8761/eureka/
+   #defaultZone: http://192.168.5.177:8761/eureka/
+  server:
+   enableSelfPreservation: false
+   evictionIntervalTimerInMs: 3000
+feign:
+ hystrix:
+  enabled: true
+hystrix:
+ command:
+  default:
+   execution:
+    isolation:
+     thread:
+      timeoutInMilliseconds: 600000
+ribbon:
+ ReadTimeout: 60000
+ ConnectTimeout: 60000
+upload:
+ filePath: D://uploadFile/ridingFile
+#  logging:
+#   config: classpath:logback-boot.xml

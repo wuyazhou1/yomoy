@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <style>
+        .waterImg,.markcount {
+            position: relative;
+        }
+    </style>
+</head>
+<body>
+<div style="position: fixed;z-index: 10000;display: none;"> <canvas style="background: red;opacity: 0;" id="ctx"></canvas></div>
+<div id="watermark" class="publicHeader">
+    <div class="waterImg watermark" style="height:80%;overflow:hidden;"><img :src="coverUrl" width="100%" height="100%" class=""></div>
+    <div class="markcount pt20 pr15 ">
+        <ul class="clearfix">
+            <li v-for="(item,index) in watermark" :key="item" @click="watterList(index,item)" :id="item.id"><img :src="curIdx==index ? item.curImg : item.img"  width="100%" height="100%"></li>
+        </ul>
+        <div class="sharebox clearfix">
+            <a href="javascript:void(0);" @click="backUrl()" class="w24 fl ml35 mt12"><img src="../img/arrow2.png" width="100%" height="100%"></a>
+            <span @click="watershare" class="wh48 displayinlik"><img src="../img/scuessIcon.png" width="100%" height="100%"></span>
+            <a href="waterfx.html" class="w24 fr mr35 mt12"><img src="../img/shar.png" width="100%" height="100%"></a>
+        </div>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/axios.min.js"></script>
+<!--<script src="../js/watermark.js"></script>-->
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#watermark',
+        data: {
+            remnant:0,
+            coverUrl: "",
+            desc:'',
+            waterImg:'../img/qr.jpg',
+            curIdx: 0,
+            watermark:[
+                {
+                    img:'../img/markImg1.png',
+                    curImg:'../img/markImg1h.png',
+                    off:true,
+                },
+                {
+                    img:'../img/markImg2.png',
+                    curImg:'../img/markImg2h.png',
+                    off:true,
+                },
+                {
+                    img:'../img/markImg3.png',
+                    curImg:'../img/markImg3h.png',
+                    off:true,
+                },
+                {
+                    img:'../img/markImg4.png',
+                    curImg:'../img/markImg4h.png',
+                    off:true,
+                },
+                {
+                    img:'../img/markImg5.png',
+                    curImg:'../img/markImg5h.png',
+                    off:true,
+                },
+            ],
+            waterPic:[
+                {
+                    img:'../img/am.png',
+                },
+                {
+                    img:'../img/qs.png',
+                },
+                {
+                    img:'../img/zj.png',
+                },
+                {
+                    img:'../img/ml.png',
+                },
+                {
+                    img:'../img/am.png',
+                }
+            ]
+        },
+        created() {
+            let ImgUrl = window.sessionStorage.getItem('imgurl');
+            this.getBase64Data(ImgUrl, '');
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            getBase64Data(path, watermark){
+                let canvas = document.getElementById('ctx');
+                let ctx = canvas.getContext('2d');
+                const tasks = watermark ? [this.gImgMark(path), this.gImgMark(watermark)] : [this.gImgMark(path)];
+                return Promise.all(tasks).then(arr => {
+                    ctx.clearRect(0,0, 1000, 1000);
+                    const [bg,watermark] = arr;
+                    canvas.width=bg.width;
+                    canvas.height=bg.height;
+                    ctx.drawImage(bg, 0, 0, bg.width, bg.height, 0,0, bg.width, bg.height);
+                    //watermark && ctx.drawImage(watermark, 0, 0, watermark.width, watermark.height,100,10,80, 54);
+                    watermark && ctx.drawImage(watermark, 0, 0, watermark.width, watermark.height,50,50,300, 300);
+                this.coverUrl = canvas.toDataURL('image/png');
+                    return this.coverUrl;
+                })
+            },
+            gImgMark(url){
+                return new Promise((resolve, reject) => {
+                    var img = new Image();
+                    img.onload = function() {
+                        resolve(img);
+                    };
+                    img.src = url;
+                });
+            },
+            backUrl(){
+                window.history.go(-1)
+            },
+            watterList(index,item){
+                let _this = this;
+                this.curIdx = index;
+                let ImgUrl = window.sessionStorage.getItem('imgurl');
+                if(index)
+                {
+                    this.getBase64Data(ImgUrl, _this.waterPic[index-1].img)
+                }else{
+                    this.getBase64Data(ImgUrl);
+                }
+            },
+            dataURLtoFile: function(dataurl, filename) {//base64转文件
+                var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+                    bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+                while(n--){
+                    u8arr[n] = bstr.charCodeAt(n);
+                }
+                return new File([u8arr], filename, {type:mime});
+            },
+            watershare(){
+                let that = this;
+                let formData = that.coverUrl;
+                let file=this.dataURLtoFile(formData,"fname");
+                let formData1=new FormData();//通过formdata上传
+                formData1.append('files',file);
+                axios.post(API_ROOT+'AmoskiActivity/userCenterManage/uploadFile',formData1,{
+                    method: 'post',
+                    headers: {'Content-Type': 'multipart/form-data'}
+                }).then(function (res){
+                    //成功获取数据
+                    let resdata = res.data;
+                    if (resdata.code == "0"){
+                        window.location.href = 'myalbum.html';
+                    } else {
+                        that.errortip =  resdata.msg;
+                    }
+                })
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <title></title>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+<!--    <link rel="stylesheet" type="text/css" href="css/element-ui.css" />-->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <style type="text/css">
+        .el-select-dropdown__list{position:relative;z-index:9998;}
+        .el-form-item__content{z-index:99;}
+    </style>
+</head>
+<section class="couenter" id="creatRoadBook">
+    <header class="HeaderRoad">
+        <h1 class="fl" v-if="roadObj.title == ''">创建路书</h1>
+        <h1 class="fl" v-else>编辑路书</h1>
+
+        <el-steps :active="1" simple class="fl" style="width:88%;">
+            <el-step title="基本信息" icon="el-icon-edit">基本信息</el-step>
+            <!--<el-step title="线路设置" icon="el-icon-upload">线路设置</el-step>-->
+        </el-steps>
+        <a href="index.html" class="fl ml10 mr30 lh60">返回列表</a>
+    </header>
+    <div class="inforCount creatRoadBookCont fl">
+        <img id="imageBill" v-if="roadObj.bill" :src="'/AmoskiUser/ActivityCreate/getFile?filePath='+roadObj.bill" style="display: none;">
+        <div class="inforMain">
+            <h2>基本信息</h2>
+            <el-form ref="roadObj" :model="roadObj" :rules="rules" label-width="80px" size="mini" class="baomingcount">
+            <el-form-item label="路书标题：" prop="title">
+                <el-input v-model="roadObj.title" placeholder="请输入路书主题" class="Input"></el-input>
+            </el-form-item>
+                <el-form-item label="路书海报：">
+                    <el-upload
+                            class="avatar-uploader fl"
+                            action="/AmoskiUser/ActivityCreate/saveFile"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                        <img  v-if="roadObj.bill" :src="'/AmoskiUser/ActivityCreate/getFile?filePath='+roadObj.bill" width="100%" height="100%" class="avatar">
+                        <img src="../img/camera.png" width="32" height="30" class="camera">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>
+                    <!--<el-upload
+                            class="avatar-uploader"
+                            action="/AmoskiRiding/ridingGuideManage/uploadRoadImg"
+                            :show-file-list="false"
+                            :on-success="handleAvatarSuccess"
+                            :before-upload="beforeAvatarUpload">
+                        <img v-if="roadObj.bill" :src="roadObj.bill" class="avatar">
+                        <img src="img/camera.png" width="32" height="30" class="camera">
+                        <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                    </el-upload>-->
+                    <span class="uploadTxt" style="margin-top:33px;">建议尺寸:{{imgWidth}}*{{imgHeight}},图片小于1M</span>
+                </el-form-item>
+            <el-form-item label="特色：">
+                <span style="clear: both; display: inline-block; width: 900px;">
+                    <el-checkbox-group v-model="roadObj.feature" v-for="(item,index) in feature">
+                        <el-checkbox-button :label="item.name" :value="item.id" :name=index></el-checkbox-button>
+                    </el-checkbox-group>
+                </span>
+
+            </el-form-item>
+            <el-form-item label="出发地：">
+                <!--<el-input class="departInput"  v-model="roadObj.province"></el-input>
+                <el-input class="departInput"  v-model="roadObj.city"></el-input>
+                <el-input class="departInput"  v-model="roadObj.area"></el-input>-->
+                <el-cascader
+                        :options="options"
+                        v-model="startaddr"
+                        :separator="'-'" style="width: 70%;">
+                </el-cascader>
+            </el-form-item>
+            <el-form-item label="途径点："><!--途经点之间请用"-"符号分隔-->
+                <el-input v-model="roadObj.routepoint" v-on:input ="inputChange($event,'pathPoint')" class="Input fl"></el-input>
+                <span class="fl ml10 color33">途径点之前请用“-”符号分隔</span>
+            </el-form-item>
+            <el-form-item label="强度等级：">
+                <el-select  v-model="roadObj.strengthgrade" class="Input"  placeholder="请选择强度等级">
+                    <el-option  v-for="(item,index) in strengthgrade" :label="item.name" :value="item.id"></el-option>
+                </el-select>
+            </el-form-item>
+            <el-form-item label="风景等级：">
+                <el-select v-model="roadObj.scenerygrad" class="Input" placeholder="请选择风景等级">
+                    <el-option v-for="(item,index) in scenerygrad" :label="item.name" :value="item.id"></el-option>
+                </el-select>
+            </el-form-item>
+                <el-form-item label="经验要求：">
+                    <el-select v-model="roadObj.experience" class="Input" placeholder="请选择经验要求">
+                        <el-option v-for="(item,index) in ask" :label="item.name" :value="item.id"></el-option>
+                    </el-select>
+                </el-form-item>
+                <el-form-item label="适宜季节：">
+                    <el-checkbox-group v-model="roadObj.season" v-for="(item,index) in season">
+                        <el-checkbox-button :label="item.name" :value="item.id" name="type"></el-checkbox-button>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="车型建议：">
+                    <el-checkbox-group v-model="roadObj.vehicletype" v-for="(item,index) in vehicletype">
+                        <el-checkbox-button :label="item.name" :value="item.id" name="type"></el-checkbox-button>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="简单介绍：">
+                    <form method="post" class="activedetail">
+                        <div id="mytextarea" style="margin-left: 100px;width:90%;color: black;">
+                            <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+                        </div>
+                    </form>
+                </el-form-item>
+        </el-form>
+            <div class="clearfix inforButton">
+                <el-button @click="saveRoadData('')">保存</el-button>
+                <el-button @click="exitPage('index.html')">退出</el-button>
+                <el-button type="primary" @click="saveRoadData('routeSetting.html')">下一步</el-button>
+            </div>
+        </div>
+    </div>
+</section>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=76e7b372802c8e7526fa37f79717c502&plugin=AMap.Geocoder"></script>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<!--<script type="text/javascript" src="../js/country-level2-data.js"></script>-->
+<script type="text/javascript" src="js/provice-data.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<!--<script src='js/tinymce.min.js' referrerpolicy="origin"></script>-->
+<script type="text/javascript" src="../js/utils.js"></script>
+
+
+
+<!--<script>
+<script>
+<script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+<script>
+    tinymce.init({
+        selector: '#mytextarea',
+        height: 380,
+        //language: "zh_CN",
+        setup:function(editor){
+            editor.on('input', function(){
+                //活动详情放活动简介里面
+                console.log('sdfsdfsdf');
+                app._data.roadObj.introduction=tinyMCE.activeEditor.getContent();
+                //window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity['detailsActivities']=tinyMCE.activeEditor.getContent();
+            })
+        }
+    });
+</script>-->
+<script type="text/javascript">
+    function getWH(el, name) {
+        var val = name === "width" ? el.offsetWidth : el.offsetHeight,
+            which = name === "width" ? ['Left', 'Right'] : ['Top', 'Bottom'];
+        if(val === 0) {
+            return 0;
+        }
+        for(var i = 0, a; a = which[i++];) {
+            val -= parseFloat( getStyle(el, "border" + a + "Width") ) || 0;
+            val -= parseFloat( getStyle(el, "padding" + a) ) || 0;
+        }
+        return val + 'px';
+    }
+    var app = new Vue({
+        el:'#creatRoadBook',
+        data:{
+            roadObj:{
+                title:'',//路书标题
+                bill:'',//活动海报
+                introduction:'',//简介
+                routepoint:'',
+                scenerygrad:'',//风景等级
+                experience:'',//经验要求
+                feature:[],//特色
+                width:'',//宽
+                height:'',//高
+                routerpoint:'',//途径点
+                strengthgrade:'',//强度等级
+                season:[],//适宜季节
+                vehicletype:[],//车型建议
+                startaddr:'',//出发地
+                province:'',//省
+                city:'',//市
+                area:'',//区
+            },
+            startaddr:[],
+            strengthgrade:[
+                /*{name:'新手上路',id:'1'},
+                {name:'进阶之徒',id:'2'},
+                {name:'高手游玩',id:'3'},
+                {name:'大神出没',id:'4'},*/
+            ],
+            scenerygrad:[//风景等级
+                /*{name:'随性骑行',id:'1'},
+                {name:'美食美景',id:'2'},
+                {name:'尽情享乐',id:'3'},
+                {name:'极致游玩',id:'4'},*/
+            ],//装备要求
+            ask:[
+                /*{name:'一颗星',id:'1'},
+                {name:'二颗星',id:'2'},
+                {name:'三颗星',id:'3'},
+                {name:'四颗星',id:'4'},
+                {name:'五颗星',id:'5'},*/
+            ],//经验要求
+            season:[
+                {
+                    name:'春',
+                    id:'1'
+                },
+                {
+                    name:'夏',
+                    id:'2'
+                },
+                {
+                    name:'秋',
+                    id:'3'
+                },
+                {
+                    name:'冬',
+                    id:'4'
+                }
+            ],//适宜季节
+            vehicletype:[
+                /*{name:"全部",id:'1'},
+                {name:"拉力",id:'2'},
+                {name:"巡航",id:'3'},
+                {name:"旅行",id:'4'},
+                {name:"山地",id:'5'},
+                {name:"赛车",id:'6'},
+                {name:"街车",id:'7'},
+                {name:"摄影",id:'8'},*/
+            ],//车型建议
+            feature: [
+                /*{
+                    name:'休闲',
+                    id:'1'
+                },
+                {
+                    name:'亲子',
+                    id:'2'
+                },
+                {
+                    name:'露营',
+                    id:'3'
+                },
+                {
+                    name:'休闲2',
+                    id:'4'
+                },*/
+            ],
+            rules: {
+                title: [
+                    { required: true, message: '请输入路书主题', trigger: 'blur' },
+                    { max: 18, message: '长度不能超过18个字符', trigger: 'blur' }
+                ],
+                char: [
+                    { required: true, message: '请输入活动特色', trigger: 'blur' },
+                ],
+                region: [
+                    { required: true, message: '请选择活动性质', trigger: 'change' }
+                ],
+                date2: [
+                    { type: 'date', required: true, message: '请选择时间', trigger: 'change' }
+                ],
+                resource: [
+                    { required: true, message: '请选择活动资源', trigger: 'change' }
+                ],
+                desc: [
+                    { required: true, message: '请填写活动描述', trigger: 'blur' }
+                ]
+            },
+            requestUrl:{
+                requestSingRoadDataUrl:"/AmoskiRiding/ridingGuideManage/querySingGuide",
+                requestUpdRoadDataUrl:"/AmoskiRiding/ridingGuideManage/updGuideData",
+                requestSaveRoadDataUrl:"/AmoskiRiding/ridingGuideManage/addGuideData"
+            },
+            isGoPage:true,
+        },
+        mounted(){
+
+            let that = this;
+
+            var obj=parent.document.getElementById("mCustomScrollbarMenu");
+            var height=obj.offsetHeight-100;
+            parent.document.getElementsByTagName("iframe")[0].height=height;
+
+
+            var perp=0.2;
+            $(".el-upload.el-upload--text").height(imgHeight*perp);
+            $(".el-upload.el-upload--text").width(imgWidth*perp);
+            $(".camera").css("margin-top",imgHeight*perp/2-25);
+            queryDict("80011","feature");//查询字典数据
+            queryDict("80012","strengthgrade");//查询字典数据
+            queryDict("80013","scenerygrad");//查询字典数据
+            queryDict("80014","ask");//查询字典数据
+            queryDict("80015","vehicletype");//查询字典数据
+            that.queryRoadData();
+            $(document).on("click",".el-message-box__headerbtn",function(e){
+                that.$message.closeAll();
+                that.isGoPage=false;
+            })
+        },
+        methods:{
+            handleClick(row) {
+                console.log(row);
+            },
+            inputChange(node,tab){},
+            queryRoadData(){//查询表格数据
+                let that = this;
+                var id=GetRequest().id;
+                if(id){
+                    var obj={
+                        id:id,
+                    };
+                    axiosSendPost(that.requestUrl.requestSingRoadDataUrl,obj,function(res){
+                        var data=res.data;//数据
+                        if(data){
+                            data.feature=data.feature?data.feature.split(","):[];
+                            data.vehicletype=data.vehicletype?data.vehicletype.split(","):[];
+                            data.season=data.season?data.season.split(","):[];
+                            that.startaddr=data.startaddr?data.startaddr.replace("北京市","1111").replace("天津市","2222").split("-"):'';
+                            /*data.province=arr[0];
+                            data.city=arr[1];
+                            data.area=arr[2];*/
+                            that.roadObj=data;
+                            editor.txt.html(app._data.roadObj.introduction);
+                        }
+
+
+                    },function(res){
+
+                    });
+                }
+            },
+            saveRoadData(pageUrl){//保存路书数据
+                var that=this;
+                var url=that.requestUrl.requestSaveRoadDataUrl;//保存路径
+                //that.roadObj.startaddr=that.roadObj.province+"-"+that.roadObj.city+"-"+that.roadObj.area;
+                that.roadObj.startaddr=that.startaddr.join("-").replace("1111","北京市").replace("2222","天津市");
+                if(that.roadObj.startaddr){
+                    var geocoder = new AMap.Geocoder({city:that.roadObj.city});
+                    geocoder.getLocation(that.roadObj.startaddr.replace("-",""), function(status, result) {
+                        if (status === 'complete'&&result.geocodes.length) {
+                            var lnglat = result.geocodes[0].location
+                            that.roadObj.lng=lnglat.lng;
+                            that.roadObj.lat=lnglat.lat;
+                            that.roadObj.routepointcount=that.roadObj.routepoint?that.roadObj.routepoint.split("-").length:0;
+                            if(that.roadObj.id){
+                                url=that.requestUrl.requestUpdRoadDataUrl;
+                            }
+                            var requestObj={...that.roadObj}
+                            requestObj.feature=requestObj.feature.join();
+                            requestObj.vehicletype=requestObj.vehicletype.join();
+                            requestObj.season=requestObj.season.join();
+                            delete requestObj["createTime"];
+
+                            that.$refs['roadObj'].validate((valid) => {
+                                if(valid){
+                                    axiosSendPost(url,requestObj,function(res){
+                                        var data=res.data;//数据
+                                        //alert("保存成功");
+                                        if(pageUrl){
+                                            window.location.href=pageUrl+"?id="+data.id;
+                                        }else{
+                                            that.$message.success("保存成功");
+                                        }
+                                    },function(res){
+
+                                    });
+                                }else{
+                                    return false;
+                                }
+                            })
+                        }else{
+                            that.$message.error("起始地址有误");
+                        }
+                    });
+                }
+            },
+            handleAvatarSuccess(res, file) {
+                /*if(res.code=="10000"){
+                    var data=res.data;
+                    this.roadObj.bill=data;
+                }*/
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    //this.roadObj.width=
+                    this.roadObj.bill=res.resultData[0].fileNameUrl;
+                    this.imageUrl = URL.createObjectURL(file.raw);
+                    setTimeout(function(){
+                        let id="imageBill";
+                        debugger;
+                        var real= document.getElementById(id).height || document.getElementById(id).style.height || document.getElementById(id).offsetHeight;
+                        app._data.roadObj.height=parseInt(real);
+                        real= document.getElementById(id).width || document.getElementById(id).style.width || document.getElementById(id).offsetWidth;
+                        app._data.roadObj.width=parseInt(real);
+
+                        /*var img = document.getElementById("imageBill");
+                        var width = getWH(img, 'width');
+                        var height = getWH(img, 'height');
+                        app._data.roadObj.width=width;
+                        app._data.roadObj.height=height;*/
+                    },800);
+
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                const isSize =true;
+                /*const isSize = new Promise(function(resolve, reject) {
+
+                    let _URL = window.URL || window.webkitURL;
+                    let image = new Image();
+                    image.onload = function() {
+                        let valid = image.width == imgWidth && image.height == imgHeight;
+                        valid ? resolve() : reject();
+                    };
+                    image.src = _URL.createObjectURL(file);
+                }).then(
+                    () => {
+                        return file;
+                    },
+                    () => {
+                        this.$message.error("上传头像图片尺寸不符合,只能是"+imgWidth+"*"+imgHeight);
+                        return Promise.reject();
+                    }
+                );*/
+                return isJPG && isLt2M && isSize;
+            },
+            exitPage(url){
+                var that=this;
+                that.saveRoadData(url);
+                window.location.href=url;
+                // that.$confirm('将退出页面, 是否保存页面数据?', '提示', {
+                //     confirmButtonText: '保存',
+                //     cancelButtonText: ' 不保存',
+                //     type: 'warning'
+                // }).then(() => {
+                //     that.saveRoadData(url);
+                // }).catch((e,evt) => {
+                //     if(that.isGoPage){
+                //         window.location.href=url;
+                //     }
+                //     that.isGoPage=true;
+                //     /*this.$message({
+                //         type: 'info',
+                //         message: '已取消'
+                //     });*/
+                // });
+
+                setTimeout(function(){
+                    $(".el-message-box__wrapper").css("z-index",20000);
+                },150)
+            },
+        },
+
+    })
+</script>
+<script type="text/javascript" src="../js/wangEditor.min.js"></script>
+<script type="text/javascript">
+    var E = window.wangEditor;
+    var editor = new E('#mytextarea');
+    // 或者 var editor = new E( document.getElementById('editor') )
+
+    editor.customConfig.onblur = function (html) {
+        // html 即变化之后的内容
+        app._data.roadObj.introduction=html;
+        app._data.roadObj.simpIntroduction=document.getElementById("mytextarea").innerText.substr(0,40).trim();
+    }
+    //editor.customConfig.onchangeTimeout = 200; // 单位 ms
+    editor.customConfig.uploadImgShowBase64 = true;
+    editor.customConfig.uploadImgServer = "/AmoskiUser/ActivityCreate/saveFileImage"; //上传URL
+    editor.customConfig.uploadFileName = 'myFileName';
+    editor.customConfig.uploadImgHooks = {
+        customInsert: function (insertImg, result, editor) {
+            var url =result.data;
+            insertImg("/AmoskiWebHtmlUser/ActivityAlipayErrorCallback/getFile?filePath="+result.resultData[0].fileNameUrl);
+        }
+    }
+    editor.create();
+</script>
+</body>
+</html>

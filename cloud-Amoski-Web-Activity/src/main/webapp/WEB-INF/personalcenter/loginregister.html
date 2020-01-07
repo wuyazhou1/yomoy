@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div id="app">
+    <div class="wechatWarp">
+        <div class="wcchatCont">
+            <div class="wechatButton" @click="wechatGo"><span><img src="img/Rectangle.png" width="100%" height="100%"></span>微信登录</div>
+            <p class="error">{{errortip}}</p>
+            <div class="clearfix buttonwarp">
+                <input type="submit" value="登录" @click="loginSubmitclick">
+                <input type="reset"  value="注册" @click="loginresetclick">
+            </div>
+            <p class="explain">注册或登录即同意AMOSKI<span>用户协议</span>和<span>隐私协议</span></p>
+        </div>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script>
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!',
+            errortip:'',
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            changeBottom: function (item) {
+                if (item == '2') {
+                    this.showBottom = false;
+                } else {
+                    this.showBottom = true;
+                }
+            },
+            loginSubmitclick(){
+                window.location.href="logintel.html";
+            },
+            loginresetclick(){
+                window.location.href="register.html";
+            },
+            wechatGo(){
+                window.location.href=API_ROOT+"/AmoskiActivity/memberUser/loginOAuth";
+                /*axiosSendPost('AmoskiActivity/memberUser/loginOAuth',{
+                    type:1
+                },function (res){
+                        //成功获取数据
+                        let resdata = res.data;
+                        console.log(resdata.data);
+                        let _this = this;
+                        if (resdata.code == "0") {
+                            window.location.href=resdata.data;
+                        } else {
+                            _this.errortip = resdata.msg;
+                        }
+                    },function (err) {
+                    //请求失败
+                    _this.errortip = err;
+                    console.log(err);
+                  })*/
+                // axios.get('http://17n97122k7.imwork.net/AmoskiActivity/memberUser/loginOAuth',{
+                //     params: {
+                //         type:1,
+                //     }
+                // }).then(function (res){
+                //
+                //     //成功获取数据
+                //     let resdata = res.data;
+                //     console.log(resdata.data);
+                //     let _this = this;
+                //     if (resdata.code == "0") {
+                //         window.location.href=resdata.data;
+                //     } else {
+                //         _this.errortip = resdata.msg;
+                //     }
+                // })
+            }
+        }
+    })
+</script>
+</body>
+</html>

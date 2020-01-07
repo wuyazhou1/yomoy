@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="cloud-Amoski-Goods" />
+        <module name="server-Amoski-Riding" />
+        <module name="cloud-Amoski-Web-Goods" />
+        <module name="cloud-Amoski-Activity" />
+        <module name="Amoski-Util" />
+        <module name="cloud-Amoski-Wechat" />
+        <module name="server-Amoski-User" />
+        <module name="cloud-Amoski-User" />
+        <module name="cloud-discovery" />
+        <module name="cloud-Amoski-Web-User" />
+        <module name="cloud-Amoski-Web-Riding" />
+        <module name="cloud-gateway" />
+        <module name="cloud-Amoski-Riding" />
+        <module name="server-Amoski-Goods" />
+        <module name="server-Amoski-Activity" />
+        <module name="cloud-Amoski-Web-Activity" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="Amoski-Util" target="8" />
+      <module name="Amoski-Web" target="1.8" />
+      <module name="AmoskiUtil" target="1.6" />
+      <module name="cloud-Amoski-Activity" target="1.8" />
+      <module name="cloud-Amoski-Goods" target="1.8" />
+      <module name="cloud-Amoski-Riding" target="1.8" />
+      <module name="cloud-Amoski-User" target="1.8" />
+      <module name="cloud-Amoski-Web-Activity" target="1.8" />
+      <module name="cloud-Amoski-Web-Goods" target="1.8" />
+      <module name="cloud-Amoski-Web-Riding" target="1.8" />
+      <module name="cloud-Amoski-Web-User" target="1.8" />
+      <module name="cloud-Amoski-Wechat" target="1.8" />
+      <module name="cloud-discovery" target="1.8" />
+      <module name="cloud-gateway" target="1.8" />
+      <module name="demo" target="1.8" />
+      <module name="server-Amoski-Activity" target="1.6" />
+      <module name="server-Amoski-Goods" target="1.6" />
+      <module name="server-Amoski-Riding" target="1.6" />
+      <module name="server-Amoski-User" target="1.6" />
+      <module name="server-Amoski-Web-Activity" target="1.7" />
+      <module name="server-Amoski-Web-User" target="1.7" />
+      <module name="service-gateway" target="1.8" />
+      <module name="springcloud-eureka" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

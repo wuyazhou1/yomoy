@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <style type="text/css">
+        .DownWrap{padding:5px 15px;background:#fff;box-shadow: 0 2px 5px #333;position:fixed;width:100%;bottom:0;left:0;}
+        .Downap{background:#E88F59;width:100px;height:39px;border-radius:5px;font-size:15px;line-height:39px;text-align:center;color:#fff;}
+        .yomoyLg{width:89px;height:40px;border-right:1px solid #e5e5e5;padding-right:10px;}
+        .signTitle{padding-right:14px;margin-left:12px;font-size:12px;color:#2D3138;margin-top:9px;display:inline-block;}
+    </style>
+</head>
+<body>
+<section id="payment">
+    <div class="positionBar pt10 pb10" v-show="appplate">
+        <span class="w24 arrowIcon fl ml10" @click="checkTicket(true)"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">支付成功</span>
+    </div>
+    <div class="mt15 paymentSuccessful">
+        <div class="Img"><img src="../img/correctIcon.jpg" width="100%" height="100%" alt="" title=""></div>
+        <strong class="paysuccess">支付成功</strong>
+        <!--<input type="button" value="微信登录优摩游查看电子票" class="checkTicket" @click="checkTicket">-->
+        <input type="button" value="微信登录优摩游查看电子票" class="checkTicket" @click="Downapp">
+    </div>
+    <footer class="clearfix DownWrap">
+        <div class="fl">
+            <div class="fl yomoyLg" >
+                <img src="../img/yomoyLg.png" alt="" title="" width="100%" height="100%">
+            </div>
+            <span class="signTitle">让骑行更有乐趣</span>
+        </div>
+        <div class="fr Downap"  @click="Downapp">
+            下载APP
+        </div>
+    </footer>
+</section>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#payment',
+        data:{
+            Indexes:3,
+        },
+        mounted(){
+            window.sessionStorage.setItem('Indexes',JSON.stringify(this.Indexes));
+        },
+        methods:{
+            Downapp(){//下载app
+                window.location.href = "https://android.myapp.com/myapp/detail.htm?apkName=com.elder.amoski&ADTAG=mobile";
+            },
+            /*backUrl(){
+              window.location.href = '../order/orderList.html';
+            },*/
+            checkTicket(bl){
+                var appToken=sessionStorage.getItem("appToken");
+                if(bl){
+                    if(appToken){
+                        window.location.href = 'gotoApp';
+                    }else{
+                        window.location.href = '../order/orderList.html';
+                    }
+                }else{
+                    if(appToken){
+                        window.location.href = 'gotoApp';
+                    }else{
+                        window.location.href = '../eticket/index.html';
+                    }
+                }
+            }
+        },
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <title>活动详情</title>
+  <meta name="keywords" content="">
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="author" content="sina_mobile">
+  <meta name="format-detection" content="telephone=no">
+  <meta name="apple-mobile-web-app-title" content="活动详情">
+  <link rel="apple-touch-icon-precomposed" href="down_image/logo.png">
+  <!--<link href="down_image/loadown.css" rel="stylesheet">-->
+  <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+  <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+  <style type="text/css">
+    .expenseModule .costDetails{border-bottom:1px solid #f3f3f3;padding-bottom:30px;}
+    body,html{height:100%;}
+    .tabulList img{display: block;width:100%;}
+  </style>
+  <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<script src="../js/loading.js"></script>
+<section id="routeDetail" v-cloak>
+  <div class="headerFixed clearfix">
+    <div class="positionBar pt10 pb10" v-show="appplate">
+      <span v-show="goprev" class="w24 arrowIcon fl ml10" onclick="backUrl('roadbookActivitype/activity/activityList.html',true)"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+      <span class="enrollees f18 color38">活动详情</span>
+      <!-- 分享按钮-->
+      <span class="ml15 fr w24 mr12" v-show="shareButton">
+          <a href="javascript:;" @click="shareBtnFun" class="w24">
+              <img src="../img/shareIcon.png" width="100%" height="100%">
+          </a>
+      </span>
+    </div>
+  </div>
+  <div class="pictureLoop">
+    <div style="width:100%;height:200px;overflow:hidden;"><img :src="detailImg" width="100%" height="100%" /></div>
+    <!--<div class="mui-slider">-->
+    <!--<div class="mui-slider-group mui-slider-loop">-->
+    <!--&lt;!&ndash;支持循环，需要重复图片节点&ndash;&gt;-->
+    <!--<div class="mui-slider-item mui-slider-item-duplicate"><a href="javascript:void(0)"><img :src="API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+item.fileNameUrl" /></a></div>-->
+    <!--<div class="mui-slider-item"><a href="javascript:void(0)"><img src="../img/sliderImg1.jpg" /></a></div>-->
+    <!--&lt;!&ndash;支持循环，需要重复图片节点&ndash;&gt;-->
+    <!--<div class="mui-slider-item mui-slider-item-duplicate"><a href="#"><img src="../img/sliderImg1.jpg" /></a></div>-->
+    <!--</div>-->
+    <!--<div class="mui-slider-indicator">-->
+    <!--<div class="mui-indicator mui-active"></div>-->
+    <!--<div class="mui-indicator"></div>-->
+    <!--</div>-->
+    <!--</div>-->
+    <h2 class="f18 color38 mt15 ml15 mr15" v-cloak><strong>{{activitybase.title}}</strong></h2>
+    <ul class="clearfix routeTig mt22 pb15" v-cloak>
+      <li>
+        <span class="f12">天数</span>
+        <strong class="f15">{{tripData.length}}天</strong>
+      </li>
+      <li>
+        <span class="f12">玩法</span>
+        <strong class="f15">{{activitybase.playType}}</strong>
+      </li>
+      <!--<li v-show="showNumber">-->
+      <li>
+        <span>人数</span>
+        <strong v-if="activitybase.numberLimitation">{{activitybase.numberLimitation}}人</strong>
+        <strong v-else>{{activitybase.numberLimitation}}不限</strong>
+      </li>
+    </ul>
+    <ul class="collectiveModule mt15 clearfix" v-show="activitySignUpListdata.length>=1">
+      <li>
+        <div class="clearfix txt pt15 pb15 ActivityJoin">
+          <div class="ml15 fl f14">
+            <p class="displayblock">活动参与：</p>
+            <strong class="mr15 color59 f15">{{activitySignUpListdata.length}}人报名</strong>
+          </div>
+          <div class="pb30 fr f14 mr15">
+            <div class="ActiviImglist fr">
+              <ul class="clearfix fl">
+                <li v-for="(item,index) in ActiviImglist" @click="Goperson"><img :src="item.Imgpath" alt="" title=""></li>
+              </ul>
+              <span class="fl ArrorIcon"><img src="../img/arrorRight.png" alt="" title=""></span>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+  <ul class="collectiveModule mt15 clearfix">
+    <li>
+      <div class="clearfix txt pt15 pb15">
+        <span class="ml15 fl f14">集合点：</span>
+        <div class="fl f14">{{activitybase.collectionPlace}}</div>
+        <!--<p class="fr mr15"><img src="../img/position-pin.png" class="fr positionImg" alt="" title=""></p>-->
+      </div>
+    </li>
+    <li>
+      <div class="clearfix txt pt15 pb15">
+        <span class="ml15 fl f14">目的地：</span>
+        <p class="fl f14">{{activitybase.destination}}</p>
+      </div>
+    </li>
+    <li>
+      <div class="clearfix txt pt15 pb15 ml15 mr15">
+        <span class="fl f14">途经点：</span>
+        <p class="fl f14">{{activitybase.pathPoint}}</p>
+      </div>
+    </li>
+  </ul>
+  <div class="clearfix mt15 tabulList">
+    <ul class="tab-tit clearfix pt15 pb15">
+      <li v-for="(title,index) in tabTitle" @click="cur=index" style="width:33.2%;" class="f15 color38" :class="{active:cur==index}">{{title}}</li>
+    </ul>
+    <div class="tab-content pb30">
+      <div class="tab-main IntroduceModul" v-show="cur==0">
+        <div class="scheduling clearfix pb15 pl15 pr15" v-html="activitybase.detailsActivities">
+          <!--                    {{activitybase.detailsActivities}}-->
+        </div>
+      </div>
+      <div class="tab-main" v-show="cur==1">
+        <h2 class="ml24 f24 color97 mt15 pt24">行程安排</h2>
+        <div class="scheduling clearfix pb15">
+          <!--<ul class="ml15 mr15 mt36 schedulingList">-->
+            <!--<li v-for="(item,index) in tripData" class="f15 color38">-->
+              <!--<span>D{{index+1}}</span>-->
+              <!--<span>{{item.roleName}}</span>-->
+            <!--</li>-->
+          <!--</ul>-->
+          <div class="ml15 mr15" v-for="(item,index) in tripData">
+            <strong class="displayblock f24 color38 mt30">DAY{{index+1}}</strong>
+            <span class="displayblock f15 color38 mt15">{{item.roleName}}</span>
+            <div v-html="item.introduce" class="f15 color6f lh30 mt15"></div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-main" v-show="cur==2">
+        <div class="expenseModule clearfix">
+          <h2 class="ml24 f18 color97 mt15 pt24 pb24" v-show="activityInvoiceListData.length<1">费用说明</h2>
+          <div v-for="(item,index) in activityInvoiceListData" class="costDetails">
+            <h3 class="f18 color59 mt30 ml25 clearfix">{{item.nameInvoice}}：{{item.ticketPrice}}/人</h3>
+            <div class="ml25 mr25">
+              <strong class="mt22 displayblock f15">费用包含：</strong><br/>
+              <div v-html="item.describe"></div>
+              <!--<textarea v-html="item.describe" style="border:none;margin:0;background:#fff;padding:0;height:150px;"></textarea>-->
+              <!--                        <ol class="f15 color6f lh24">-->
+              <!--                            <li>1、交通:全程进山往返费用,及子梅村到子梅垭口往返交通费用。</li>-->
+              <!--                            <li>2、住宿:按行程所列标准入住,已包含出发前当晚成都商务酒店住宿。</li>-->
+              <!--                            <li>3、餐饮:8正7早,包含徒步期间的营地早餐、营地晚餐。营地早餐为:粥、榨菜、大饼、清炒蔬菜或面条等;营地晚餐为:三荤两素一汤。</li>-->
+              <!--                            <li>4、门票:包含贡嗄寺进山门票。</li>-->
+              <!--                            <li>5、马匹:包含马匹驮装备费用。</li>-->
+              <!--                            <li>6、装备:炊事帐篷、燃料、炉具、炊具、部分餐具、通讯工具等。</li>-->
+              <!--                            <li>7、向导及协作:专业领队和当地藏民协作。</li>-->
+              <!--                            <li>8、保险:赠送户外意外险;</li>-->
+              <!--                            <li>9、活动组织费等。</li>-->
+              <!--                        </ol>-->
+            </div>
+          </div>
+          <div v-show="activityInvoiceListData.length<1" class="pb24 f18 textAlign">暂无数居</div>
+        </div>
+      </div>
+      <!--<div class="tab-main" v-show="cur==3">-->
+      <!--{{activitybase.notice}}-->
+      <!--</div>-->
+    </div>
+  </div>
+  <footer class="clearfix footer mt15 detailFooter" v-show="footerShow">
+    <div class="pb10">
+      <div class="fl ml20" @click="goactivety()">
+        <p class="wh24"><img src="../img/AlbumIcon2.png" width="100%" height="100%"></p>
+        <span class="color6f">相册</span>
+      </div>
+      <div class="fl ml20" @click="goactivetyroad()">
+        <p class="wh24"><img src="../img/AlbumIcon3.png" width="100%" height="100%"></p>
+        <span class="color6f">路书</span>
+      </div>
+      <input type="button" :value="clipboardTxt" id="clipboardTxtVal" style="visibility: hidden;height:0;width:0;font-size:0;padding:0;margin:0;position:fixed;">
+      <input type="button" :value="baomVal" id="btn"   :data-clipboard-text="clipboardTxt"  @click="goOrderIndex()" :disabled="endTime<nowDay" class="imBaom mb16 f15 ml10" :class="{imgary:endTime<nowDay}" style="width:60%;">
+
+    </div>
+  </footer>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/clipboard.min.js"></script>
+
+
+<script src="http://g.alicdn.com/sj/lib/zepto/zepto.js" charset=utf-8></script>
+<script src="http://g.alicdn.com/msui/sm/0.6.2/js/sm.js" charset=utf-8></script>
+<!--<script type="text/javascript" src="native.js"></script>-->
+
+<!--<script type="text/javascript" src="/AmoskiWebUser/js/jquery/1.9.1/jquery.min.js"></script>-->
+<!--<script src="/AmoskiWebActivity/personalcenter/roadbookActivitype/js/native.js"></script>-->
+<script type="text/javascript">
+
+  /*import Bridge from '/AmoskiWebActivity/personalcenter/roadbookActivitype/js/bridge.js'
+  var appBridge = Bridge
+  alert(appBridge);
+  appBridge.callhandler('hiddenBottomBar', params, (data) => {
+    // 处理返回数据
+  });*/
+  function hiddenBottomBar(){
+    return true;
+  }
+
+  window.onload = function () {
+    var gallery = mui('.mui-slider');
+    gallery.slider({
+      interval:3000//自动轮播周期，若为0则不自动播放，默认为0；
+    });
+  }
+/*  window.onbeforeunload=function(e){
+    alert("调用showBottomBar方法"+window.na)
+    window.na.invoke('hiddenBottomBar',false,function(data){
+      alert("返回值"+data);
+    })
+  }*/
+
+  var app = new Vue({
+    el:'#routeDetail',
+    data:{
+      RequestId:'',//跳转详情列表id
+      tabTitle: ['介绍', '行程', '费用'],
+      tabMain: ['内容一', '内容二', '内容三', '内容四','内容五'],
+      cur: 0,//默认选中第一个tab
+      showNumber:true,
+      ActiviImglist:[
+        {
+          Imgpath:'../img/defaulthead.png',
+        },
+        {
+          Imgpath:'../img/defaulthead.png',
+        },
+        {
+          Imgpath:'../img/defaulthead.png',
+        }
+      ],
+      dayNum:'',//天数
+      activitybase:{},//活动基础信息
+      activityInvoiceListData:[],//费用
+      tripData:[],//行程安排
+      activitySignUpListdata:[],//报名人员列表
+      nowDay: new Date().getTime(),
+      endTime:'',
+      baomVal:'立即报名',
+      detailImg:'',
+      id:'',
+      activityStartDay:'',
+      footerShow:true,
+      basicsId:'',
+      Title:'',
+      Id:'',
+      EndTime:'',
+      shareButton:true,
+      Title:'',
+      goprev:true,
+      platform:'',
+      Titletxt:'',
+      typeApp:'',//判断是从app跳入还是从h5
+      clipboardTxt:'',
+    },
+    mounted(){
+      this.detailInfor();
+      let Request = new  Object();
+      Request = GetRequest();
+      this.Id = Request.id;
+      //this.EndTime = Request.endTime;
+      this.Title = Request.platform;
+      //this.Titletxt = Request.TitleTxt;
+      this.typeApp = Request.type;
+      window.sessionStorage.removeItem('packageData');
+      if(this.Title == 'wx')
+      {
+        this.shareButton = false;
+        this.platform = 'wx';
+      }else{
+        this.shareButton = true;
+        this.platform = '';
+      }
+
+      var ua = navigator.userAgent.toLowerCase();
+      if(ua.match(/MicroMessenger/i)=="micromessenger"){
+        this.goprev = false;
+      }
+      this.typeApp = 'app';
+      if(this.typeApp == 'app'){
+        this.baomVal = '立即报名';
+      }else{
+        this.baomVal = '下载APP立即报名';
+      }
+      /*setTimeout(function(){
+        window.na.invoke('wxShare','123','456','789','12324',function(){})
+      },500)
+      setTimeout(function(){
+        window.na.invoke('hiddenBottomBar',true,function(){})
+      },300)*/
+      /*try {
+        setTimeout(function(){
+          window.na.invoke('hiddenBottomBar',true,function(){});
+        },300)
+      } catch (e) {
+        alert(e);
+          console.log(e);
+      }*/
+      // alert("native.bridge"+native.bridge);
+      // native.bridge.callHandler('hiddenBottomBar', {'bool':true}, function responseCallback(responseData) {
+      //   console.log("JS received response:", responseData)
+      // })
+
+    },
+    methods:{
+      Goperson(){
+        let _this = this;
+        let Request = new Object();
+        Request = GetRequest();
+        _this.RequestId = Request.id;
+        window.location.href = 'personnel.html?id='+_this.RequestId+'&endTime='+Request.endTime;
+      },
+      goOrderIndex(){
+        let _this = this;
+        let id = _this.activitybase.id;
+        let code = _this.activitybase.code;
+        //this.typeApp = 'app';
+        /*判断从app进来，而是h5*/
+        if(this.typeApp == 'app'){//从app进来
+          // _this.clipboard();
+          _this.baomVal = '立即报名';
+          setTimeout(function(){
+            window.location.href = '../order/index.html?id='+id+'&code='+code+'&type=app';
+          },300)
+
+
+        }else{//从h5进来
+          _this.clipboard();
+          _this.baomVal = '下载APP立即报名';
+          setTimeout(function(){
+            window.location.href = 'https://android.myapp.com/myapp/detail.htm?apkName=com.elder.amoski&ADTAG=mobile'
+          })
+
+        }
+
+      },
+      clipboard(){
+        let _this = this;
+        var aTxt = _this.clipboardTxt;
+        var clipboard = new ClipboardJS('#btn', {
+          text: function(trigger){
+            return document.getElementById('clipboardTxtVal').value;
+          }
+        });
+        clipboard.on('success', function(e) {
+         // alert('已复制到剪贴板！')
+        });
+        clipboard.on('error', function(e) {
+          //alert('您的浏览器不支持点击复制，请长按下载app！')
+        });
+
+        // var btn = document.getElementById('btn');
+        // var clipboard = new ClipboardJS(btn);
+        // clipboard.on('success', function(e) {
+        //   alert('已复制到剪贴板');
+        // });
+        // clipboard.on('error', function(e) {
+        //   alert('请长按下载app！')
+        //
+        // });
+      },
+      detailInfor(){
+        let _this = this;
+        let Request = new Object();
+        Request = GetRequest();
+        _this.RequestId = Request.id;
+        console.log(_this.RequestId);
+        return new Promise((resolve, reject) => {
+          const data = {
+            id:_this.RequestId,
+          }
+          postData(data,'AmoskiActivity/appRidingGuideManage/queryActivityDetailInfo').then(response =>{
+          if (response.code == 0){
+          let result = response.data;
+          _this.Titletxt=result.activity.title;
+          _this.basicsId = result.activity.code;
+          if(result)
+          {
+            if(result.activity.showNumber==null || result.activity.showNumber == "显示"){
+              _this.showNumber=true;
+            }else{
+              _this.showNumber=false;
+            }
+
+            _this.activitybase = result.activity;//活动基本信息
+            //_this.endTime = new Date(result.activity.activityEnd).getTime();
+            time = new Date(result.activity.activityEnd);
+            //time.setHours(time.getHours()-11);
+            _this.endTime=time.getTime();
+            if(this.endTime<this.nowDay)
+            {
+              this.baomVal = '报名已截止';
+            }
+
+            _this.dayNum = Math.floor((_this.activitybase.activityStop - _this.activitybase.activityStart)/1000/60/60/24);
+            _this.activityInvoiceListData = result.activityInvoiceList;//费用
+            _this.tripData = result.list;
+            _this.activitySignUpListdata = result.activitySignUpList;
+
+            _this.detailImg = API_ROOT+'AmoskiRiding/appRidingGuideManage/getImg?fileUrl='+_this.activitybase.fileNameUrl;
+            _this.id = _this.activitybase.code;
+            _this.activityStartDay = _this.activitybase.activityStart;
+
+            _this.clipboardTxt = 'Amoski:HDID='+_this.activitybase.code;
+
+            if( _this.activityInvoiceListData[0].ticketPrice>0){//报名人数大于0时，显示路书，相册，报名按钮
+              _this.footerShow = true;
+            }else{
+              _this.footerShow = false;
+          }
+
+          }
+          resolve(result)
+        }else {
+          // reject('error')
+        }
+      }).catch(error => {
+          //  reject(error)
+        })
+      })
+      },
+      goactivety(){
+        let title = this.activitybase.title;
+        let basid = this.activitybase.code;
+        window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/album/shopalbum.html?id='+basid+'&TitleTxt='+title+'&platform='+this.platform;
+      },
+      goactivetyroad(){
+        let _this = this;
+        let activityStarttime = getFmtTime(_this.activityStartDay,'yyyy-MM-dd-HH-mm');
+        let title = this.activitybase.title;
+        let basid = this.activitybase.code;
+        window.location.href = '/AmoskiWebActivity/personalcenter/roadBook/activity/index.html?id='+_this.id+'&activityStart='+activityStarttime+'&goTo=2'+'&TitleTxt='+title+'&platform='+this.platform;
+      },
+      shareBtnFun(){
+        var _this = this;
+        var ua = navigator.userAgent.toLowerCase();
+        if(ua.match(/MicroMessenger/i)=="micromessenger"){
+          _this.goprev = false;
+        }
+        window.location.href = API_ROOT+'AmoskiWebActivity/personalcenter/roadbookActivitype/activity/detail.html?id='+this.Id+'&endTime='+this.EndTime+'&ImgUrl=AmoskiActivity/appRidingGuideManage/getActivityImages?code='+this.basicsId+'&platform=wx'+'&TitleTxt='+this.Titletxt;
+      }
+
+    }
+  })
+</script>
+</body>
+</html>

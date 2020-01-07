@@ -1,0 +1,56 @@
+spring:
+ redis:
+  database: 0
+  timeout: 1000
+  pool:
+   max-idle: 10
+   min-idle: 0
+   max-max-active: 0
+  cluster:
+   nodes: 192.168.0.21:7000,192.168.0.21:7001,192.168.0.21:7002,192.168.0.21:7003
+ mvc:
+  view:
+   prefix: /WEB-INF/jsp/
+   suffix: .jsp
+   static-path-pattern: /webapp/WEB-INF/jsp/**
+ http:
+  encoding:
+   force: true
+   charset: UTF-8
+   enabled: true
+ profiles:
+  active: dev
+ dsuser:
+  url: jdbc:oracle:thin:@192.168.0.39:1521:orcl
+  username: amoski_goods
+  password: YW1vc2tpX2dvb2Rz
+  driver-class-name: oracle.jdbc.OracleDriver
+  max-active: 50
+  max-idle: 50
+  min-idle: 60000
+  initial-size: 10
+  validation-query: select 1 from dual
+  test-on-borrow: true
+  test-on-return: true
+  test-while-idle: true
+ application:
+  name: AmoskiGoods
+ boot:
+  admin:
+   context-path: /admin
+server:
+ port: 8999 #指定该Eureke实例的端口
+eureka:
+ instance:
+  preferIpAddress: true
+  instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+  leaseRenewalInseconds: 1
+  leaseExpirationDurationInseconds: 3
+ client:
+  serviceUrl:
+   defaultZone: http://localhost:8761/eureka/
+  server:
+   enableSelfPreservation: false
+   evictionIntervalTimerInMs: 30000
+#  logging:
+#   config: classpath:logback-boot.xml

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.dtpicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.picker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="fillmeal" v-cloak>
+    <div class="positionBar pt10 pb10"  v-show="appplate">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">填写报名信息</span>
+    </div>
+    <div class="informationListWarp">
+        <ul class="informationList informationmeal mt15 clearfix">
+            <li class="clearfix" v-for="(item,index) in packageList" @click="goFillsign(index)">
+                <i class="ml15">*</i>
+                <span class="s_1 f15">{{item.nameInvoice}}</span>
+                <p class="fr">
+                    <span v-show="item.newInfor?true:false" >{{item.newInfor.name}}</span>
+                    <span class="name f15"><img src="../img/arrowRight.jpg"></span>
+                </p>
+            </li>
+        </ul>
+    </div>
+    <footer class="orderFooter pt10 pb10 clearfix">
+        <span class="f15 color38 ml15 mt10 displayinlik">合计</span>
+        <strong class="ml15 color59 f18 mt10 displayinlik"><i class="f12 dollar">￥</i>{{totalprice}}</strong>
+        <input class="fr mr15 nextButton " :disabled="isDisabled" type="button" value="下一步" @click="Nextcomplete()">
+    </footer>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/mui.picker.js"></script>
+<script src="../js/mui.poppicker.js"></script>
+<script src="../js/mui.dtpicker.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#fillmeal',
+        data:{
+            totalprice:'',//总价
+            RequestId:'',//id;
+            RequestCode:'',
+            packageList:'',//套餐
+            isDisabled:false,
+        },
+        mounted(){
+            let _this = this;
+            let Request = new Object();
+            Request = GetRequest();
+            this.RequestId = Request.id;
+            this.RequestCode = Request.code;
+            //本地数据列表
+            let packDataList = window.sessionStorage.getItem('packageData');
+            this.packageList = JSON.parse(packDataList);
+
+            //获取本地总价
+            let localtotalprice = window.sessionStorage.getItem('totalprice');
+            this.totalprice = JSON.parse(localtotalprice);
+
+            if(this.packageList)
+            {
+                this.packageList.forEach(function(cur,index,arr){
+                    if(!arr[index]['newInfor'])
+                    {
+                        arr[index]['newInfor'] = {};
+                    }
+                   if(!arr[index]['newInfor'].name){
+
+                       _this.isDisabled = true;
+                      //console.log(_this);
+                   }
+                })
+            }
+            console.log(this.isDisabled);
+        },
+        methods:{
+            goFillsign(idx){
+                window.location.href='../order/fillsign.html?Index='+idx+'&code='+this.RequestCode;
+            },
+            gobackUrl(){
+                window.location.href = '../order/index.html';
+            },
+            Nextcomplete(){
+                let _this = this;
+                let arrData = [];
+                let invoiceId,name,sex,identityNumber,tel;
+                _this.isDisabled = true;
+                let Newinforlength = false;
+                this.packageList.forEach(function(cur,index,arr){
+                    if(!arr[index]['newInfor'])
+                    {
+                        arr[index]['newInfor'] = {};
+                        Newinforlength = false;
+
+                    }else if(arr[index]['newInfor'].name){
+                        Newinforlength = true;
+                    }
+                })
+               if(!Newinforlength){//未填写报名人信息时的判断
+                    alert('请填写报名信息');
+                }else{
+                    _this.packageList.forEach(function(cur,index,arr){
+                        console.log(cur.newInfor.codeNumber);
+                        arrData.push(
+                            {
+                                invoiceId:cur.id,
+                                name:cur.newInfor.name,
+                                sex:cur.newInfor.sex,
+                                identityNumber: cur.newInfor.id,
+                                tel:cur.newInfor.tel,
+                                club:cur.newInfor.club,
+                                region:cur.newInfor.sheFeng,
+                                models:cur.newInfor.cur,//车型；
+                                displacement:cur.newInfor.displacement,//排量
+                                clothingDigital:cur.newInfor.codeNumber,//数码
+                                remake:cur.newInfor.beiZhu,//备注
+                            }
+                        )
+                    });
+                    return new Promise((resolve, reject) =>{
+                    let Jsonstr = JSON.stringify(
+                        {
+                            basicsId: _this.RequestCode,
+                            arrStr:arrData
+                        }
+                    )
+                    const data = {
+                        createOrderJsonStr:Jsonstr
+                    }
+                    postData(data,'AmoskiActivity/activityOrderManage/createOrder').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result)
+                            {
+                                _this.isDisabled = false;
+                               window.sessionStorage.setItem('orderPayObj',JSON.stringify(result));
+                                window.location.href='../order/orderPayment.html'
+                            }
+                            resolve(result)
+                        } else{
+                            _this.isDisabled = false;
+                            alert(response.msg);
+                        }
+                    }).catch(error =>{
+                        // reject(error)
+                    })
+
+                })
+                }
+            }
+        },
+    })
+</script>
+</body>
+</html>

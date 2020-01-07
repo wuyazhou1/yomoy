@@ -1,0 +1,42 @@
+@charset "UTF-8";
+*{ margin:0px; padding:0px;box-sizing: border-box;;}
+html,body{font-size:14px ; color:#333;height: 100%;background:#fff;}
+a{ color:#222; text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:none!important}
+a:focus,input:focus,textarea:focus{ outline: none;}
+input{ color: #222;}
+input,button,textarea{-webkit-appearance: none; border-radius: 0px;}
+img,a img{ border:0px;vertical-align: middle;}
+ul{ list-style:none; margin:0px; padding:0px;}
+ul li{ list-style:none;margin:0px; padding:0px;}
+h1{margin:0;padding:0;font-weight: normal;}
+form{ margin:0; padding:0; list-style:none}
+table{ border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;}
+.clearfix{clear: both;}
+.clearfix:after { clear: both; content: "."; display: block; height: 0; visibility: hidden;}
+.clearfix{*zoom:1;}
+
+.fl{float:left;display:inline-block;}
+.fr{float:right;display:inline-block}
+.dinline{display:inline-block;}
+
+.mt10{margin-top:10px;}
+.mt20{margin-top:20px;}
+.ml10{margin-left:10px;}
+.ml20{margin-left:20px;}
+.mr10{margin-right:10px;}
+.mr30{margin-right:30px;}
+
+#amoskialbum{width:99%;margin:0 auto;}
+#amoskialbum header{margin-top:30px;}
+#amoskialbum header h2{font-size:26px;color:#535355;font-weight:normal;}
+.dayBox{margin-top:30px;}
+.dayBox ul{border-bottom:1px solid #CCD5DB;}
+.dayBox ul li{float:left;display:inline-block;/*margin:0 7px;*/color:#67676F;margin:0 20px 20px 0;cursor:pointer;}
+.dayBox ul li.active{color:#62B297;/*border-bottom:1px solid #62B297;*/margin-bottom:-1px;}
+.elPagin{margin-top:25px;}
+
+.webuploader-pick{border-radius:5px;margin-right:12px;color:#222 !important;}

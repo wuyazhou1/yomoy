@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div class="logintel login" id="verificodefreepass">
+    <div class="goarrow" @click="backUrl"><a href="javascript:void(0)"><img src="img/arrow.png" width="100%"  height="100%"></a></div>
+    <div class="infor">
+        <p class="tel" class="numberfont">{{tel}}</p>
+        <p class="message">已发送短信验证码至此号码</p>
+    </div>
+    <div class="logintelconent">
+        <ul>
+            <li  v-show="show" class="numberfont"><input type="text" placeholder="请输入验证码" v-model="verif" @keyup="getInputValue" class="progressW"><span class="progressverification" @click="againcode">重新发送</span></li>
+            <li  v-show="!show" class="numberfont"><input type="text" placeholder="请输入验证码" v-model="verif" @keyup="getInputValue" class="progressW"><span class="progressverification">{{count}} s</span></li>
+        </ul>
+        <p class="error">{{errortip}}</p>
+        <input  @click="codeLogin" v-if="btnshow2" type="button" value="确定" class="loginButton activate">
+        <input  @click="codeLogin"  v-else type="button" value="确定" class="loginButton notactivate">
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script>
+    var app = new Vue({
+        el: '#verificodefreepass',
+        data: {
+            btnshow:false,    //v-show="false" 隐藏
+            eye:true,         //
+            inputType:'',	  //
+            btnshow2:false,//按钮状态
+            verif:'',//验证码
+            verif2:'',
+            pass:'',
+            tel:'',
+            show: true,
+            count: '',
+            errortip:'',//错误提示
+            timer: null,
+            alertTipscuess:false,//成功提示框
+            alertTiperror:false,//失败提示框
+            scuesstext:'验证码发送成功',
+            errortext:'验证码发送失败',
+        },
+        mounted () {
+            let _this = this;
+            _this.getCode();//验证码倒计时;
+            _this.tel =  window.sessionStorage.getItem('tel');//本地手机
+            _this.verif2 = window.sessionStorage.getItem('yzcode');//本地验证码
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            showPassword:function(){ /*密码显示 */
+                var me = this;
+                if (me.eye) {
+                    me.eye = false
+                    me.inputType = 'password'
+                } else {
+                    me.eye = true
+                    me.inputType = 'text'
+                }
+            },
+            getInputValue(){
+                let _this = this
+                if(_this.verif.length>=1){
+                    _this.btnshow2 = true;
+                }else{
+                    _this.btnshow2 = false;
+                }
+            },
+            getCode(){//获取验证码
+                const TIME_COUNT = 60;
+                if (!this.timer) {
+                    this.count = TIME_COUNT;
+                    this.show = false;
+                    this.timer = setInterval(() => {
+                        if (this.count > 0 && this.count <= TIME_COUNT) {
+                            this.count--;
+                        } else {
+                            this.show = true;
+                            clearInterval(this.timer);
+                            this.timer = null;
+                        }
+                    }, 1000)
+                }
+            },
+            againcode:function(){//重新发送验证码
+                let _this = this;
+                _this.getCode();
+
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        mobile:_this.tel,
+                        type:2
+                    }
+                    postData(data,'AmoskiActivity/memberUser/getMobileCode').then(response => {
+                        const result = response.data
+                        if (response.code === 0) {
+                            _this.alertTipscuess = true;
+                            scuessTip(_this.scuesstext,_this.alertTipscuess);
+                            window.sessionStorage.setItem('yzcode', result);//验证码
+                            resolve(result)
+                        } else if(response.code == 20005){
+                            _this.alertTiperror = true;//绑定失败
+                            errorTip(response.msg,_this.alertTiperror);
+                        }else {
+                            _this.alertTiperror = true;//绑定失败
+                            errorTip(_this.errortext,_this.alertTiperror);
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+
+
+            },
+            codeLogin:function(){//验证码登陆
+                var _this=this;
+                //手机号验证
+                if (!_this.verif) {
+                    _this.errortip = "请输入验证号";
+                }
+                else{
+                    _this.errortip = "";
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            mobile:_this.tel,
+                            validCode:_this.verif
+                        }
+                        postData(data,'AmoskiActivity/memberUser/codeLoginAndForgetPwd').then(response => {
+                            if (response.code == 0){
+                                const result = response.data
+                                window.location.href="person/index.html";
+                                resolve(result)
+                            } else {
+                                _this.errortip = response.msg;
+                                reject('error')
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+
+                    })
+
+
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

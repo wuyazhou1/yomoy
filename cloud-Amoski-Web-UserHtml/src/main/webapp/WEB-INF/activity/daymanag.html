@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script src='https://cdn.tiny.cloud/1/no-api-key/tinymce/5/tinymce.min.js' referrerpolicy="origin"></script>
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <script>
+        tinymce.init({
+            selector: '#mytextarea',
+            height: 180,
+        });
+    </script>
+</head>
+<body>
+<div id="daymanagePage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center restrictCount clearfix">
+        <my-aisde></my-aisde>
+        <div class="information fl">
+            <h2>日程安排</h2>
+            <div >
+                <form method="post" class="activedetail">
+                    <textarea id="mytextarea">Hello, World!</textarea>
+                </form>
+                <ul class="dayUl">
+                    <li class="clearfix" v-for="(item,index) in mealList">
+                        <div class="clearfix">
+                            <div class="fl">
+                                <div class="clearfix">
+                                    <div class="fl clearfix">
+                                        <el-time-select
+                                                placeholder="起始时间"
+                                                v-model="startTime"
+                                                :picker-options="{
+                                                  start: '08:30',
+                                                  step: '00:15',
+                                                  end: '18:30'
+                                                }"
+                                                class="pickerTime fl"
+                                        >
+                                        </el-time-select>
+                                        <el-time-select
+                                                placeholder="结束时间"
+                                                v-model="endTime"
+                                                :picker-options="{
+                                                  start: '08:30',
+                                                  step: '00:15',
+                                                  end: '18:30',
+                                                  minTime: startTime
+                                                }"
+                                                class="pickerTime fl"
+                                        >
+                                        </el-time-select>
+                                    </div>
+                                    <div class="fl descms">
+                                        <span class="fl">描述</span>
+                                        <input type="text" v-model="mealFood[index].mealName" class="eactValue">
+                                    </div>
+                                </div>
+                                <ul class="subultag">
+                                    <li><a href="#">{{item.comeon}}</a></li>
+                                    <li><a href="#">{{item.rest}}</a></li>
+                                    <li><a href="#">{{item.riding}}</a></li>
+                                    <li><a href="#">{{item.breakfast}}</a></li>
+                                    <li><a href="#">{{item.lunch}}</a></li>
+                                    <li><a href="#">{{item.dinner}}</a></li>
+                                    <li><a href="#">{{item.accommodation}}</a></li>
+                                    <li><a href="#">{{item.play}}</a></li>
+                             </ul>
+                            </div>
+                            <div class="fl reduceW" @click="deletedDay(index)">
+                                <span class="reduceIcon"></span>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <p class="dayaddbutton" @click="addDay"><img src="../img/addIcon.png" alt="" title=""></p>
+            </div>
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script>
+    var app = new Vue({
+        el: '#daymanagePage',
+        data: {
+            value1: '',
+            value2: '',
+            startTime: '',//开始时间
+            endTime: '',//结束时间
+            mealFood:[
+                {mealName:'早餐'},
+                {mealName:'中餐'},
+                {mealName:'晚餐'}
+            ],
+            mealcur:'',
+            mealall:[],
+            mealList:[
+                {
+                    comeon:'加油',
+                    rest:'休息',
+                    riding:'骑行',
+                    breakfast:'早餐',
+                    lunch:'午餐',
+                    dinner:'晚餐',
+                    accommodation:'住宿',
+                    play:'游玩',
+                }
+            ],
+            curNum:'1',//默认有一条数据
+        },
+        mounted(){
+            createObj=window.top.activityCreateList[window.top.activityIndex].tbActivitySynopsisEntity;
+        },
+        methods: {
+            addDay(){
+                let newmeal = { comeon:'加油',
+                    rest:'休息',
+                    riding:'骑行',
+                    breakfast:'早餐',
+                    lunch:'午餐',
+                    dinner:'晚餐',
+                    accommodation:'住宿',
+                    play:'游玩',};
+                if(this.curNum< 3)
+                {
+                    this.curNum++;
+                    this.mealList.push(newmeal);
+                }
+            },
+            deletedDay(index){
+
+                if(this.curNum>=1)
+                {
+                    this.mealList.splice(index,1)
+                    // this.mealFood[index].mealName = this.mealFood[index+1].mealName;
+                    this.curNum--;
+                }
+            },
+        }
+    })
+    lookDisabled();//如果是查看需要禁用表单
+</script>
+</body>
+</html>

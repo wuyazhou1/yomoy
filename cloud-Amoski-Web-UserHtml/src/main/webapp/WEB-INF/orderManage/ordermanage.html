@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+</head>
+<body>
+<div id="ordermanage" class="couenter fl">
+    <div class="orderTitle"><span>订单管理111</span></div>
+    <div class="orderCount">
+        <h2>订单列表</h2>
+        <ul class="orderList clearfix">
+            <li v-for="(item,index) in orderList" :class="{active:index==indexPrev}" @click="orderClick(index)">{{item.text}}</li>
+        </ul>
+        <div ref="orderListall" class="orderListall">
+            <div class="orderSub" ref="orderSub1">
+                <el-table
+                        ref="multipleTable"
+                        :data="tableData"
+                        tooltip-effect="dark"
+                        style="width: 100%"
+                        @selection-change="handleSelectionChange">
+                    <el-table-column
+                            type="selection"
+                            width="55">
+                    </el-table-column>
+                    <el-table-column
+                            prop="name"
+                            label="报名人"
+                            width="100">
+                    </el-table-column>
+                    <el-table-column
+                            prop="order"
+                            label="订单编号"
+                            width="180">
+                    </el-table-column>
+                    <el-table-column
+                            prop="state"
+                            label="订单状态"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="ticket"
+                            label="票种名称"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="tickPrice"
+                            label="票价"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="number"
+                            label="数量"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column
+                            prop="service"
+                            label="服务费率"
+                            show-overflow-tooltip>
+                    </el-table-column>
+                    <el-table-column label="操作">
+                        <template slot-scope="scope">
+                            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">查看详情</el-button>
+                        </template>
+                    </el-table-column>
+                </el-table>
+            </div>
+            <div class="orderSub" ref="orderSub2">
+                222222222222
+            </div>
+            <div class="orderSub" ref="orderSub3">
+                3333333333333
+            </div>
+            <div class="orderSub" ref="orderSub4">
+                444444444444
+            </div>
+            <div class="orderSub" ref="orderSub5">
+                555555555555555
+            </div>
+            <div class="orderSub" ref="orderSub6">
+                66666666666
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script>
+    var app = new Vue({
+        el: '#ordermanage',
+        data: {
+            orderList:[
+                {text:'所有订单'},
+                {text:'待付款'},
+                {text:'待参与'},
+                {text:'已完成'},
+                {text:'已取消'},
+                {text:'退款'},
+            ],
+            indexPrev:'',
+            tableData: [{
+                name: '宋俊',
+                order:'433166155920365024',
+                state:'待付款',
+                ticket:'票种1',
+                tickPrice:'2100',
+                number:'2',
+                service:'',
+
+            },{
+                name: '宋俊',
+                order:'433166155920365024',
+                state:'待付款',
+                ticket:'票种1',
+                tickPrice:'2100',
+                number:'2',
+                service:'',
+
+            },{
+                name: '宋俊',
+                order:'433166155920365024',
+                state:'待付款',
+                ticket:'票种1',
+                tickPrice:'2100',
+                number:'2',
+                service:'',
+
+            },{
+                name: '宋俊',
+                order:'433166155920365024',
+                state:'待付款',
+                ticket:'票种1',
+                tickPrice:'2100',
+                number:'2',
+                service:'',
+
+            }],
+            multipleSelection: []
+        },
+        mounted(){
+            this.$refs["orderSub1"].style.display = 'block';
+        },
+        methods: {
+            handleClick(tab, event) {
+                // console.log(tab, event);
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            orderClick(index){
+                this.indexPrev = index;
+                let curIndex = index+1;
+                let ullenth = this.$refs.orderListall.children.length;
+                //return false;
+                for(let i=1;i<ullenth+1;i++)
+                {
+                    this.$refs["orderSub"+i].style.display = 'none';
+                }
+                this.$refs["orderSub"+curIndex].style.display = 'block';
+
+            },
+            handleSelectionChange(val) {
+                this.multipleSelection = val;
+            },
+            handleEdit(index, row) {
+                console.log(index, row);
+            },
+        }
+    })
+</script>
+</body>
+</html>

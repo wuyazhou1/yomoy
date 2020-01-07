@@ -1,0 +1,88 @@
+
+<script type="text/javascript" src="/AmoskiWebUser/js/jquery/1.9.1/jquery.min.js"></script>
+<script>
+    function is_weixin() {
+        var ua = window.navigator.userAgent.toLowerCase();
+        if (ua.match(/MicroMessenger/i) == 'micromessenger') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    function callpay(){
+        if (typeof WeixinJSBridge == "undefined"){
+            if( document.addEventListener ){
+                document.addEventListener('WeixinJSBridgeReady', onBridgeReady, false);
+            }else if (document.attachEvent){
+                document.attachEvent('WeixinJSBridgeReady', onBridgeReady);
+                document.attachEvent('onWeixinJSBridgeReady', onBridgeReady);
+            }
+        }else{
+            onBridgeReady();
+        }
+    }
+
+    function onBridgeReady(){
+        WeixinJSBridge.invoke( 'getBrandWCPayRequest', {
+                /*"appId":dt.appId,     //公众号名称，由商户传入
+                "timeStamp":dt.timeStamp+"",         //时间戳，自1970年以来的秒数
+                "nonceStr":dt.nonceStr, //随机串
+                "package":dt.package,
+                "signType":dt.signType,         //微信签名方式：
+                "paySign":dt.paySign //微信签名\*/
+                "appId":dt.resultData.appId,     //公众号名称，由商户传入
+                "timeStamp":dt.resultData.timeStamp+"",         //时间戳，自1970年以来的秒数
+                "nonceStr":dt.resultData.nonceStr, //随机串
+                "package":dt.resultData.package,
+                "signType":dt.resultData.signType,         //微信签名方式：
+                "paySign":dt.resultData.paySign //微信签名
+            },
+            //$.parseJSON(dt),
+            function(res){
+                // 使用以上方式判断前端返回,微信团队郑重提示：res.err_msg将在用户支付成功后返回    ok，但并不保证它绝对可靠。
+                if(res.err_msg == "get_brand_wcpay_request:ok"){
+                    alert("支付成功!");
+                }else if(res.err_msg == "get_brand_wcpay_request:cancel"){
+                    alert("用户取消支付!");
+                }else if(res.err_msg == "get_brand_wcpay_request：fail"){
+                    alert("支付失败!");
+                }
+            }
+        );
+    }
+    var dt = "";//公众号支付签名信息
+    $(document).ready(function() {
+
+        $.ajax({
+            url:"/AmoskiWebHtmlUser/ActivityAlipayErrorCallback/AlipayPay",
+            type:"post",
+            data:{"is_weixin":is_weixin()},
+            dataType:"text",
+            async:true,
+            success:function(data){
+                /*document.write(data);*/
+                //$("body").html(data);
+                if(!is_weixin()){
+                    $("body").html(data);
+                }else{
+                    /*dt={}
+                    dt.appId = $(data).find("[name='appid']").val()*/
+                    dt = data;
+                    callpay();
+                }
+            }
+        });
+    });
+
+</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+</html>

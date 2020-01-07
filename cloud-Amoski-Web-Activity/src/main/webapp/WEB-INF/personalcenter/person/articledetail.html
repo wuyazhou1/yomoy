@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">文章详情</span>
+        </p>
+    </div>
+    <div class="clearfix articlewarp pl15 pr15 pt15 pb15 mt15">
+        <h2 class="f22">爱摩老斯基的柳州之行，“愚你有礼”让你爆</h2>
+        <span class="subtxt f12 mt15 displayblock">更新于21小时前</span>
+        <p>
+            2015年第一届环中国，上百位骑士分别位于祖国边境多个点，
+            同时顺时针出发，在最短的时间内利用GPS轨迹完成首次中国版图骑行；
+        </p>
+        <p>
+            2016年第二届环中国，俱乐部成员再次顺时针完成环边境；
+        </p>
+        <p>
+            2017年第三届环中国，以传递接力棒的方式，数百名万里骑士及支持者参与了此次活动，
+            并留下了非常珍贵的“接力棒”及签字长幅；同年12月，万里骑士062号阿诺，
+            单人单骑无后援完成环中国边境连续骑行活动，历时127天总里程达38835公里；
+        </p>
+        <div class="artImg">
+            <img src="../img/artImg.png" width="100%" height="100%">
+        </div>
+        <p>
+            2015年第一届环中国，上百位骑士分别位于祖国边境多个点，同时顺时针出发，在最短的时间内利用GPS轨迹完成首次中国版图骑行；
+        </p>
+        <p>2016年第二届环中国，俱乐部成员再次顺时针完成环边境； </p>
+        <p>2017年第三届环中国，以传递接力棒的方式，数百名万里骑士及支持者参与了此次活动，并留下了非常珍贵的“接力棒”及签字长幅；同年12月，万里骑士062号阿诺，单人单骑无后援完成环中国边境连续骑行活动，历时127天总里程达38835公里；</p>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            desc:'',
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            }
+        }
+    })
+</script>
+</body>
+</html>

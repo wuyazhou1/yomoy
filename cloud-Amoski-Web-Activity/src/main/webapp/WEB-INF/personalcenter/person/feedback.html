@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/ui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <style type="text/css">
+        .active{
+            background: red;
+        }
+    </style>
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">意见反馈</span>
+        </p>
+    </div>
+    <ul class="portraitList feedbackList mt15">
+        <li class="clearfix pl15 pr15 pb15 pt15 f15"  v-for="(item,index) in checkboxText" :key="item"  :id="item.id" >
+            <label :for="item.id"  @change="feedbackinput(index,item)" >
+                <input name="Fruit" type="checkbox" v-model="item.check" value="" :class="{active:item.check}"/>
+                {{item.name}}
+            </label>
+        </li>
+        <li class="clearfix pl15 pr15 pb15  introduction mt13">
+            <textarea  class="pt15 f14" maxlength="160" @input="descInput" v-model="desc" placeholder="请在此输入简介"></textarea>
+            <span class="wordnumber numberfont">{{remnant}}/160</span>
+        </li>
+    </ul>
+    <p class="error">{{errortip}}</p>
+    <div class="loginButton ml15 mr15 mt36 f15" @click="submitfeedback"><input type="button" value="提交"></div>
+</div>
+ <script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.min.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            desc:'',
+            checkboxText:'',
+            selectArr: [],
+            suggestionId:[],
+            alertTipscuess:false,
+            alertTiperror:false,
+            inputlength:0,
+            errortip:'',
+            scuesstext:'您的反馈提交成功',
+            errortext:'您的反馈提交失败',
+        },
+        created(){
+            this.opinion();//意见反馈
+        },
+        mounted(){
+
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            switchoff(){
+                mui('.mui-switch')['switch']()
+            },
+            feedbackinput(index, item){
+                let _this = this;
+                if(item.check){
+                    if(_this.suggestionId.indexOf(item.id) == -1)
+                    {
+                        _this.suggestionId.push(item.id);
+                        _this.inputlength++;
+                    }
+                }else{
+                  let num = _this.suggestionId.indexOf(item.id);
+                    _this.suggestionId.splice(num,1)
+                    _this.inputlength--;
+                }
+            },
+            opinion(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'AmoskiActivity/userCenterManage/getUserFeedback').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data
+                            if(result)
+                            {
+                                _this.checkboxText = result;
+                            }
+                            resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+
+
+            },
+            submitfeedback(){
+                let _this = this;
+                console.log(_this.inputlength);
+                if(_this.inputlength < 1){
+                    _this.errortip = "请选择致少一条反馈";
+                }
+                else if (!_this.desc) {
+                    _this.errortip = "请输入简介";
+                }else{
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            suggestionId:_this.suggestionId.join(','),
+                            remake:_this.desc,
+                        }
+                        postData(data,'AmoskiActivity/userCenterManage/userSubmitSuggest').then(response => {
+                            if (response.code == 0) {
+                                const result = response.data
+                                _this.alertTipscuess = true;
+                                scuessTip(_this.scuesstext,_this.alertTipscuess);
+                                window.location.href = 'setup.html';
+                                resolve(result)
+                            } else {
+                                _this.alertTiperror = true;
+                                errorTip(_this.errortext,_this.alertTiperror);
+                                reject('error')
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+
+                    })
+
+
+                }
+
+            }
+        }
+    })
+</script>
+</body>
+</html>

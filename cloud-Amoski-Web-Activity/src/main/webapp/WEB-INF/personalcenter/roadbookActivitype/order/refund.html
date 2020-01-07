@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/acitvity.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<div id="waitpayment" v-cloak>
+    <div class="orderHeader clearfix colorff">
+        <div class="positionBar pt10 pb10 clearfix" v-show="appplate">
+            <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeftf.png" alt="" title=""></a></span>
+            <span class="enrollees f18 colorff">活动订单</span>
+        </div>
+        <strong class="f22 mt22 ml20 displayblock">已完成</strong>
+        <wait-pay :option="time"></wait-pay>
+    </div>
+    <div class="baomInfor mt15 ml15 mr15">
+        <div class="clearfix">
+            <h1 class="fl f15 color38"><strong>报名人信息</strong></h1>
+            <div @click="viewDetail()" class="fr">
+                <p v-if="mealListShow" class="color97">查看详情<i class="displayinlik arrow ml5"><img src="../img/arrowTop.jpg"></i></p>
+                <p v-else class="color97">收起<i class="displayinlik arrow ml5"><img src="../img/arrowBottom.jpg"></i></p>
+            </div>
+        </div>
+        <ul class="setmeal mt15">
+            <li class="clearfix" v-for="(item,index) in setmealList">
+                <p class="clearfix taocang">
+                    <span class="fl Taocan f15 color9797 width35">{{item.standard}}</span>
+                    <span class="fl TaoMoney width53">￥{{item.money}}</span>
+                </p>
+                <p v-if="mealListShow" class="name">
+                    <span>{{item.name}}</span>
+                    <span>{{item.name1}}</span>
+                </p>
+                <div v-else class="mealList mt15" v-for="(subitem,index) in item.list">
+                    <p class="clearfix">
+                        <span class="fl Taocan f15 color9797 s_1">姓名：</span>
+                        <span class="fl TaoMoney s_2">{{subitem.name}}</span>
+                        <a class="fl publicBtn" href="javascript:void(0);">已退款</a>
+                    </p>
+                    <p class="clearfix">
+                        <span class="fl Taocan f15 color9797 s_1">身份证：</span>
+                        <span class="fl TaoMoney s_2">{{subitem.id}}</span>
+                    </p>
+                    <p class="clearfix">
+                        <span class="fl Taocan f15 color9797 s_1">俱乐部：</span>
+                        <span class="fl TaoMoney s_2">{{subitem.club}}</span>
+                    </p>
+                    <p class="clearfix">
+                        <span class="fl Taocan f15 color9797 s_1">地区：</span>
+                        <span class="fl TaoMoney s_2">{{subitem.address}}</span>
+                    </p>
+                    <p class="clearfix">
+                        <span class="fl Taocan f15 color9797 s_1">票号：</span>
+                        <s class="fl TaoMoney s_2">{{subitem.picker}}</s>
+                    </p>
+                </div>
+            </li>
+        </ul>
+        <div class="paymentpeople mt10 clearfix">
+            <p class="mt5 clearfix lh30">
+                <span class="f15 color9797 fl mt5"><i>*</i>付款人</span>
+                <input type="text" ref="panyname" class="color38 InputTxt fl" value="张三">
+                <span class="Icon fl" @click="editpayment(1)"><img src="../img/iphone.png" width="100%" height="100%"></span>
+            </p>
+            <p class="mt5 clearfix lh30">
+                <span class="f15 color9797 fl mt5"><i>*</i>联系电话</span>
+                <input type="text" ref="panytel" class="color38 InputTxt fl" value="15773137352">
+                <span class="Icon fl" @click="editpayment(2)"><img src="../img/iphone.png" width="100%" height="100%"></span>
+            </p>
+        </div>
+    </div>
+    <footer class="orderFooter pt10 pb10 mt22 clearfix paymentFooter">
+        <a href="javascript:void(0)" class="refundBtn refundBtn2 f15 displayinlik">退票详情</a>
+    </footer>
+</div>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/waitpay.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#waitpayment',
+        data: {
+            day: 0, hr: 0, min: 0, sec: 0,
+            time: '2019-08-27',
+            mealListShow: true,
+            setmealList: [
+                {
+                    standard: "骑士标准套餐",
+                    money: '30000X2',
+                    name: '张三',
+                    name1: '李四',
+                    list: [
+                        {
+                            name: '张三',
+                            id: '433122199809309878',
+                            club: '牛村',
+                            address: '北京',
+                            picker: '999-632215',
+                        },
+                        {
+                            name: '李四',
+                            id: '433122199809309878',
+                            club: '牛村',
+                            address: '北京',
+                            picker: '999-632215',
+                        }
+                    ]
+
+
+                },
+                {
+                    standard: "家属标准套餐",
+                    money: '10000X2',
+                    name: '张三',
+                    name1: '李四'
+                }
+            ]
+        },
+        mounted() {
+            this.time =
+                this.countdown()
+        },
+        methods: {
+            viewDetail() {
+                this.mealListShow = !this.mealListShow;
+            },
+            countdown() {
+                const end = Date.parse(new Date('2017-12-01'))
+                const now = Date.parse(new Date())
+                const msec = end - now
+                let day = parseInt(msec / 1000 / 60 / 60 / 24)
+                let hr = parseInt(msec / 1000 / 60 / 60 % 24)
+                let min = parseInt(msec / 1000 / 60 % 60)
+                let sec = parseInt(msec / 1000 % 60)
+                this.day = day
+                this.hr = hr > 9 ? hr : '0' + hr
+                this.min = min > 9 ? min : '0' + min
+                this.sec = sec > 9 ? sec : '0' + sec
+                const that = this;
+                this.time = `${day}天 ${hr}小时 ${min}分钟 ${sec}分钟`;
+                setTimeout(function () {
+                    that.countdown()
+                }, 1000)
+            },
+            editpayment(val){
+                if(val == 1)
+                {
+                    this.$refs.panyname.focus()
+                }
+                if(val == 2){
+                    this.$refs.panytel.focus()
+                }
+            }
+        }
+    })
+</script>
+</body>
+</html>

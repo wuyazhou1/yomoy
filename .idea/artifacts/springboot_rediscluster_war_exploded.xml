@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="springboot_rediscluster:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/springboot_rediscluster_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="springboot_rediscluster/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="springboot_rediscluster" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

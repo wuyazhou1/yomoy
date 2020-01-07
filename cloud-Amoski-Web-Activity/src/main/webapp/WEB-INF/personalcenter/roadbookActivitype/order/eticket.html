@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="eticked" v-cloak>
+    <div class="positionBar pt10 pb10"  v-show="appplate">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">电子票</span>
+    </div>
+    <div class="mt15 etickedWarp">
+        <div class="ticketPrice">
+            <ul>
+                <li>票种3 ￥1.00</li>
+                <li>易鹏  (13787101911)</li>
+            </ul>
+        </div>
+        <div class="codeNumber mt30">
+            <h2 class="f22">{{codeNumber}}</h2>
+            <span class="codeImg mt15"><img src="../img/codeImg1.jpg" alt="" title="" width="100%" height="100%"></span>
+            <span class="verification f15 mt10">{{verif}}</span>
+            <a href="#" class="remind f15"><img src="../img/noticeIcon.png"  class="notice mt10 ml10 fl"/>活动开始前提醒我<img src="../img/arrowR.png" class="fr mt10 mr10"></a>
+        </div>
+        <div class="clearfix mt15 surePictxt">
+            <div class="fl pt10 pl10 pb10 txt">
+                <strong>英国一地8天轻奢深度游,经典线路，小团出行…</strong>
+                <p>时间：2019-07-11 08:00 开始</p>
+                <p>地点：长沙县未来漫城</p>
+                <p>数量：票种1×2  票种2×1</p>
+            </div>
+            <div class="fr orderImg1 mt15 mr15"><img src="../img/dayThreeImg2.jpg" width="100%" height="100%" alt="" title=""></div>
+        </div>
+    </div>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#eticked',
+        data:{
+            codeNumber:'9781 1397 6214',
+            verif:'已验证',
+        },
+        mounted(){
+            this.eticketInfor();
+        },
+        methods:{
+            eticketInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'fffffffffff').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result && result.length>0)
+                            {
+                                console.log('ffffffffffffff');
+                               // _this.isDisabled = false;
+                            }
+                            resolve(result)
+                        } else {
+                           // _this.isDisabled = false;
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+            }
+        },
+    })
+</script>
+</body>
+</html>

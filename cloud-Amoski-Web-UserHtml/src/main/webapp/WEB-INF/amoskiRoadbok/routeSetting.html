@@ -1,0 +1,1461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="css/common.css" />
+    <!--link rel="stylesheet" type="text/css" href="css/element-ui.css" />-->
+    <link rel="stylesheet" href="css/index.css">
+    <style type="text/css">
+        .tox-silver-sink{z-index:8888 !important;}
+        .selectIpt{
+            width: 90%;
+        }
+        .el-textarea__inner{
+            /*line-height:3.5;*/
+            /*padding:6px 5px;*/
+            margin-bottom:15px;
+        }
+        .schedule li{position:relative;}
+        .diaLogedit{position:absolute;right:-77px;top:0;background:#fff;border-radius:5px;padding:5px;color:#9B9B9B;border:1px solid #CCD5DB;}
+        .diaLogedit span{width:100%;text-align: center;}
+        .schedule li span a{color:#333;}
+        .schedule li span a:hover{color:#62b297;}
+        /*.tox .tox-dialog-wrap__backdrop{z-index:9999 !important;}*/
+
+    </style>
+</head>
+<body>
+<div class="couenter clearfix" id="routeSeeting">
+    <el-dialog title="日程" :visible.sync="dialogFormVisible">
+        <el-form :model="form">
+            <el-form-item label="出发地:" :label-width="formLabelWidth">
+                <el-cascader
+                        :options="options"
+                        v-model="cityname1"
+                        @change="handleChange(1)"
+                        :separator="''" style="width: 70%;">
+                </el-cascader>
+            </el-form-item>
+            <el-form-item label="目的地" :label-width="formLabelWidth">
+                <el-cascader
+                        :options="options"
+                        v-model="cityname2"
+                        @change="handleChange(2)"
+                        :separator="''" style="width: 70%;">
+                </el-cascader>
+            </el-form-item>
+        </el-form>
+        <div style="width:100%;margin:0 auto;" id="mytextarea" >
+            <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+            <!--<textarea id="mytextarea1">Hello, World!</textarea>-->
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取 消</el-button>
+            <el-button type="primary" @click="addatelog">确 定</el-button>
+        </div>
+    </el-dialog>
+
+    <el-dialog title="线路简介" :visible.sync="dialogFormVisible1">
+        <div class="clearfix">
+            <div class="fl" style="width:45%">
+                <span class="fl mr10 mt10">预计里程（KM）:</span>
+                <el-input class="departInput fl" style="width:120px !important;"  v-model="aboutdisKm" placeholder="预计里程（KM）"></el-input>
+            </div>
+            <div class="fl ml20" style="width:45%">
+                <div class="clearfix">
+                    <span class="fl mr10 mt10">预计用时（H）:</span>
+                    <el-input class="departInput"  style="width:120px !important;" v-model="ridingtimeMin" placeholder="预计用时（H）"></el-input>
+                </div>
+            </div>
+        </div>
+        <div style="width:100%;margin:20px auto 0;" class="clearfix">
+            <!--<p>欢迎使用 <b>wangEditor</b> 富文本编辑器</p>-->
+            <div class="fl">路线提示：</div>
+            <div id="mytextarea1" class="fl" style="width:450px;border:1px solid #DCDFE6;border-radius:5px;"></div>
+        </div>
+        <div slot="footer" class="dialog-footer">
+            <el-button @click="dialogFormVisible1 = false">取 消</el-button>
+            <el-button type="primary" @click="finashSetLineData">确 定</el-button>
+        </div>
+    </el-dialog>
+    <!--图片弹框 -->
+    <el-dialog id="imagesXiangCe" title="相册" :visible.sync="dialogPhotoVisible">
+        <div class="clearfix RouterUp">
+            <el-upload
+                    class="avatar-uploader fl ml15"
+                    action="/AmoskiUser/ActivityCreate/saveFile"
+                    id="0"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <img :src="cameraImageUrl0" id="cameraImageUrl0"  width="32" height="30" class="camera">
+
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+
+            </el-upload>
+
+            <el-upload
+                    class="avatar-uploader fl ml15"
+                    action="/AmoskiUser/ActivityCreate/saveFile"
+                    id="1"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <img :src="cameraImageUrl1" id="cameraImageUrl1" width="32" height="30" class="camera">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+
+            </el-upload>
+
+            <el-upload
+                    class="avatar-uploader fl ml15"
+                    action="/AmoskiUser/ActivityCreate/saveFile"
+                    id="2"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <img :src="cameraImageUrl2" id="cameraImageUrl2" width="32" height="30" class="camera">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+            <el-upload
+                    class="avatar-uploader fl ml15"
+                    action="/AmoskiUser/ActivityCreate/saveFile"
+                    id="3"
+                    :show-file-list="false"
+                    :on-success="handleAvatarSuccess"
+                    :before-upload="beforeAvatarUpload">
+                <img v-if="imageUrl" :src="imageUrl" class="avatar">
+                <img :src="cameraImageUrl3" id="cameraImageUrl3" width="32" height="30" class="camera">
+                <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+        </div>
+        <div class="el-dialog__body">
+            <button type="button" class="el-button el-button--primary" @click="remove_img('cameraImageUrl0')" style="margin-left: 50px;"><span>删除</span></button>
+            <button type="button" class="el-button el-button--primary" @click="remove_img('cameraImageUrl1')" style="margin-left: 130px;"><span>删除</span></button>
+            <button type="button" class="el-button el-button--primary" @click="remove_img('cameraImageUrl2')" style="margin-left: 130px;"><span>删除</span></button>
+            <button type="button" class="el-button el-button--primary" @click="remove_img('cameraImageUrl3')" style="margin-left: 130px;"><span>删除</span></button>
+
+        </div>
+        <div class="clearfix primaryButton">
+            <el-button type="primary" @click="dialogPhotoVisible=false">确定</el-button>
+            <el-button type="primary" @click="dialogPhotoVisible=false">取消</el-button>
+        </div>
+    </el-dialog>
+
+    <header class="HeaderRoad clearfix">
+        <h1 class="fl" v-if="PointObj == ''">创建路书</h1>
+        <h1 class="fl" v-else>编辑路书</h1>
+        <el-steps :active="2" simple>
+            <!--<el-step title="基本信息"  icon="el-icon-upload">基本信息</el-step>-->
+            <el-step title="线路设置" icon="el-icon-edit">线路设置</el-step>
+        </el-steps>
+
+    </header>
+    <div class="center clearfix" v-cloak>
+        <div ref="navinforall" class="infor fl">
+            <ul ref="navinfor2" class="schedule">
+                <li class="clearfix" v-for="(item,index) in dayList" @click="dayListTab(index,item)" :class="{active:index===IsActiveIndex}">
+                    <span class="s_1">D{{item.day}}</span>
+                    <span class="s_2">{{item.startaddr}}</span>
+                    <span class="s_3">></span>
+                    <span class="s_4">{{item.endaddr}}</span>
+                    <div  @click.stop="easyIconLine(index)" style="background:url(img/easyIconLine.png) no-repeat;background-size:cover;width:16px;height:16px;border:none;float:right;margin-right:0;margin-top:5px;"></div>
+                    <div
+                            v-show="Iserprove == index"
+                            placement="right"
+                            width="400"
+                            trigger="click"
+                            class="diaLogedit"
+                    >
+                        <span class="s_5 dinline" @click="deletesch(index)"><a href="javascript:void(0)">删除</a></span>
+                        <span class="s_6 dinline" @click="adddayClick(index)"><a href="javascript:void(0)">编辑</a></span>
+                    </div>
+
+
+                </li>
+                <li class="addday" @click="adddayClick(-1)">+日程</li>
+            </ul>
+        </div>
+        <div class="templateleft fl RouterAisade" v-show="showDiv">
+            <h2>D{{IsActiveIndex+1}}</h2>
+            <ul class="RouterUl" @click="return;">
+                <li class="clearfix" @click="RouterTab(-1,0)">
+                    <div class="clearfix">
+                        <span class="fl">出发地：</span>
+                        <span class="elInputRouter fl"><input ref="PathPointInput1" id="inputStart"  v-on:input="InputFocus(-1)" v-model="startPoint.routeName" class="elInputRouter" placeholder="请输入内容"  style="background:#fff;border:1px solid #DCDFE6;border-radius:4px;color:#DCDFE6;"></span>
+                    </div>
+                    <div class="TimeRouter clearfix">
+                        <span>{{startPoint.aboutdisFormat}}</span>
+                        <span>{{startPoint.ridingtimeFormat}}</span>
+                    </div>
+                    <p class="clearfix point" @click="setLineDataClick(-1,null)"></p>
+                </li>
+                <li class="clearfix" v-show="pointList.length>0">
+                    <div class="clearfix" v-for="(item,index) in pointList"  @click="RouterTab(index,item)">
+                        <div class="clearfix loction" style="color:#DCDFE6"> <!--@blur="InputFocus(index,item)"-->
+                            <input type="text" v-model="item.routeName" :id="'input'+index" ref="PathPointInput" v-on:input="InputFocus(index,item)" class="elInputRouter" placeholder="请输入内容" style="background:#fff;border:1px solid #DCDFE6;border-radius:4px;color:#DCDFE6;">
+                            <!--                            <el-input :id="'input'+index" ref="PathPointInput" class="elInputRouter" placeholder="请输入内容" value="" ></el-input>-->
+                            <span class="errorIcon fl" @click.stop="deleteRouter(index)"><img src="img/errorIcon.png" alt="" title=""></span>
+                        </div>
+                        <div class="TimeRouter">
+                            <span>{{item.aboutdisFormat}}</span>
+                            <span>{{item.ridingtimeFormat}}</span>
+                        </div>
+                        <p class="clearfix point" @click="setLineDataClick(index,item)"></p>
+                    </div>
+                </li>
+                <li class="clearfix" @click="RouterTab(-2,0)">
+                    <span class="fl">目的地：</span>
+                    <span class="elInputRouter fl"><input ref="PathPointInput2" id="inputDes"  v-on:input="InputFocus(-2)" v-model="endPoint.routeName" class="elInputRouter" placeholder="请输入内容" value="" style="background:#fff;border:1px solid #DCDFE6;border-radius:4px;color:#DCDFE6;"></span>
+                </li>
+            </ul>
+            <p class="clearfix totalTime">
+                <span>累计：</span>
+                <span>{{allRouteDis}}</span>
+                <span>{{allRouteTime}}</span>
+            </p>
+            <input type="button" value="+" class="addrouterButton" @click="addRouter">
+        </div>
+        <div class="information fl eatmanageCount">
+            <div id="container" style="overflow: hidden !important;">
+                <div id=""><!--myPageTop-->
+                    <div class="navigationMoudel clearfix">
+                        <div class="clearfix navigationCount" style="width:190px;">
+                            <el-cascader :options="options"
+                                         v-model="cityname"
+                                         @change="handleChange('')"
+                                         :separator="''" class="fl navigationInput navigationcascader">
+                            </el-cascader>
+                            <!--<ul class="fl navIconList2">-->
+                                <!--<li @click="scenicSpot('景点')">-->
+                                    <!--<span><img src="img/navIcon1.png" alt="" title=""></span>-->
+                                    <!--<span>景点</span>-->
+                                <!--</li>-->
+                                <!--<li @click="scenicSpot('美食')">-->
+                                    <!--<span><img src="img/navIcon2.png" alt="" title=""></span>-->
+                                    <!--<span>美食</span>-->
+                                <!--</li>-->
+                                <!--<li @click="scenicSpot('加油站')">-->
+                                    <!--<span><img src="img/navIcon3.png" alt="" title=""></span>-->
+                                    <!--<span>加油站</span>-->
+                                <!--</li>-->
+                                <!--<li @click="scenicSpot('酒店')">-->
+                                    <!--<span><img src="img/navIcon1.png" alt="" title=""></span>-->
+                                    <!--<span>酒店</span>-->
+                                <!--</li>-->
+                                <!--<li>-->
+                                    <!--<el-select v-model="value" placeholder="请选择" class="navigationInput">-->
+                                        <!--<el-option-->
+                                                <!--v-for="item in options2"-->
+                                                <!--:key="item.value"-->
+                                                <!--:label="item.label"-->
+                                                <!--:value="item.value">-->
+                                        <!--</el-option>-->
+                                    <!--</el-select>-->
+                                <!--</li>-->
+                            <!--</ul>-->
+                        </div>
+                        <!--<div class="navTipCount">
+                            <input id="tipinput" class="tipInput" v-model="inputVal" />
+                            <el-button type="primary"  @click="searchMap(searchCurButton)">点击搜索</el-button>
+                        </div>-->
+                        <!--<div class="addPathpoint" v-show="RouterTabShow" >
+                            &lt;!&ndash;<div class="clearfix">
+                                &lt;!&ndash;<div class="addPathLeft">
+                                    <p class="txt">{{PointName}}</p>
+                                    <ul class="RouteLi">
+                                        <li class="active"><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                        <li><a href="#"></a></li>
+                                    </ul>
+                                </div>&ndash;&gt;
+                                &lt;!&ndash;<div class="addPathRight">
+                                    <p class="clearfix">
+                                        <span class="fl">相册</span>
+                                        <span class="fr">3/4</span>
+                                    </p>
+                                    <div class="clearfix mt15" @click="dialogFormVisible= true" style="width:300px;height:200px;border:1px solid #ccc;border-radius: 5px;">
+                                        &lt;!&ndash;                                        <el-upload&ndash;&gt;
+                                        &lt;!&ndash;                                                class="avatar-uploader fl"&ndash;&gt;
+                                        &lt;!&ndash;                                                action="https://jsonplaceholder.typicode.com/posts/"&ndash;&gt;
+                                        &lt;!&ndash;                                                :show-file-list="false"&ndash;&gt;
+                                        &lt;!&ndash;                                                :on-success="handleAvatarSuccess"&ndash;&gt;
+                                        &lt;!&ndash;                                                :before-upload="beforeAvatarUpload" &ndash;&gt;
+                                        &lt;!&ndash;                                                >&ndash;&gt;
+                                        &lt;!&ndash;                                            <img v-if="imageUrl" :src="imageUrl" class="avatar">&ndash;&gt;
+                                        &lt;!&ndash;                                            <img src="../img/camera.png" width="32" height="30" class="camera">&ndash;&gt;
+                                        &lt;!&ndash;                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>&ndash;&gt;
+                                        &lt;!&ndash;                                        </el-upload>&ndash;&gt;
+                                    </div>
+                                </div>&ndash;&gt;
+                            </div>&ndash;&gt;
+                            &lt;!&ndash;<div class="clearfix textareaInput">
+                                <el-input type="textarea" v-model="form.desc"></el-input>
+                            </div>
+                            <div class="saveButton"><el-button>保存</el-button></div>&ndash;&gt;
+                        </div>-->
+                    </div>
+                        <div class="addPathpoint"  v-show="showDiv">
+                            <div class="clearfix">
+                                <div class="addPathLeft">
+                                    <p class="txt" id="pointName">{{pointShowName}}{{currRouteIndx<0?'':currRouteIndx}}:{{PointObj.routeName}}</p>
+                                    <ul class="RouteLi">
+                                        <li v-for="item in iconList" :class="{active:iconIndex==item}" @click="iconClick(item)"><a href="#"></a></li>
+                                    </ul>
+                                </div>
+                                <div class="addPathRight">
+                                    <p class="clearfix">
+                                        <span class="fl" style="margin-bottom:15px;">相册</span>
+                                        <span class="fr">{{updImgCount}}/4</span>
+                                    </p>
+                                    <div class="clearfix mt15"  @click="chongedialogFormVisible" style="width:188px;height:110px;border:1px solid #ccc;border-radius: 5px;">
+                                        <img :src="camera[PointName] ? camera[PointName] : '../img/camera.png'"  style="margin: 0% 0% 0% 0%;width: 100%;height: 100%;"/>
+                                        <!--<el-upload
+                                                class="avatar-uploader"
+                                                action="/AmoskiUser/ActivityCreate/saveFile"
+                                                :show-file-list="false"
+                                                :on-success="handleAvatarSuccess"
+                                                :before-upload="beforeAvatarUpload">
+                                            <img v-if="PointObj.imgUrl" :src="'/AmoskiUser/ActivityCreate/getFile?filePath='+PointObj.imgUrl" width="100%" height="100%" class="avatar">
+                                            <img src="../img/camera.png" width="32" height="30" class="camera">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="clearfix textareaInput">
+                                <el-input type="textarea"  row="10" v-model="PointObj.remake" v-on:input="txtInput"></el-input>
+                            </div>
+                            <!--<div class="saveButton"><el-button>保存</el-button></div>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix">
+            <el-row class="elrowButton">
+                <el-button type="primary" @click="exitPage('creatRoadBook.html')">上一步</el-button>
+                <!--<el-button type="primary">预览和设置</el-button>-->
+                <el-button type="primary" @click="updRouteData(1)">保存</el-button>
+                <el-button type="primary" @click="updRouteData(2)">发布</el-button>
+                <el-button type="info" @click="exitPage('index.html')">退出</el-button>
+            </el-row>
+        </div>
+    </div>
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="../js/vue2.min.js"></script>
+    <script type="text/javascript" src="../js/axios.min.js"></script>
+    <script type="text/javascript" src="../js/qs.js"></script>
+    <script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=76e7b372802c8e7526fa37f79717c502&plugin=AMap.Autocomplete,AMap.PlaceSearch,AMap.Driving"></script>
+    <script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+    <script type="text/javascript" src="../js/element-ui.js"></script>
+    <script type="text/javascript" src="../js/country-level2-data.js"></script>
+    <script type="text/javascript" src="../js/utils.js"></script>
+    <script type="text/javascript" src="../js/wangEditor.min.js"></script>
+    <!--<script type="text/javascript" src="../js/tinymce.min.js" referrerpolicy="origin"></script>-->
+    <script>
+        var placeSearch,auto,map,auto2,placeSearch2,driving,driving1;
+        let addRobj = {routeName:'',ridingtime:'',aboutdis:'',aboutdisFormat:0,ridingtimeFormat:0,routeIcon:1,remake:'',routeId:parseInt(GetRequest().id),lng:'',lat:''};
+        var app = new Vue({
+            el: '#routeSeeting',
+            data: {
+                showDiv:false,
+                IsActiveIndex:0,
+                Iserprove:-1,
+                IserproveCur:0,
+                pointShowName:"出发地",
+                camera:[],
+                PointName:"",
+                iconIndex:1,
+                currRouteIndx:-1,
+                allRouteDis:0,
+                allRouteTime:0,
+                RouterTabShow:true,
+                startPoint:{...addRobj},
+                endPoint:{...addRobj},
+                iconList:[1,2,3,4,5,6,7,8],
+                PointObj:{},//途径点名称
+                aboutdisKm:0,
+                ridingtimeMin:0,
+                pathPoint1:'',
+                isActive:'',
+                imageUrl: '',
+                value:'',
+                input:'',
+                centerDialogVisible:false,
+                cameraImageUrl0:'../img/camera.png',
+                cameraImageUrl1:'../img/camera.png',
+                cameraImageUrl2:'../img/camera.png',
+                cameraImageUrl3:'../img/camera.png',
+                formLabelWidth: '120px',
+                inputVal:'',//输入框内容
+                form: {
+                    name: '',
+                    desc:'',
+                },
+                tablistimg:'',//存放最终显示的图片
+                tablistall:[
+                    [
+                        {
+                            img:'../img/listImg1.png',
+                            txt:'内蒙草原生机嘉年华',
+                        },
+                        {
+                            img:'../img/listImg2.png',
+                            txt:'哈尔滨冰雪重机嘉年华',
+                        },
+                        {
+                            img:'../img/listImg1.png',
+                            txt:'内蒙草原生机嘉年华',
+                        },
+                    ],
+                ],
+                cityname:'长沙',//城市名;
+                selectedOptions: [],//存放默认值
+                options:options,//存放城市数据
+                inputVal:'',//当前选中地址
+                searchCurButton:'',//
+                departure:'',//出发地
+                departure2:'',//出发地
+                pointList:[
+
+                ],
+                options2: [{
+                    value: '不限星级',
+                    label: '不限星级'
+                }, {
+                    value: '一星级',
+                    label: '一星级'
+                },{
+                    value: '二星级',
+                    label: '二星级'
+                },{
+                    value: '三星级',
+                    label: '三星级'
+                },{
+                    value: '四星级',
+                    label: '四星级'
+                },{
+                    value: '五星级',
+                    label: '五星级'
+                }],
+                value: '',
+                dialogFormVisible: false,
+                dialogFormVisible1: false,
+                dialogPhotoVisible:false,
+                formLabelWidth: '120px',
+                cityname1:'',//城市名;
+                cityname2:'',
+                selectedOptions: [],//存放默认值
+                PathPointListTab:[//切换途径点
+                    [{
+                        "pointName":'途径点2：经开区管委会',
+                    }],
+                    [{
+                        "pointName":'途径点3：经开区管委会',
+                    }],
+                ],
+                dayList:[],
+                dialogFormVisible: false,
+                requestUrl:{
+                    requestRouteDataUrl:"/AmoskiRiding/ridingGuideManage/queryRouteList",
+                    requestUpdRouteDataUrl:"/AmoskiRiding/ridingGuideManage/addOrUpdGuideRouteData",
+                },
+                currRoadId:'',
+                isUpdate:false,
+                isGoPage:true,
+                isDayEdit:0,
+                editor:'',
+                editor1:'',
+                beforeInputVal:'',
+                timeoutObj:'',
+                lineId:0,
+                currUpdImgId:'',
+                updImgCount:0,
+                easyLine:false,
+            },
+            mounted(){
+                window.parent.ShowLayerWait();
+                let that = this;
+                var obj=parent.document.getElementById("mCustomScrollbarMenu");
+                var height=obj.offsetHeight-100;
+                parent.document.getElementsByTagName("iframe")[0].height=height;
+
+                that.currRoadId=parseInt(GetRequest().id);
+                that.tablistimg = that.tablistall[0];
+                that.initMap();
+                /*var li = document.querySelectorAll('.RouteLi li');
+                for (var i = 0; i < li.length; i++)
+                    li[i].onclick = function () {
+                        for (var i = 0; i < li.length; i++) li[i].className = '';
+                        this.className='active'
+                        that.iconIndex=this.dataset.val;
+                    }*/
+
+                that.queryRoadRouteData();
+                $(document).on("click",".el-message-box__headerbtn",function(e){
+                    that.$message.closeAll();
+                    that.isGoPage=false;
+                })
+
+                document.getElementById('routeSeeting').onclick = function(){
+                    that.Iserprove = -1;
+                }
+            },
+            methods: {
+                easyIconLine(index){
+                    this.easyLine = true;
+                    this.Iserprove = index;
+                    if(this.Iserprove == index){
+                        this.IserproveCur = true
+                    }else{
+                        this.Iserprove = false;
+                    }
+
+                },
+                chongedialogFormVisible(){
+                    this.dialogPhotoVisible=true;
+                    var obj;
+                    if(this.currRouteIndx==-1){
+                        obj=this.startPoint;
+                    }else if(this.currRouteIndx==-2){
+                        obj=this.endPoint;
+                    }else{
+                        obj=this.pointList[this.currRouteIndx-1];
+                    }
+                    for(let i=0;i<=3;i++){
+                        var imgUrl=obj.imgUrl;
+                        if(i>0){
+                            imgUrl=obj["imgUrl"+i];
+                        }
+                        if(imgUrl==null){
+                            this["cameraImageUrl"+i]='../img/camera.png';
+                        }else{
+                            this["cameraImageUrl"+i]=obj.baseUrl+"?filePath="+imgUrl;
+                        }
+                    }
+                    this.$nextTick(function(){
+                        for(let i=0;i<=3;i++) {
+                            if (this["cameraImageUrl" + i] == "../img/camera.png") {
+                                document.getElementById("cameraImageUrl" + i).style = {};
+                            } else {
+                                document.getElementById("cameraImageUrl" + i).style.width = "100%";
+                                document.getElementById("cameraImageUrl" + i).style.height = "100%"
+                                document.getElementById("cameraImageUrl" + i).style.marginTop = "0px"
+                            }
+                        }
+                    })
+                },
+                countImgNumber(){//统计上传图片数量
+                    this.updImgCount=0;
+                    var obj;
+                    if(this.currRouteIndx==-1){
+                        obj=this.startPoint;
+                    }else if(this.currRouteIndx==-2){
+                        obj=this.endPoint;
+                    }else{
+                        obj=this.pointList[this.currRouteIndx-1];
+                    }
+                    for(var i=0;i<4;i++){
+                        if(i==0){
+                            if(obj["imgUrl"]){
+                                this.updImgCount++;
+                            }
+                        }else{
+                            if(obj["imgUrl"+i]){
+                                this.updImgCount++;
+                            }
+                        }
+                    }
+                },
+                initMap(){
+                    let _this = this;
+                    //地图加载
+                    map = new AMap.Map("container", {
+                        zoom: 14,
+                        resizeEnable: true,
+                    });
+                    //输入提示
+                    var autoOptions = {
+                        input: "tipinput"
+                    };
+                    auto = new AMap.Autocomplete(autoOptions);
+                    AMap.event.addListener(auto, "select", _this.select);//注册监听，当选中某条记录时会触发
+                    placeSearch = new AMap.PlaceSearch({
+                        map: map,
+                        city:_this.cityname,
+                        autoFitView:true,
+                        citylimit:true,
+                        showCover:false
+                    });  //构造地点查询类
+                    AMap.event.addListener(placeSearch, "markerClick", _this.markPointClick);
+                    driving = new AMap.Driving({
+                        map: map,
+                    });
+                    var drivingOption = {
+                        ferry: 1, // 是否可以使用轮渡
+                    }
+                    driving1 = new AMap.Driving(drivingOption);
+                },
+                select(e){
+                    var that=this;
+                    map.setCity(e.poi.adcode);
+                    placeSearch.search(e.poi.name);
+                    /*placeSearch.search(e.poi.name,function(status, result){
+                        // console.log(status);
+                    });
+                    var maker=new AMap.Marker({
+                        map:map,
+                        position:new AMap.LngLat(e.poi.location.lng,e.poi.location.lat),
+                        clickable:false,
+                    });*/
+                    clearTimeout(that.timeoutObj);
+                    that.timeoutObj="";
+                    that.setSearchVal(e.poi);
+                },
+                iconClick(item){
+                    var that=this;
+                    that.iconIndex=item;
+                    if(that.currRouteIndx>0){
+                        that.pointList[that.currRouteIndx-1].routeIcon=item;
+                    }else{
+                        if(that.currRouteIndx==-1){
+                            that.startPoint.routeIcon=item;
+                        }else{
+                            that.endPoint.routeIcon=item;
+                        }
+                    }
+                },
+                setSearchVal(obj){//赋值地图查询点信息
+                    var that=this;
+                    var addr=obj.pname+obj.cityname;
+                    if(obj.cityname!=obj.adname){
+                        addr+=obj.adname;
+                    }
+                    if(!obj.pname){
+                        addr=obj.district;
+                    }
+                    addr+=" "+obj.address;
+                    if (that.currRouteIndx == -1) {
+                        that.startPoint.address=addr;
+                        that.startPoint.routeName=obj.name;
+                        that.startPoint.lng=obj.location.lng;
+                        that.startPoint.lat=obj.location.lat;
+                    }else if(that.currRouteIndx == -2){
+                        that.endPoint.address=addr;
+                        that.endPoint.routeName=obj.name;
+                        that.endPoint.lng=obj.location.lng;
+                        that.endPoint.lat=obj.location.lat;
+                    }else{
+                        that.pointList[that.currRouteIndx-1].address=addr;
+                        that.pointList[that.currRouteIndx-1].routeName=obj.name;
+                        that.pointList[that.currRouteIndx-1].lng=obj.location.lng;
+                        that.pointList[that.currRouteIndx-1].lat=obj.location.lat;
+                    }
+                    that.$nextTick(function(){
+                        if (that.currRouteIndx == -1) {
+                            that.RouterTab(-1);
+                        }else if(that.currRouteIndx == -2){
+                            that.RouterTab(-2);
+                        }else{
+                            that.RouterTab(that.currRouteIndx-1);
+                        }
+                    })
+                    if(!obj.location){
+                        return;
+                    }
+                    //var routeArr=[];
+                    var allAddr="";
+                    for (var i=0;i<that.pointList.length;i++){
+                        if(that.pointList[i].lng&&that.pointList[i].lat){
+                            allAddr+="-"+that.pointList[i].routeName;
+                            //routeArr.push({"keyword":that.pointList[i].routeName});
+                        }
+                    }
+                    if(that.startPoint.lng&&that.startPoint.lat){
+                        allAddr=that.startPoint.routeName+allAddr;
+                        //routeArr.splice(0,0,{"keyword":that.startPoint.routeName});
+                    }
+                    if(that.endPoint.lng&&that.endPoint.lat){
+                        allAddr=allAddr+"-"+that.endPoint.routeName;
+                        //routeArr.splice(routeArr.length-1,0,{"keyword":that.endPoint.routeName});
+                    }
+
+                    that.dayList[that.IsActiveIndex].allRoutepoint=allAddr;
+                    // 根据起终点名称规划驾车导航路线
+                    //if(routeArr.length>1){
+                        that.isUpdate=true;
+                        var routeArr=[];
+                        if(that.currRouteIndx==-1){//起始点
+                            if(that.startPoint.lat&&that.startPoint.lng){
+                                routeArr.push({"keyword":that.startPoint.routeName});
+                            }
+                            if(that.pointList.length>0){
+                                if(that.pointList[0].lat&&that.pointList[0].lng){
+                                    routeArr.push({"keyword":that.pointList[0].routeName});
+                                }
+                            }else{
+                                if(that.endPoint.lat&&that.endPoint.lng){
+                                    routeArr.push({"keyword":that.endPoint.routeName});
+                                }
+                            }
+                            that.saveDistanceAndTime(routeArr,that.startPoint);
+                        }else if(that.currRouteIndx==-2){//终点
+                            var currObj={};
+                            if(that.pointList.length>0){
+                                currObj=that.pointList[that.pointList.length-1];
+                                //routeArr.push({"keyword":that.pointList[that.pointList.length-1].routeName});
+                            }else{
+                                currObj=that.startPoint;
+                                //routeArr.push({"keyword":that.startPoint.routeName});
+                            }
+                            if(currObj.lng&&currObj.lat){
+                                routeArr.push({"keyword":currObj.routeName});
+                            }
+                            if(that.endPoint.lng&&that.endPoint.lat){
+                                routeArr.push({"keyword":that.endPoint.routeName});
+                            }
+                            that.saveDistanceAndTime(routeArr,currObj);
+                        }else{
+                            if(that.pointList[that.currRouteIndx-1].lng&&that.pointList[that.currRouteIndx-1].lat){
+                                routeArr.push({"keyword":that.pointList[that.currRouteIndx-1].routeName});
+                            }
+                            if(that.currRouteIndx==that.pointList.length){
+                                if(that.endPoint.lng&&that.endPoint.lat){
+                                    routeArr.push({"keyword":that.endPoint.routeName});
+                                }
+                            }else{
+                                if(that.pointList[that.currRouteIndx].lng&&that.pointList[that.currRouteIndx].lat){
+                                    routeArr.push({"keyword":that.pointList[that.currRouteIndx].routeName});
+                                }
+                            }
+                            that.saveDistanceAndTime(routeArr,that.pointList[that.currRouteIndx-1],function(){
+                                routeArr=[];
+                                var currObj={};
+                                if(that.currRouteIndx-2<0){
+                                    currObj=that.startPoint;
+                                    //routeArr.push(0,0,{"keyword":that.startPoint.routeName});
+                                }else{
+                                    currObj=that.pointList[that.currRouteIndx-2];
+                                    //routeArr.push(0,0,{"keyword":that.pointList[that.currRouteIndx-2].routeName});
+                                }
+                                if(that.pointList[that.currRouteIndx-1].lng&&that.pointList[that.currRouteIndx-1].lat){
+                                    routeArr.push({"keyword":that.pointList[that.currRouteIndx-1].routeName});
+                                }
+                                if(currObj.lng&&currObj.lat){
+                                    routeArr.push({"keyword":currObj.routeName});
+                                }
+                                that.saveDistanceAndTime(routeArr,currObj);
+                            });
+                        }
+                    //}
+                },
+                markPointClick(data) {
+                    let that = this;
+                    //placeSearch.clear();
+                    clearTimeout(that.timeoutObj);
+                    that.timeoutObj="";
+                    that.setSearchVal(data.data);
+                    return;
+                },
+                dateAndDistanceFormat(desObj){
+                    var that=this;
+                    desObj.aboutdisFormat=Math.ceil(desObj.aboutdis/1000.0)+"km";
+                    //预计骑行时间 s
+                    var second=parseInt(desObj.ridingtime/60);var hour=parseInt(second/60);
+                    var val="";
+                    if(hour>0){
+                        val+=hour+":";
+                        second=second%60;
+                    }else{
+                        val+="00:";
+                    }
+                    if(second>0){
+                        val+=second+":";
+                    }else{
+                        val+="00:";
+                    }
+                    if(desObj.ridingtime%60>0){
+                        val+=desObj.ridingtime%60;
+                    }else{
+                        val+="00";
+                    }
+                    desObj.ridingtimeFormat=val;
+                },
+                //计算总距离
+                addAllDisAndTime(){
+                    var that=this;
+                    //计算总距离
+                    that.allRouteDis=0;
+                    that.allRouteTime=0;
+                    //开始
+                    that.allRouteDis+=strToNum(that.startPoint.aboutdis);
+                    that.allRouteTime+=strToNum(that.startPoint.ridingtime);
+                    that.dateAndDistanceFormat(that.startPoint);
+                    //途经点
+                    for(var i=0;i<that.pointList.length;i++){
+                        var obj=that.pointList[i];
+                        if(obj.aboutdis&&!isNaN(obj.aboutdis)){
+                            that.allRouteDis+=strToNum(obj.aboutdis);
+                            that.allRouteTime+=strToNum(obj.ridingtime);
+                            that.dateAndDistanceFormat(obj);
+                        }
+                    }
+                    var newObj={
+                        aboutdis:that.allRouteDis,
+                        ridingtime:that.allRouteTime
+                    }
+                    that.dateAndDistanceFormat(newObj);
+                    that.allRouteDis=newObj.aboutdisFormat;
+                    that.allRouteTime=newObj.ridingtimeFormat;
+                },
+                queryRoadRouteData(){//查询表格数据
+                    let that = this;
+                    if(that.currRoadId){
+                        var obj={
+                            guideId:that.currRoadId,
+                        };
+                        axiosSendPost(that.requestUrl.requestRouteDataUrl,obj,function(res){
+                            var data=res.data;//数据
+
+                            if(data&&data.length>0){
+                                that.showDiv=true;
+                                that.dayList=data;
+                                if(data[0].pointList&&data[0].pointList.length>0){
+                                    //that.pointList=data[0].pointList;
+                                    that.dayListTab(0,data[0])
+                                }
+                                that.$nextTick(() => {
+                                    that.initMapSeach();//初始化input搜索
+                                })
+                            }else{
+                                that.pointList=[];
+                            }
+                            window.parent.ShowLayerClose();
+                        },function(res){
+                            window.parent.ShowLayerClose();
+                        });
+                    }
+                },
+                saveDistanceAndTime(routeArr,desObj,func){
+                    var that=this;
+                    if(routeArr.length>=2){
+                        driving.search(routeArr, function(status, result) {
+                            console.log(">>>>>>result:"+result);
+                            if (status === 'complete') {
+                                //预计里程 m
+                                desObj.aboutdis=result.routes[0].distance;
+                                //预计骑行时间 s
+                                desObj.ridingtime=result.routes[0].time;
+                                that.addAllDisAndTime();
+                                //that.dateAndDistanceFormat(desObj);
+                                if(typeof func == 'function'){
+                                    func();
+                                }
+                            } else {
+                                that.$message.error("没有找到该途径点的路线规划");
+                                console.log(">>>>>>>result:"+result);
+                            }
+                        });
+                    }
+                    /*//开始地点纬度
+                    desObj.startlat=result.origin.lat;
+                    //开始地点经度
+                    desObj.startlng=result.origin.lng;
+                    //结束地点纬度
+                    desObj.endlat=result.destination.lat;
+                    //结束地点经度
+                    desObj.endlng=result.destination.lng;*/
+                },
+                searchMap(index){
+                    let _this = this;
+                    placeSearch.search(_this.inputVal,function(status, result){
+                        // console.log(status);
+                    })
+                    _this.breakfastadd = _this.inputVal;
+
+                },
+                handleChange(value){
+                    let that = this;
+                    that["cityname"+value] = that["cityname"+value][1]
+                    placeSearch.setCity(that["cityname"+value]);
+                    //auto.setCity(that["cityname"+value]);
+                    //auto2.setCity(that["cityname"+value]);
+                    map.setCity(that["cityname"+value]);
+                },
+                addRouter(){
+                    var that=this;
+                    if(this.dayList.length==0){
+                        this.$message.error("请添加日程");
+                        return;
+                    }
+                    if(!that.startPoint.lng||!that.endPoint.lng){
+                        /*layer.msg("请选择出发地，和目的地", {
+                            icon : 5,
+                            time : 3000
+                        });*/
+                        this.$message.error("请先填写正确的出发地和目的地");
+                        return;
+                    }
+                    if(that.currRouteIndx>=1){
+                        var val=that.pointList[that.currRouteIndx-1].lng;
+                        if(!val){
+                            this.$message.error("请先填写正确的途径点再添加");
+                            return;
+                        }
+                    }
+                    var newObj={...addRobj};
+                    newObj.type=3;
+                    newObj.routeId=that.dayList[that.IsActiveIndex].id;
+                    that.pointList.push(newObj);
+                    /*var beforePoint;
+                    if(that.pointList.length>1){
+                        beforePoint=that.pointList[that.pointList.length-2];
+                    }else{
+                        beforePoint=that.startPoint;
+                    }
+                    //预计里程 m
+                    beforePoint.//:disabled="formDisabled"=0;
+                    //预计骑行时间 s
+                    beforePoint.ridingtime=0;
+                    that.dateAndDistanceFormat(beforePoint);
+                    that.dateAndDistanceFormat(newObj);*/
+                    that.addAllDisAndTime();
+                    that.$nextTick(() => {
+                        that.initMapSeach(that.pointList.length-1);//初始化input搜索
+                    })
+                    //that.currRouteIndx=that.pointList.length;
+                    that.isUpdate=false;
+                },
+                deleteRouter(index){
+                    this.pointList.splice(index,1);
+                    that.addAllDisAndTime();
+                    this.$nextTick(function(){
+                        this.RouterTab(index-1);
+                    })
+                },
+                remove_img(index){
+                    this[index]="../img/camera.png";
+                    //this.dayList[0].pointList[0].imgUrl = "";
+                    this.$forceUpdate();
+                },
+                handleAvatarSuccess(res, file) {
+
+                    var that=this;
+                    var pathUrlArr=fileUploadSuccess(res);
+                    if(pathUrlArr.length>0){
+                        //that.PointObj.imgUrl = res.resultData[0].fileNameUrl;
+                        that[that.currUpdImgId]=res.resultData[0].fileNameUrl;
+                        console.log(that.currUpdImgId);
+                        if(that.currRouteIndx>0){
+                            that.dealUpdAfterData(that.pointList[that.currRouteIndx-1],res);
+                        }else{
+                            var obj;
+                            if(that.currRouteIndx==-1){
+                                obj=that.startPoint;
+                            }else{
+                                obj=that.endPoint;
+                            }
+                            that.dealUpdAfterData(obj,res);
+                        }
+                        //that.PointObj.imgUrl=res.resultData[0].fileNameUrl;
+                    }
+                },
+                dealUpdAfterData(obj,res){
+
+                    var that=this;
+                    obj.baseUrl="/"+res.resultData[0].projectUrl+res.resultData[0].filePathUrl;
+                    for(var j=0;j<4;j++){
+                        console.log(">>>>>>>>");
+                        if(that.currUpdImgId==("cameraImageUrl"+j)){
+                            if(j==0){
+                                obj.imgUrl=res.resultData[0].fileNameUrl;
+                            }else{
+                                obj["imgUrl"+j]=res.resultData[0].fileNameUrl;
+                            }
+                            that[that.currUpdImgId]=obj.baseUrl+"?filePath="+res.resultData[0].fileNameUrl;
+
+                            document.getElementById(that.currUpdImgId).style.width = "100%";
+                            document.getElementById(that.currUpdImgId).style.height = "100%";
+                            document.getElementById(that.currUpdImgId).style.marginTop = "0px";
+                            that.countImgNumber();
+                        }
+                    }
+                    that.camera[that.PointName]=obj.baseUrl+"?filePath="+res.resultData[0].fileNameUrl;
+
+                },
+                beforeAvatarUpload(file){
+                    var that=this;
+                    // const isJPG = file.type === 'image/jpeg';
+                    const isLt2M = file.size / 1024 / 1024 < 2;
+                    // if (!isJPG) {
+                    //     that.$message.error('上传头像图片只能是 JPG 格式!');
+                    // }
+                    if (!isLt2M) {
+                        that.$message.error('上传头像图片大小不能超过 2MB!');
+                    }
+                    /*const isSize = new Promise(function(resolve, reject) {
+                        let _URL = window.URL || window.webkitURL;
+                        let image = new Image();
+                        image.onload = function() {
+                            let valid = image.width == imgWidth && image.height == imgHeight;
+                            valid ? resolve() : reject();
+                        };
+                        image.src = _URL.createObjectURL(file);
+                    }).then(
+                        () => {
+                            return file;
+                        },
+                        () => {
+                            this.$message.error("上传头像图片尺寸不符合,只能是"+imgWidth+"*"+imgHeight);
+                            return Promise.reject();
+                        }
+                    );*/
+                    var currId=event.currentTarget.previousSibling.id;
+                    that.currUpdImgId=currId;
+                    return  isLt2M;
+                },
+                RouterTab(index,item){//切换途径点
+                    if(this.dayList.length==0){
+                        this.$message.error("请添加日程");
+                        return;
+                    }
+                    if(index==-1){//起点
+                        this.currRouteIndx=-1;
+                        this.PointObj = {...this.startPoint};
+                        this.pointShowName="出发地";
+                        this.iconIndex=this.startPoint.routeIcon;
+                        this.PointName= "出发地："+ this.PointObj.routeName;
+                        //document.getElementById("pointName").innerText="出发地:"+this.PointObj.routeName;
+                    }else if(index==-2){//终点
+                        this.currRouteIndx=-2;
+                        this.PointObj = {...this.endPoint};
+                        this.pointShowName="目的地";
+                        this.iconIndex=this.endPoint.routeIcon;
+                        this.PointName= "目的地："+ this.PointObj.routeName;
+                        //document.getElementById("pointName").innerText="目的地:"+this.PointObj.routeName;
+                    }else{
+                        this.pointShowName="途径点";
+                        this.currRouteIndx=index+1;
+                        this.PointObj = {...this.pointList[index]};
+                        this.iconIndex=this.pointList[index].routeIcon;
+                        this.PointName= "途径点"+this.currRouteIndx+"："+ this.PointObj.routeName;
+                    }
+                    this.aboutdisKm=Math.ceil(this.PointObj.aboutdis/1000),this.ridingtimeMin=Math.ceil(this.PointObj.ridingtime/60);
+                    this.RouterTabShow = true;
+                    this.countImgNumber();
+                },
+                scenicSpot(val){
+                    AMap.service(["AMap.PlaceSearch"], function() {
+                        // //关键字查询
+                        placeSearch.search(val,function(status, result){
+                        })
+                    });
+                },
+                initMapSeach(initAll){
+                    var that=this;
+                    if(!initAll){
+                        for(var i=1;i<3;i++){
+                            AMap.event.addListener(new AMap.Autocomplete({
+                                input:that.$refs["PathPointInput"+i].id
+                            }), "select", that.select);//注册监听，当选中某条记录时会触发
+                        }
+                        if(that.$refs.PathPointInput){
+                            that.$refs.PathPointInput.forEach(function(cur,index,arry){
+                                AMap.event.addListener(new AMap.Autocomplete({
+                                    input:cur.id
+                                }), "select", that.select);//注册监听，当选中某条记录时会触发
+                            })
+                        }
+                    }else{
+                        AMap.event.addListener(new AMap.Autocomplete({
+                            input:that.$refs.PathPointInput[initAll].id
+                        }), "select", that.select);//注册监听，当选中某条记录时会触发
+                    }
+                },
+                InputFocus(index){
+
+                    let that = this;
+                    var idVal ="";
+                    // if(event.inputType=="insertText"){//插入数据才做查询
+                        if(that.dayList.length==0){
+                            return;
+                        }
+                        if(index==-1){
+                            idVal=that.$refs.PathPointInput1.value;
+                            // console.log(idVal);
+                        }else if(index==-2){
+                            idVal=that.$refs.PathPointInput2.value;
+                        }else{
+                            var obj=that.$refs.PathPointInput[index];
+                            idVal=obj.value;
+                        }
+                        that.inputTimeoutContr(idVal);
+                    // }
+                },
+                inputTimeoutContr(idVal){
+                    var that=this;
+                    if(!that.timeoutObj){//控制n秒后没有输入就执行搜索
+                        that.beforeInputVal=idVal;
+                        that.timeoutObj=setTimeout(function(){
+                            var currVal=idVal;
+                            var currRouteIndx=that.currRouteIndx;
+                            if(currRouteIndx==-1){
+                                currVal=that.$refs.PathPointInput1.value;
+                            }else if(currRouteIndx==-2){
+                                currVal=that.$refs.PathPointInput2.value;
+                            }else{
+                                var obj=that.$refs.PathPointInput[that.currRouteIndx-1];
+                                currVal=obj.value;
+                            }
+                            that.timeoutObj='';
+                            // console.log(that.beforeInputVal);
+                            // console.log(currVal);
+                            if(that.beforeInputVal==currVal){
+
+                                that.PointObj.routeName=currVal;
+                                placeSearch.search(currVal,function(status, result) {
+                                    // 搜索成功时，result即是对应的匹配数据
+                                    if(status=="complete"){
+                                        if(result.poiList.pois.length==1){
+                                            var data=result.poiList.pois[0];
+                                            //that.setSearchVal(data);
+                                        }else{
+                                            that.setSearchVal({location:'',name:that.beforeInputVal});
+                                            //that.$message.success("搜索到多个地址，请在地图上选一个地址!");
+                                        }
+                                        that.$message.success("搜索成功，请选择地址!");
+                                    }else{
+                                        that.$message.error("搜索失败，未找到该地址!");
+                                        that.setSearchVal({location:'',name:that.beforeInputVal});
+                                    }
+                                })
+                                // var placeSearch2 = new AMap.PlaceSearch({
+                                //     map: map,
+                                //     city:that.cityname,
+                                //     autoFitView:true,
+                                // });  //构造地点查询类
+                                // AMap.event.addListener(placeSearch, "select", select);//注册监听，当选中某条记录时会触发
+                                // function select(e){
+                                //     placeSearch2.setCity(e.poi.adcode);
+                                //     placeSearch2.search(e.poi.name);  //关键字查询查询
+                                // }
+                            }else{
+                                that.inputTimeoutContr(currVal);
+                            }
+                        },1500);
+                    }
+                },
+                clearRouteData(){//清空当前途径点数据
+
+                },
+                changemealList(data,index){
+                    //console.log('abccccccccccc');
+                    console.log(data,index);
+                },
+                adddayClick(type){
+                    var that=this;
+                    that.dialogFormVisible = true;
+                    that.$nextTick(function(){
+                        if(!that.editor){
+                            var E = window.wangEditor;
+                            that.editor = new E('#mytextarea');
+                            that.editor.customConfig.uploadImgShowBase64 = true;
+                            that.editor.create();
+                        }
+                        if(type==-1){
+                            that.isDayEdit=-1;
+                            that.cityname1='1';
+                            that.cityname2='1';
+                            if(that.editor){
+                                that.editor.txt.html("");
+                            }
+                        }else{
+                            that.isDayEdit=type;
+                            var dayEntity=that.dayList[type];
+                            if(that.editor){
+                                that.editor.txt.html(dayEntity.introduction?dayEntity.introduction:'');
+                            }
+                            that.cityname1=dayEntity.startaddr;
+                            that.cityname2=dayEntity.endaddr;
+                        }
+                    })
+                },
+                setLineDataClick(idx){
+                    var that=this;
+                    that.dialogFormVisible1 = true;
+                    that.lineId=idx;
+
+                    /*this.PointObj.aboutdisKm=parseInt(this.PointObj.aboutdis/1000);
+                    this.PointObj.ridingtimeMin=parseInt(this.PointObj.ridingtime/60);*/
+                    that.$nextTick(function() {
+
+                        if (!that.editor1) {
+                            var E = window.wangEditor;
+                            that.editor1 = new E('#mytextarea1');
+                            that.editor1.customConfig.uploadImgShowBase64 = true;
+                            that.editor1.create();
+                        }
+                        if(that.lineId==-1){
+                            that.editor1.txt.html(that.startPoint.lineIntroduction);
+                        }else{
+                            that.editor1.txt.html(that.pointList[that.lineId].lineIntroduction?that.pointList[that.lineId].lineIntroduction:'');
+                        }
+                    });
+                },
+                finashSetLineData(){
+                    var that=this;
+                    that.dialogFormVisible1 = false;
+                    if(that.lineId==-1){
+                        that.startPoint.lineIntroduction=that.editor1.txt.html();
+                        that.startPoint.aboutdis=parseInt(that.aboutdisKm)*1000;
+                        that.startPoint.ridingtime=parseInt(that.ridingtimeMin)*60;
+                    }else{
+                        that.pointList[that.lineId].lineIntroduction=that.editor1.txt.html();
+                        that.pointList[that.lineId].aboutdis=parseInt(that.aboutdisKm)*1000;
+                        that.pointList[that.lineId].ridingtime=parseInt(that.ridingtimeMin)*60;
+                    }
+                    that.addAllDisAndTime();
+                },
+                txtInput(){
+                    var that=this;
+                    if(that.currRouteIndx>0){
+                        that.pointList[that.currRouteIndx-1].remake=that.PointObj.remake;
+                    }else{
+                        if(that.currRouteIndx==-1){
+                            that.startPoint.remake=that.PointObj.remake;
+                        }else{
+                            that.endPoint.remake=that.PointObj.remake;
+                        }
+                    }
+                },
+                addatelog(){//点击确定添加日程
+                    var that=this;
+                    if(this.cityname1.length==0||this.cityname2.length==0){
+                        /*layer.msg("请选择出发地，和目的地", {
+                            icon : 5,
+                            time : 3000
+                        });*/
+                        this.$message.error("请选择出发地和目的地");
+                        return;
+                    }
+                    var startPoint={...addRobj},endPoint={...addRobj};
+                    startPoint.type=1,endPoint.type=2;
+                    let originarry={};
+                    if(that.isDayEdit!=-1){
+                        originarry=that.dayList[that.isDayEdit];
+                    }else{
+                        originarry.day=that.dayList.length+1;
+                        originarry.guideId=that.currRoadId;
+                        originarry.pointList=[startPoint,endPoint];
+                        that.dayList.push(originarry);
+                    }
+                    originarry.startaddr=that.cityname1;
+                    originarry.endaddr=that.cityname2;
+                    originarry.introduction=that.editor.txt.html();
+                    originarry.simpIntroduction=document.getElementById("mytextarea").innerText.substr(0,40).trim();
+                    that.showDiv=true;
+                    if(that.isDayEdit==-1){
+                        that.startPoint.type=1;
+                        that.endPoint.type=2;
+                        that.dayListTab(that.dayList.length-1,originarry);
+                    }
+                    that.dialogFormVisible = false;
+                    return;
+                    // 根据起终点名称规划驾车导航路线
+                    driving1.search([
+                        {keyword: that.cityname1,city:that.cityname1},
+                        {keyword: that.cityname2,city:that.cityname2}
+                    ], function(status, result) {
+                        // result 即是对应的驾车导航信息，相关数据结构文档请参考  https://lbs.amap.com/api/javascript-api/reference/route-search#m_DrivingResult
+                        if (status === 'complete') {
+                            //预计里程 m
+                            originarry.aboutdis=result.routes[0].distance;
+                            //预计骑行时间 s
+                            originarry.ridingtime=result.routes[0].time;
+                            //开始地点纬度
+                            originarry.startlat=result.origin.lat;
+                            //开始地点经度
+                            originarry.startlng=result.origin.lng;
+                            //结束地点纬度
+                            originarry.endlat=result.destination.lat;
+                            //结束地点经度
+                            originarry.endlng=result.destination.lng;
+                            if(that.isDayEdit==-1){
+                                that.startPoint.type=1;
+                                that.endPoint.type=2;
+                                that.dayListTab(that.dayList.length-1,originarry);
+                            }
+                        } else {
+                            console.log(">>>>>>>result:"+result);
+                        }
+                    });
+                    //that.isUpdate=false;
+                },
+                dayListTab(index,nodes){
+                    var that=this;
+                    //切换之前把数据保存
+                    if(that.IsActiveIndex!=index){
+                        that.pointList.splice(0,0,{...that.startPoint});
+                        that.pointList.splice(that.pointList.length,0,{...that.endPoint});
+                        if(that.dayList[that.IsActiveIndex]){
+                            that.dayList[that.IsActiveIndex].pointList=that.pointList.concat();
+                        }
+                        that.IsActiveIndex=index;
+                    }
+                    if(nodes.pointList.length>=2){
+                        that.startPoint=nodes.pointList[0];
+                        that.endPoint=nodes.pointList[nodes.pointList.length-1];
+                        /*for(var i=0;i<nodes.pointList.length;i++){
+                            that.dateAndDistanceFormat(nodes.pointList[i]);
+                        }*/
+                        nodes.pointList.splice(0,1);
+                        nodes.pointList.splice(nodes.pointList.length-1,1);
+                    }
+                    that.pointList=nodes.pointList;
+                    that.iconIndex=that.startPoint.routeIcon;
+                    that.RouterTab(-1);
+                    //that.PointObj=that.startPoint;
+                    //window.top.scheduleIndex=nodes.id;
+                    that.addAllDisAndTime();
+                },
+                deletesch(index){
+                    var that =this;
+                    that.dayList.splice(index,1);
+                    that.$nextTick(function(){
+                        for(var i=0;i<that.dayList.length;i++){
+                            that.dayList[i].day=i+1;
+                        }
+                        if(index==that.IsActiveIndex){
+                            if(index>=that.dayList.length){
+                                if(that.dayList.length==0){
+                                    that.startPoint={...addRobj},that.endPoint={...addRobj};
+                                    that.pointList=[];
+                                    that.IsActiveIndex=0;
+                                }else{
+                                    index=index-1;
+                                }
+                            }
+                        }else{
+                            if(index>that.IsActiveIndex){
+                                index=that.IsActiveIndex;
+                            }else{
+                                index=that.IsActiveIndex-1;
+                            }
+                            //切换之前把数据保存
+                            /*that.pointList.splice(0,0,{...that.startPoint});
+                            that.pointList.splice(that.pointList.length,0,{...that.endPoint});
+                            that.dayList[index].pointList=that.pointList.concat();*/
+                        }
+                        if(that.dayList.length>0){
+                            that.dayListTab(index,that.dayList[index]);
+                        }
+                        /*that.startPoint=that.dayList[index].pointList[0];
+                        that.endPoint=that.dayList[index].pointList[that.dayList[index].pointList.length-1];
+                        that.dayList[index].pointList.splice(0,1);
+                        that.dayList[index].pointList.splice(that.dayList[index].pointList.length-1,1);
+                        that.pointList=that.dayList[index].pointList;
+                        that.IsActiveIndex=index;*/
+                        if(that.dayList.length==0){//全部删除
+                            that.pointList=[];
+                            that.PointObj = {...this.startPoint};
+                            that.showDiv = false;
+                        }
+                    })
+                    //this.option.splice(index,1);
+                },
+                updRouteData(type,goPageUrl){//更新数据
+                    let that = this;
+                    var obj=that.dayList;
+                    if(obj.length==0||!that.dayList[that.IsActiveIndex]){
+                        history.back();
+                        return;
+                    }
+                    that.dayList[that.IsActiveIndex].pointList=that.pointList.concat();
+                    that.dayList[that.IsActiveIndex].pointList.splice(0,0,that.startPoint);
+                    that.dayList[that.IsActiveIndex].pointList.splice(that.dayList[that.IsActiveIndex].pointList.length,0,that.endPoint);
+                    if(type!=1){//发布需要判断是否途径点都正确
+                        for(var i=0;i<obj.length;i++){
+                            var dayObj=obj[i];
+                            var pointList=dayObj.pointList;
+                            for(var j=0;j<pointList.length;j++){
+                                if(!pointList[j].lng||!pointList[j].lng){
+                                    that.$message.error("存在错误的途径点，请确认后再发布!");
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                    var id=that.currRoadId;
+                    if(id){
+                        var paramObj={
+                            allDay:that.dayList.length,
+                            status:type,
+                            arrObj:JSON.stringify(that.dayList),
+                            id:id
+                        }
+                        postData(that.requestUrl.requestUpdRouteDataUrl,JSON.stringify(paramObj),function(res){
+                            var data=res.data;//数据
+                            if(goPageUrl){
+                                window.location.href=goPageUrl+"?id="+that.currRoadId;
+                            }else{
+                                if(type==1){
+                                    that.$message.success("保存成功");
+                                }else{
+                                    that.$message.success("发布成功");
+                                    setTimeout(function(){
+                                        window.location.href="index.html";
+                                    },1000);
+                                }
+                                that.queryRoadRouteData();
+                            }
+                        },function(res){
+                            that.$message.error("保存数据失败");
+                        });
+                    }
+                },
+                exitPage(url){
+                    var that=this;
+                    if(url.indexOf("creatRoadBook")<0){
+                        that.updRouteData(1,url);
+                        window.location.href=url+"?id="+that.currRoadId;
+
+                        // that.updRouteData(1,url);
+                        // window.location.href=url+"?id="+that.currRoadId;
+
+                        // that.$confirm('将退出页面, 是否保存页面数据?', '提示', {
+                        //     confirmButtonText: '保存',
+                        //     cancelButtonText: '不保存',
+                        //     type: 'warning'
+                        // }).then(() => {
+                        //     that.updRouteData(1,url);
+                        // }).catch(() => {
+                        //     if(that.isGoPage){
+                        //         window.location.href=url+"?id="+that.currRoadId;
+                        //     }
+                        //     that.isGoPage=true;
+                        //
+                        //     /*this.$message({
+                        //         type: 'info',
+                        //         message: '已取消'
+                        //     });*/
+                        // });
+                    }else{//上一步
+                        that.updRouteData(1,url);
+                    }
+                },
+            }
+        })
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">实名认证</span>
+        </p>
+    </div>
+    <div class="realTxt pb18">
+        <span class="displayblock realImg"><img src="../img/authentImg.png" width="100%" height="100%"></span>
+        <strong class="f15">尚未认证</strong>
+        <span class="f12">您尚未进行实名认证，请认证实名信息</span>
+    </div>
+    <ul class="portraitList realnameList">
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="javascript:void(0);" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">真实姓名</span>
+                </span>
+                <input type="text" class="fl realInput mt8 lh24 f14"  id="inputname" v-model="realname" @click="inputreal('inputname')">
+            </a>
+        </li>
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="#" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">证件类型</span>
+                </span>
+                <span class="fr f15">
+                    身份证
+                </span>
+            </a>
+        </li>
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="#" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">证件号码</span>
+                </span>
+                <input type="text" class="fl realInput mt8 lh24 f14"  id="inputtr" v-model="idcard" @click="inputreal('inputtr')">
+            </a>
+        </li>
+    </ul>
+    <p class="error">{{errortip}}</p>
+    <div class="loginButton ml15 mr15 mt22 f15"><input type="button" value="开始认证" @click="certification"></div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            desc:'',
+            errortip:'',
+            realname:'',//真实姓名
+            idcard:'',//身份证
+            alertTipscuess:false,//成功提示框
+            alertTiperror:false,//失败提示框
+            scuesstext:"认证成功",
+            errortext:"认证失败"
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            certification(){//开始认证
+                let _this = this;
+                let idcard_patter = /^[1-9][0-9]{5}([1][9][0-9]{2}|[2][0][0|1][0-9])([0][1-9]|[1][0|1|2])([0][1-9]|[1|2][0-9]|[3][0|1])[0-9]{3}([0-9]|[X])$/;
+                if (!_this.realname) {
+                    console.log('输入姓名');
+                    _this.errortip = "请输入姓名";
+                }else if(!idcard_patter.test(_this.idcard)){
+                    _this.errortip = '请输入正确的身份证号';
+                }
+                else {
+                    _this.errortip = "";
+
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            identityNumber: _this.idcard,
+                            realName:_this.realname
+                        }
+                        postData(data,'AmoskiActivity/userCenterManage/userAutonym').then(response => {
+                            if (response.code == 0) {
+                                const result = response.data
+                                _this.alertTipscuess = true;
+                                scuessTip(_this.scuesstext,_this.alertTipscuess);
+                                window.location.href = 'index.html';
+                                resolve(result)
+                            } else {
+                                _this.alertTiperror = true;
+                                errorTip(response.msg,_this.alertTiperror);
+                                window.location.href = 'index.html';
+                                //reject('error')
+                            }
+                        }).catch(error => {
+                            //reject(error)
+                        })
+
+                    })
+
+                }
+            },
+            // inputreal(name){
+            //     //let _this = this;
+            //     setTimeout(function(){
+            //         document.getElementById(name).scrollIntoView(true);
+            //     }, 100);
+            // }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="Amoski-Web:war">
+    <output-path>$PROJECT_DIR$/Amoski-Web/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>Amoski-Web</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="Amoski-Web-1.0-SNAPSHOT.war">
+      <element id="artifact" artifact-name="Amoski-Web:war exploded" />
+    </root>
+  </artifact>
+</component>

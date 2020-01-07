@@ -1,0 +1,221 @@
+.h375{height:10rem;}
+.pictureBig{width:100%;height:11rem;/*background:url(../img/pictureBig.jpg) no-repeat;background-size:cover;*/
+position:relative;
+}
+.pictureBig .refundPicker{position:absolute;left:0;width:100%;}
+
+/*.Module_1{width:100%;height:100%;overflow: hidden;position:relative;}*/
+.btnSlideUp{    font-size: 12px;
+    width: 100px;
+    left: 50%;
+    margin-left: -50px;
+    position:absolute;
+    text-align: center;color:#67676F;
+    top:0;
+    z-index:9999;}
+.icon-navigateup:hover {
+    -webkit-transition-delay: 0;
+    transition-delay: 0;
+    opacity: 1;
+}
+.icon-navigateup {
+    position:absolute;
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+    border-top: 4px solid #67676F;
+    border-left: 4px solid #67676F;
+    position: absolute;
+    top:40px;
+    left: 40px;
+    -webkit-animation: opener .5s ease-in-out alternate infinite;
+    animation: opener .5s ease-in-out alternate infinite;
+    cursor: pointer;
+    opacity: 0.5;
+    -webkit-transition: opacity .2s ease-in-out, transform .5s ease-in-out .2s;
+    transition: opacity .2s ease-in-out, transform .5s ease-in-out .2s;
+}
+@-webkit-keyframes opener {
+    100% {
+        top: 45px
+    }
+}
+@keyframes opener {
+    100% {
+        top: 45px
+    }
+}
+
+#activityWarp{width:100%;height:100%;position: relative;}
+
+.Module_1{position:relative;height:100%;background:#fff;}
+.ctrlBtn{position: fixed;
+    bottom:0.4rem;
+    right:0.4rem;
+    width:1.0666666666666667rem;
+    height:1.0666666666666667rem;
+    z-index: 199;
+    border-radius: 220px 0 0}
+.tripMenuWrap{ position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 181;
+    font-size: 14px;
+    text-align: center}
+
+.tripMenuWrap .greyBg{    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    background: rgba(0,0,0,.5);}
+.tripMenuWrap .tripMenu {
+    position: absolute;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    padding: 20px 20px 60px;
+    background: #fff;
+    border-radius: 5px;
+    overflow: auto;
+    max-height: calc(100vh - 40px);
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;}
+.tripMenuWrap .btnPageHeader {
+    margin: 10px 0;
+}
+.gap10{    padding-left: 5px;
+    padding-right: 5px}
+.gap10 .row {
+    margin-right: -5px;
+    margin-left: -5px;}
+.tripMenuWrap .btnPage {
+    border: 1px solid #B6BDC1;
+    border-radius: 5px;
+    line-height:1.3333333333333333rem;
+    height:1.3333333333333333rem;
+    margin: 5px 0;
+    cursor: pointer}
+.tripMenuWrap .btnPage .icon {
+    position: relative;
+    top:0px;}
+.tripMenuWrap .btnPage i {
+    font-size: 26px;
+}
+.tripMenuWrap .btnPage .title {
+    line-height: 50px;
+    margin-left: 3px;}
+.tripMenuWrap .btnDayHeader {
+    position: relative;
+    text-align: center;
+    line-height: 20px;
+    height: 20px;
+    }
+/*.tripMenuWrap .btnDayList {*/
+/*    clear: both;*/
+/*    overflow: hidden;}*/
+.tripMenuWrap .btnDay {
+    border: 1px solid #B6BDC1;
+    border-radius: 5px;
+    height: 50px;
+    line-height: 50px;
+    min-width: 50px;
+    float: left;
+    margin: 5px;
+    cursor: pointer}
+.chTig .btnPage{width:46%;float:left;display:inline;margin:1.2% 0.8%;}
+.btnBorderGreen{border:1px solid #62B297;color:#62B297;border-radius:5px;cursor:pointer;}
+
+
+.tripViewMap{width:100%;height:9rem;}
+.tripDay li{background:#fff;padding: 5px 5px 5px 65px;box-sizing: border-box;position: relative;border-bottom: 1px #DCDEE0 solid;}
+.tripDay li .day{color:#00A4A8;    position: absolute;
+    left: 0;
+    width: 65px;
+    text-align: center;
+    top:31%}
+.tripDay .cities {
+    font-size: 18px;
+    line-height: 24px;
+    min-height: 40px;
+    margin-right:0.3rem;
+    color: #455661;
+    border-left: 1px #DCDEE0 solid;
+    padding: 10px 0 10px 15px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;}
+
+.tripDay .cities {
+    font-size: 18px;
+    line-height: 24px;
+    min-height: 40px;
+    width: 100%;
+    color: #455661;
+    border-left: 1px solid #DCDEE0 }
+.cities .arrow {
+    color: #00A4A8;
+}
+.swiper-slide{background:#fff;height:100%;overflow:auto;}
+.swiper-slide .about{width:92%;margin:0 auto;overflow-x: hidden;/*overflow-y: auto;*/}
+.swiper-slide .about p{font-size:0.4rem;margin-top:0.26666666666666666rem;}
+.w375{width:10rem;}
+.h217{height:5.786666666666667rem;}
+.h281{height: 7.493333333333333rem;}
+.h180{height:4.8rem;}
+.h250{height:6.666666666666666rem;}
+.arrangementSubHeader{position:relative;}
+.arrangementSubHeader .subTitle {
+    display: inline-block;
+    background: #fff;
+    padding-right: 10px;
+    position: relative;
+    z-index: 2;
+    color: #4F5A60;
+}
+.arrangementSubHeader:after{
+    display: block;
+    position: absolute;
+    border-bottom: 1px #DBE0E4 solid;
+    width: 100%;
+    z-index: 0;
+    bottom:9px;
+}
+.arrangementSubHeader:after, .noteSubHeader:after, .tripMenuWrap .btnDayHeader:before {
+    top: 10px;
+    content: " ";
+}
+.schedulingList .schedulingListName{border-radius:5px;border:1px solid #DBE0E4;}
+.schedulingList li .title{background:#EFF1F2;border-bottom:#DBE0E4 dotted 1px;line-height:34px;}
+.borderBottom{border-bottom:1px dashed #455661;}
+.swiperplh{line-height:0.64rem;}
+/*.dayarrange li span{color:#67676F}*/
+.dayarrange li strong{color:#2D3138;margin-left:0.26666666666666666rem;font-weight:normal;}
+
+.routeArrange li h4{border-bottom:1px solid #DBE0E4;}
+.routeArrange .Whole{width:40%;text-align:center;}
+.routeArrange .flgImg{width:12%;text-align:center;vertical-align: middle;}
+.routeArrange .City{width:40%;text-align:center;}
+.routeArrange .routeList{position:relative;}
+.routeArrange .flgIcon{position:absolute;left:-0.4rem;top:50%;margin-top:-0.4rem;width:0.64rem;height:0.64rem;}
+.routeArrange .hangB{border:1px solid #DBE0E4;border-radius:5px;}
+.routeArrange li .carIcon{width:0.64rem;height:0.64rem;}
+.routeArrange li .carIcon img{vertical-align:middle;display: inline-block;}
+.routeList .Hotel{width:71%;}
+.routeList .HotalImg{width:1.5rem;height:1.5rem;margin-left:5%;}
+
+.tripMenu .btnPage .tos-icon{width:0.64rem;height:0.64rem;vertical-align:middle;display:inline-block;}
+.tripMenu .btnPage .icon-roadbook{background:url(../img/btnPageIcon1.jpg) no-repeat;}
+.tripMenu .btnPage .icon-route{background:url(../img/btnPageIcon2.jpg) no-repeat;}
+.tripMenu .btnPage .icon-talk{background:url(../img/btnPageIcon3.jpg) no-repeat;}
+.tripMenu .btnPage .icon-document{background:url(../img/btnPageIcon4.jpg) no-repeat;}
+.tripMenu .btnPage .title{display: inline-block;vertical-align: middle;}
+.jiuDIcon img{width:0.64rem;height:0.64rem;display:inline-block;}
+
+.tripDay .cities span:last-child .icon-arrowPoi{display:none;}
+
+.swiperplh p{font-size:0.4rem;color:#A5A5BC;}

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mescroll.min.css"/>
+    <style type="text/css">
+        .mescroll{
+            width:100%;
+            position:absolute;
+            top: 0px;
+            bottom: 0;
+            height: 100%; /*如设置bottom:50px,则需height:auto才能生效*/
+            background:#F7F7FF;
+        }
+        /*.upwarp-nodata{display:none !important;}*/
+        /*.mescroll-upwarp{*/
+            /*opacity: 0!important;*/
+            /*min-height: 30px;*/
+            /*padding: 15px 0;*/
+            /*text-align: center;*/
+        /*}*/
+        /*.btnWidth {*/
+            /*position: fixed;*/
+            /*bottom: 7px;*/
+            /*width: 100%;*/
+        /*}*/
+
+        /*. li{*/
+            /*width:44%;*/
+        /*}*/
+        /*.albumwarp .but li{*/
+            /*width:44%;*/
+        /*}*/
+        /*.EmpImg{width:100%;height:6.2rem;}*/
+
+        /*body {-webkit-touch-callout:none;!*系统默认菜单被禁用*!-webkit-user-select:none;!*webkit浏览器*!-khtml-user-select:none;!*早起浏览器*!-moz-user-select:none;!*火狐浏览器*!-ms-user-select:none;!*IE浏览器*!user-select:none;!*用户是否能够选中文本*!}*/
+    </style>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="personnel" v-cloak>
+    <div class="headerFixed clearfix">
+        <div class="positionBar pl10 pt10 pb10" v-show="appplate">
+            <span class="w24 arrowIcon fl" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+            <span class="enrollees f18 color38">报名人员</span>
+        </div>
+    </div>
+    <div id="mescroll" class="clearfix mescroll">
+        <div id="demo-test-gallery" class="demo-gallery" style="margin-top: 1.5rem;">
+            <ul class="clearfix personalList mt15"  style="height: 110%;">
+                <li v-for="(item,index) in personList" class="pb10 pt10">
+                    <span class="s_1 mt10 ml12 wh48 displayinlik"><img src="../img/defaulthead.png" width="100%" height="100%" alt="" title=""></span>
+                    <span class="s_2 ml15 f15">{{item.name}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!--<footer class="clearfix footer mt15 pb10" style="position:fixed;left:0;bottom:0;z-index:9999;">-->
+        <!--<input type="button" :value="baomVal" @click="goOrderIndex()" :disabled="endTime<nowDay" class="imBaom mb16 f15" :class="{imgary:endTime<nowDay}">-->
+    <!--</footer>-->
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/footer.js"></script>
+<script src="../js/mescroll.min.js"></script>
+<script type="text/javascript">
+    window.onload = function () {
+        var gallery = mui('.mui-slider');
+        gallery.slider({
+            interval:3000//自动轮播周期，若为0则不自动播放，默认为0；
+        });
+    }
+    var app = new Vue({
+        el:'#personnel',
+        data:{
+            personList:[],
+            activitybase:{},
+            nowDay: new Date().getTime(),
+            endTime:'',
+            baomVal:'立即报名',
+        },
+        mounted(){
+
+            let Request = new Object();
+            Request = GetRequest();
+            this.Id = Request.id;
+            this.detailInfor(
+                {   num: 1, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
+                    size: 16, //每页数据条数,默认10
+                    basicsId:this.Id,
+                });
+
+            this.initData();
+            this.endTime = Request.endTime;
+            window.sessionStorage.removeItem('packageData')
+            if(this.endTime<this.nowDay)
+            {
+                this.baomVal = '报名已截止';
+            }
+        },
+        methods:{
+            initData(){
+                let _this = this;
+                // _this.initmescroll();
+            },
+            detailInfor(page){
+                let _this = this;
+                let Request = new Object();
+                Request = GetRequest();
+                _this.RequestId = Request.id;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        page:page.num,
+                        limit:page.size,
+                        id:_this.RequestId,
+                    }
+                    postData(data,'AmoskiActivity/appRidingGuideManage/queryActivityDetailInfo').then(response =>{
+                        if (response.code == 0){
+                            let result = response.data;
+                            if(result)
+                            {
+                                _this.activitybase = result.activity;//活动基本信息
+                                _this.personList = result.activitySignUpList;
+                                console.log(_this.personList);
+                            }
+                            resolve(result)
+                        } else {
+                            // reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            },
+            goOrderIndex(){
+                let _this = this;
+                let id = _this.activitybase.id;
+                let code = _this.activitybase.code;
+                window.location.href = '../order/index.html?id='+id+'&code='+code;
+            },
+            initmescroll(){//初始化下拉
+                let _this = this;
+                mescroll = new MeScroll("mescroll", { //第一个参数"mescroll"对应上面布局结构div的id (1.3.5版本支持传入dom对象)
+                    down: {
+                        use:false,
+                        callback: _this.detailInfor //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+                    },
+                    up: {
+                        callback:  _this.detailInfor, //上拉加载的回调
+                        page: {
+                            num: 1, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
+                            size: 16 //每页数据条数,默认10
+                        },
+                        htmlNodata: '<p class="upwarp-nodata" style="height: 0px;">-- END --</p>',
+                    }
+                });
+            },
+        },
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="orderIndex" v-cloak>
+    <div class="positionBar pt10 pb10" v-show="appplate">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">填写数量</span>
+    </div>
+    <div class="FillorderMoudle mt15 pt24">
+        <ul class="pb20">
+            <li class="mt30" v-for="(item,index) in votesMeal" >
+                <div class="ticketSpecies ml15 mr15 clearfix">
+                    <span class="fl s_1 f15">{{item.nameInvoice}}<i class="displayinlik wh16" @click="cur=index"><img src="../img/alert-circle.png" alt=""></i></span>
+                    <span class="f15 fr mr15 s_2 f18"><i>￥</i>{{item.ticketPrice}}</span>
+                </div>
+                <div class="clearfix">
+                    <div class="mui-numbox fl ml15 mt15" data-numbox-step='1' data-numbox-min='0' :data-numbox-max='item.numberCount'>
+                        <button class="mui-btn mui-numbox-btn-minus" type="button">-</button>
+                        <input class="mui-numbox-input f15" type="number" v-model="item.ticketNo"  @change="changeaddorDecr(index)"/>
+                        <button class="mui-btn mui-numbox-btn-plus" type="button">+</button>
+                    </div>
+                    <span class="colorbc ml15 mt15 displayinlik detelePirce">剩余{{item.numberCount}}张</span>
+                </div>
+                <div class="alertMeal" ref="alertdescrie" v-show="cur==index"  @click="describenone()">
+                    <div class="mealNumber"></div>
+                    <div class="mealTxt" v-html="item.describe"></div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <footer class="orderFooter pt10 pb10 mt22 clearfix">
+        <span class="f15 color38 ml15 mt10 displayinlik">合计</span>
+        <strong class="ml15 color59 f18 mt10 displayinlik"><i class="f12 dollar">￥</i>{{totalprice}}</strong>
+        <input class="fr mr15 nextButton" type="button" value="下一步" @click="goNext()" :disabled="isDisabled">
+    </footer>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/subfooter.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#orderIndex',
+        data:{
+            ticketNo1:0,//票种一
+            ticketPrice1:1000,//票价一
+            ticketTotalPrice1:1000,//票种1在总价
+            surplusTicket1:10,//余票一
+            ticketNo2:0,//票种二
+            ticketPrice2:2000,//票价二
+            ticketTotalPrice2:2000,//票种1在总价
+            surplusTicket2:10,//余票二
+            ticketNo3:0,//票种三
+            ticketPrice3:3000,//票价三
+            ticketTotalPrice3:3000,//票种1在总价
+            surplusTicket3:10,//余票三
+            totalprice:0,//总价
+            isDisabled:false,
+            RequestId:'',
+            RequestCode:'',
+            votesMeal:[],//套餐
+            describeshow:false,
+            cur:-1,
+            packageData:[],//套餐数据;
+            albummList:[],
+        },
+        mounted(){
+            let _this = this;
+            let Request = new Object();
+            Request = GetRequest();
+            _this.RequestId = Request.id;
+            _this.RequestCode = Request.code;
+            _this.queryActivity();//套餐数据读取
+        },
+        methods:{
+            totalPriceNumber(val){//总价
+                let _this = this;
+                _this.totalprice = 0;
+                for(let i=0;i<_this.votesMeal.length;i++)
+                {
+                    _this.totalprice += _this.votesMeal[i].ticketPrice*_this.votesMeal[i].ticketNo;//总价
+                }
+                console.log(_this.totalprice);
+            },
+            changeaddorDecr(idx){//输入数量后获取单价和总价
+                let val=event.currentTarget.value;
+                if(event.currentTarget.value <=-1){
+                    event.currentTarget.value = 0;
+                }else{
+                    this.votesMeal[idx].ticketNo = val;
+                    this.totalPriceNumber(val);//总价
+                }
+
+            },
+            queryActivity(){
+                let _this = this;
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            id:_this.RequestId,
+                        };
+                        postData(data,'AmoskiActivity/appRidingGuideManage/queryActivityInvoice').then(response => {
+                            if (response.code == 0){
+                                const result = response.data;
+                                if(result && result.length>0)
+                                {
+                                    //下一步，返回返显的数据处理;
+                                    let pack = window.sessionStorage.getItem('packageData');
+                                    let packagedata = JSON.parse(pack);
+
+                                    result.forEach(function (cur,index,arr) {
+                                        arr[index].ticketNo = 0;
+                                        if(packagedata) {
+                                            _this.votesMeal = packagedata;
+                                            packagedata.forEach(function (value, index1, arry) {
+                                                if(value.id==cur.id){
+                                                    arr[index].ticketNo+=1;
+                                                }
+                                            })
+                                        }
+                                    })
+                                    _this.votesMeal = result;
+                                    //金额反显
+                                    for(let i=0;i<_this.votesMeal.length;i++)
+                                    {
+                                        _this.totalprice += _this.votesMeal[i].ticketPrice*_this.votesMeal[i].ticketNo;//总价
+                                    }
+                                    //下一步，返回返显的数据处理结束;
+                                    _this.$nextTick(function(){
+                                        mui('.mui-numbox').numbox();
+                                    })
+                                }
+                                resolve(result)
+                            } else {
+                                //reject('error')
+                            }
+                        }).catch(error => {
+                           // reject(error)
+                        })
+                    })
+            },
+            goNext() {
+                let _this = this;
+                _this.isDisabled = false;
+                if(this.totalprice<=0){
+                   // _this.isDisabled = false;
+                    errorTip('请选择票种',true)
+                }else{
+                    _this.packageData = [];
+                    _this.votesMeal.forEach(function (cur,index,arr){
+                        if(arr[index].ticketNo>=1)
+                        {
+                            for(var i=0;i<arr[index].ticketNo;i++)
+                            {
+                                _this.packageData.push(arr[index]);
+                            }
+                        }
+                    })
+
+                    window.sessionStorage.setItem('packageData',JSON.stringify(_this.packageData));
+                    window.sessionStorage.setItem('totalprice',JSON.stringify(_this.totalprice));
+                    window.location.href = '../order/fillmeal.html?code='+_this.RequestCode;
+                }
+            },
+            describe(){
+                this.describeshow = true;
+            },
+            describenone(){
+                this.cur = -1;
+            }
+        },
+    })
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <link rel="stylesheet" type="text/css" href="../css/main1119.css"/>
+    <style>
+        .avatar-uploader .el-upload {
+            border: 1px dashed #d9d9d9;
+            border-radius: 6px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .avatar-uploader .el-upload:hover {
+            border-color: #409EFF;
+        }
+        .avatar-uploader-icon {
+            font-size: 28px;
+            color: #8c939d;
+            width: 178px;
+            height: 178px;
+            line-height: 178px;
+            text-align: center;
+        }
+        .avatar {
+            width: 178px;
+            height: 178px;
+            display: block;
+        }
+        /*地图*/
+        #tip {
+            background-color: #ddf;
+            color: #333;
+            border: 1px solid silver;
+            box-shadow: 3px 4px 3px 0px silver;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            line-height: 20px;
+        }
+        #tip input[type="text"] {
+            height: 25px;
+            border: 0;
+            padding-left: 5px;
+            width: 280px;
+            border-radius: 3px;
+            outline: none;
+        }
+        object{
+            height: 120%!important;
+        }
+    </style>
+</head>
+<body>
+<div id="costdetailPage" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center clearfix" >
+        <div class="templateleft fl">
+            <el-tabs v-model="activeName" @tab-click="handleClick" class="clearfix">
+                <el-tab-pane label="模板中心" name="first">
+                    <div class="temp">
+                        <el-input v-model="input" placeholder="请输入内容" class="fl searchinput"></el-input>
+                        <el-button class="searchbutton el-icon-search" size="small">搜索</el-button>
+                    </div>
+                    <ul class="tagInfor clearfix">
+                        <li class="tagall"><a href="#">全部</a></li>
+                        <li><a href="#">川菜</a></li>
+                        <li><a href="#">鲁菜</a></li>
+                        <li><a href="#">香菜</a></li>
+                        <li><a href="#">湘菜</a></li>
+                        <li><a href="#">土家菜</a></li>
+                        <li><a href="#">粤菜</a></li>
+                        <li><a href="#">烧烤</a></li>
+                        <li><a href="#">火锅</a></li>
+                        <li><a href="#">农家乐</a></li>
+                    </ul>
+                    <ul class="tagInfor clearfix">
+                        <li><a href="#">人均消费</a></li>
+                        <li class="tagall"><a href="#">全部</a></li>
+                        <li><a href="#">230</a></li>
+                        <li><a href="#">￥50</a></li>
+                        <li><a href="#">￥80</a></li>
+                        <li><a href="#">￥100</a></li>
+                        <li><a href="#">￥150</a></li>
+                        <li><a href="#">￥200</a></li>
+                    </ul>
+                    <ul class="tablistImg mt30 clearfix">
+                        <li v-for="item in tablistimg">
+                            <a href="#">
+                                <img :src=item.img>
+                                <span>{{item.txt}}</span>
+                            </a>
+                        </li>
+                    </ul>
+                </el-tab-pane>
+                <el-tab-pane label="我的" name="second">
+                    <div>sdfsdfsdfsdfsf</div>
+                </el-tab-pane>
+            </el-tabs>
+        </div>
+        <div class="information fl eatmanageCount">
+            <div id="container" >
+                <div id="myPageTop" style="height:auto;">
+                    <table>
+                        <tr>
+                            <td>
+                                <el-cascader
+                                        :options="options"
+                                        v-model="cityname"
+                                        @change="handleChange"
+                                        :separator="''">
+                                </el-cascader>
+                                <input id="tipinput" class="tipInput" v-model="inputVal"/>
+                                <el-button type="primary" @click="searchMap(searchCurButton)">点击搜索</el-button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <ul style="bottom: -15%;">
+                    <li>
+                        <div class="clearfix mealList">
+                            <span class="fl meals" @click="mealListClick(1,'mealshow1')">早餐</span>
+                            <div v-show="mealarry[0].mealshow1" class="fl mealsForm">
+                                <el-form ref="form" label-width="80px" :disabled="formDisabled" ><!-- v-for="(item,index) in breakfastList"-->
+                                    <el-form-item label="酒店名称">
+                                        <el-input id="restaurantName1"  v-model="breakfastObj.restaurantName" v-on:input="inputChange('','restaurantName','breakfastObj')" class="elInputform fl"  ></el-input>
+                                        <span @click="timgShowDiog(1,breakfastObj.restaurantName)" class="timgSpan"><img src="../img/timg.jpg" class="timgIcon"></span>
+                                        <span>{{breakfastObj.locationAddrName}}</span>
+                                    </el-form-item>
+                                    <el-form-item label="活动名称" class="">
+                                        <el-upload
+                                                class="avatar-uploader"
+                                                action="/AmoskiUser/ActivityCreate/saveFile"
+                                                :show-file-list="false"
+                                                :on-success="handleAvatarSuccess"
+                                                :before-upload="beforeAvatarUpload">
+                                            <img v-if="imageUrl1" :src="imageUrl1" width="100%" height="100%" class="avatar">
+                                            <img src="../img/camera.png" width="32" height="30" class="camera">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
+                                    </el-form-item>
+                                    <div class="clearfix">
+                                        <el-form-item label="特色" class="fl">
+                                            <el-input v-model="breakfastObj.characteristic" v-on:input="inputChange('','characteristic')"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="菜单" class="fl ml15">
+                                            <template slot-scope="scope">
+                                                <span @click="opendialog('breakfastObj')">添加菜单</span>
+                                            </template>
+                                        </el-form-item>
+                                    </div>
+                                    <div class="clearfix">
+                                        <el-form-item label="金额" class="fl">
+                                            <el-input v-model="breakfastObj.price"  v-on:input="inputChange('','price')"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="桌数" class="fl ml30">
+                                            <el-input v-model="breakfastObj.tableNumber" v-on:input="inputChange('','tableNumber')"></el-input>
+                                        </el-form-item>
+                                    </div>
+                                    <el-form-item label="小计">
+                                        <el-input v-model="breakfastObj.sum" v-on:input="inputChange('','sum')"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="联系人">
+                                        <el-input v-model="breakfastObj.contacts" v-on:input="inputChange('','contacts')"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="电话">
+                                        <el-input v-model="breakfastObj.contactsTel" v-on:input="inputChange('','contactsTel')"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                               <div class="saveButton" @click="breakfast(0,'breakfastObj')"><el-button type="primary">保存</el-button></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="clearfix mealList">
+                            <span class="fl meals" @click="mealListClick(2,'mealshow2')">午餐</span>
+                            <div v-show="mealarry[1].mealshow2" class="fl mealsForm">
+                                <el-form ref="form" label-width="80px" :disabled="formDisabled" > <!--v-for="(item,index) in lunchList"-->
+                                    <el-form-item label="酒店名称">
+                                        <el-input  id="restaurantName2" v-model="lunchObj.restaurantName"  v-on:input="inputChange('','restaurantName','lunchObj')"  class="elInputform fl"></el-input>
+                                        <span @click="timgShowDiog(2,lunchObj.restaurantName)" class="timgSpan"><img src="../img/timg.jpg" class="timgIcon"></span>
+                                        <span>{{lunchObj.locationAddrName}}</span>
+                                    </el-form-item>
+                                    <el-form-item label="活动名称">
+                                        <el-upload
+                                                class="avatar-uploader"
+                                                action="/AmoskiUser/ActivityCreate/saveFile"
+                                                :show-file-list="false"
+                                                :on-success="handleAvatarSuccess"
+                                                :before-upload="beforeAvatarUpload">
+                                            <img v-if="imageUrl2" :src="imageUrl2" width="100%" height="100%" class="avatar">
+                                            <img src="../img/camera.png" width="32" height="30" class="camera">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
+                                    </el-form-item>
+                                    <div class="clearfix">
+                                        <el-form-item label="特色" class="fl">
+                                            <el-input v-model="lunchObj.characteristic" v-on:input="inputChange('','characteristic')"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="菜单" class="fl ml15">
+                                            <template slot-scope="scope">
+                                                <span @click="opendialog('lunchObj')">添加菜单</span>
+                                            </template>
+                                        </el-form-item>
+                                    </div>
+                                    <div class="clearfix">
+                                        <el-form-item label="金额" class="fl">
+                                            <el-input v-model="lunchObj.price"  v-on:input="inputChange('','price')"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="桌数" class="fl ml30">
+                                            <el-input v-model="lunchObj.tableNumber" v-on:input="inputChange('','tableNumber')"></el-input>
+                                        </el-form-item>
+                                    </div>
+                                    <el-form-item label="小计">
+                                        <el-input  v-model="lunchObj.sum" v-on:input="inputChange('','sum')"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="联系人">
+                                        <el-input v-model="lunchObj.contacts" v-on:input="inputChange('','contacts')"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="电话">
+                                        <el-input v-model="lunchObj.contactsTel" v-on:input="inputChange('','contactsTel')"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                                <div class="saveButton" @click="breakfast(1,'lunchObj')"><el-button type="primary">保存</el-button></div>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="clearfix mealList">
+                            <span class="fl meals" @click="mealListClick(3,'mealshow3')">晚餐</span>
+                            <div v-show="mealarry[2].mealshow3" class="fl mealsForm">
+                                <el-form ref="form" label-width="80px" :disabled="formDisabled" > <!--v-for="(item,index) in dinnerList"-->
+                                    <el-form-item label="酒店名称">
+                                        <el-input  id="restaurantName3" v-model="dinnerObj.restaurantName"  v-on:input="inputChange('','restaurantName','dinnerObj')"  class="elInputform fl"></el-input>
+                                        <span @click="timgShowDiog(3,dinnerObj.restaurantName)" class="timgSpan"><img src="../img/timg.jpg" class="timgIcon"></span>
+                                        <span>{{dinnerObj.locationAddrName}}</span>
+                                    </el-form-item>
+                                    <el-form-item label="活动名称">
+                                        <el-upload
+                                                class="avatar-uploader"
+                                                action="/AmoskiUser/ActivityCreate/saveFile"
+                                                :show-file-list="false"
+                                                :on-success="handleAvatarSuccess"
+                                                :before-upload="beforeAvatarUpload">
+                                            <img v-if="imageUrl3" :src="imageUrl3" width="100%" height="100%" class="avatar">
+                                            <img src="../img/camera.png" width="32" height="30" class="camera">
+                                            <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+                                        </el-upload>
+                                    </el-form-item>
+                                    <div class="clearfix">
+                                        <el-form-item label="特色" class="fl">
+                                            <el-input v-model="dinnerObj.characteristic" v-on:input="inputChange('','characteristic')"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="菜单" class="fl ml15">
+                                            <template slot-scope="scope">
+                                                <span @click="opendialog('dinnerObj')">添加菜单</span>
+                                            </template>
+                                        </el-form-item>
+                                    </div>
+                                    <div class="clearfix">
+                                        <el-form-item label="金额" class="fl">
+                                            <el-input v-model="dinnerObj.price"  v-on:input="inputChange('','price')"></el-input>
+                                        </el-form-item>
+                                        <el-form-item label="桌数" class="fl ml30">
+                                            <el-input v-model="dinnerObj.tableNumber" v-on:input="inputChange('','tableNumber')"></el-input>
+                                        </el-form-item>
+                                    </div>
+                                    <el-form-item label="小计">
+                                        <el-input v-model="dinnerObj.sum" v-on:input="inputChange('','sum')"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="联系人">
+                                        <el-input v-model="dinnerObj.contacts" v-on:input="inputChange('','contacts')"></el-input>
+                                    </el-form-item>
+                                    <el-form-item label="电话">
+                                        <el-input v-model="dinnerObj.contactsTel" v-on:input="inputChange('','contactsTel')"></el-input>
+                                    </el-form-item>
+                                </el-form>
+                                <div class="saveButton" @click="breakfast(2,'dinnerObj')"><el-button type="primary">保存</el-button></div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <menu-right></menu-right>
+        <el-dialog title="菜单明细" :visible.sync="centerDialogVisible" class="eldialogWarp">
+            <el-form :model="form">
+                <el-form-item label="菜名" :label-width="formLabelWidth" class="menuname">
+                    <el-input type="textarea" v-model="form.desc" v-on:input="menuIndexValue()" class="dialogTextare"></el-input>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button @click="centerDialogVisible = false">取 消</el-button>
+                <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+            </div>
+        </el-dialog>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=76e7b372802c8e7526fa37f79717c502&plugin=AMap.Autocomplete,AMap.PlaceSearch"></script>
+<script type="text/javascript" src="https://cache.amap.com/lbs/static/addToolbar.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+<script>
+    var placeSearch,auto,map,hotelNameOptions1,hotelNameOptions2,hotelNameOptions3;
+    var app = new Vue({
+        el: '#costdetailPage',
+        data: {
+            formDisabled:false,
+            activeName: 'first',
+            optiondata:'',
+            imageUrl1: '',
+            imageUrl2: '',
+            imageUrl3: '',
+            value:'',
+            isCollapse: true,
+            input:'',
+            centerDialogVisible:false,
+            formLabelWidth: '120px',
+            inputVal:'',//输入框内容
+            mealarry:[
+                {mealshow1:false},
+                {mealshow2:false},
+                {mealshow3:false},
+            ],
+            lodIndex:0,
+            form: {
+                name: '',
+                region: '',
+                date1: '',
+                date2: '',
+                delivery: false,
+                type: [],
+                resource: '',
+                desc: ''
+            },
+            tablistimg:'',//存放最终显示的图片
+            tablistall:[
+                [
+                    {
+                        img:'../img/listImg1.png',
+                        txt:'内蒙草原生机嘉年华',
+                    },
+                    {
+                        img:'../img/listImg2.png',
+                        txt:'哈尔滨冰雪重机嘉年华',
+                    },
+                    {
+                        img:'../img/listImg1.png',
+                        txt:'内蒙草原生机嘉年华',
+                    },
+                ],
+            ],
+            cityname:'',//城市名;
+            selectedOptions: [],//存放默认值
+            options:options,//存放城市数据
+            breakfastadd:'',//早餐
+            lunch:'',//午餐
+            dinner:'',//晚餐
+            inputVal:'',//当前选中地址
+            searchCurButton:1,//
+            breakfastObj://早餐
+            {}
+            ,
+            lunchObj://中餐
+            {}
+            ,
+            dinnerObj://晚餐
+            {}
+            ,
+            scheIdx:0,//日程id
+        },
+        mounted(){
+            let that = this;
+            that.tablistimg = that.tablistall[0];
+            that.initEatData(0);//初始化餐饮数据
+            that.initMap();
+            $(".amap-sug-result div").one("click",function(){
+                debugger;
+            });
+        },
+
+        methods: {
+            handleClick(tab, event){
+                // console.log(tab, event);
+            },
+            menuIndexValue(){
+                this[menuIndex].menu=this.form.desc;
+            },
+            initEatData(scheIdx){//初始化餐饮数据
+                let that = this;
+                that.scheIdx=scheIdx;
+                let eatDataList=window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbHotelRestaurantEntity;
+                if(!eatDataList||eatDataList.length==0){
+                    eatDataList=[new TbHotelRestaurantEntity(),new TbHotelRestaurantEntity(),new TbHotelRestaurantEntity()];
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbHotelRestaurantEntity=eatDataList;
+                }
+                for(let i=0;i<eatDataList.length;i++){
+                    eatDataList[i].orderId=(i+1);
+                }
+                that.breakfastObj=eatDataList[0]?eatDataList[0]:new TbHotelRestaurantEntity();
+                that.lunchObj=eatDataList[1]?eatDataList[1]:new TbHotelRestaurantEntity();
+                that.dinnerObj=eatDataList[2]?eatDataList[2]:new TbHotelRestaurantEntity();
+                that.imageUrl1=joinImgSrc(that.breakfastObj.tbHotelRestaurantImageEntity[0].projectUrl+that.breakfastObj.tbHotelRestaurantImageEntity[0].filePathUrl,that.breakfastObj.tbHotelRestaurantImageEntity[0].fileNameUrl);
+                that.imageUrl2=joinImgSrc(that.lunchObj.tbHotelRestaurantImageEntity[0].projectUrl+that.lunchObj.tbHotelRestaurantImageEntity[0].filePathUrl,that.lunchObj.tbHotelRestaurantImageEntity[0].fileNameUrl);
+                that.imageUrl3=joinImgSrc(that.dinnerObj.tbHotelRestaurantImageEntity[0].projectUrl+that.dinnerObj.tbHotelRestaurantImageEntity[0].filePathUrl,that.dinnerObj.tbHotelRestaurantImageEntity[0].fileNameUrl);
+                /*if(that.imageUrl[0]){
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbHotelRestaurantEntity[0].tbHotelRestaurantImageEntity=[new TbHotelRestaurantImageEntity()];
+                }
+                if(that.imageUrl[1]){
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbHotelRestaurantEntity[1].tbHotelRestaurantImageEntity=[new TbHotelRestaurantImageEntity()];
+                }
+                if(that.imageUrl[2]){
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[scheIdx].tbHotelRestaurantEntity[2].tbHotelRestaurantImageEntity=[new TbHotelRestaurantImageEntity()];
+                }*/
+            },
+            handleAvatarSuccess(res, file) {
+                var pathUrlArr=fileUploadSuccess(res);
+                if(pathUrlArr.length>0){
+                    var obj=res.resultData[0];
+                    obj.type=2;
+                    window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbHotelRestaurantEntity[this.searchCurButton-1].tbHotelRestaurantImageEntity=[obj];
+                    this["imageUrl"+this.searchCurButton] = URL.createObjectURL(file.raw);
+                }
+            },
+            beforeAvatarUpload(file) {
+                const isJPG = file.type === 'image/jpeg';
+                const isLt2M = file.size / 1024 / 1024 < 2;
+                /*if (!isJPG) {
+                    this.$message.error('上传头像图片只能是 JPG 格式!');
+                }
+                if (!isLt2M) {
+                    this.$message.error('上传头像图片大小不能超过 2MB!');
+                }
+                return isJPG && isLt2M;*/
+                return true;
+            },
+            mealListClick(index,mealtype){//点击收缩
+                let that = this;
+                this.searchCurButton = index;
+               that.mealarry.forEach(function(cur,idx,arry){
+                     if(that.mealarry[idx][mealtype]!=undefined)
+                     {
+                        that.mealarry[idx][mealtype] = !that.mealarry[idx][mealtype]
+                     }else{
+                        that.mealarry[idx]["mealshow"+(idx+1)] = false;
+
+                     }
+               })
+            },
+            opendialog(node){
+                let that = this;
+                this.menuIndex=node;
+                that.centerDialogVisible = true;
+            },
+            initMap(){
+                let _this = this;
+                //地图加载
+                map = new AMap.Map("container", {
+                    zoom: 14,
+                    resizeEnable: true,
+                });
+                //输入提示
+                var autoOptions = {
+                    input: "tipinput",
+                    //city:_this.cityname,
+                };
+                hotelNameOptions1 = new AMap.Autocomplete({
+                    input: "restaurantName1"
+                });
+                hotelNameOptions2 = new AMap.Autocomplete({
+                    input: "restaurantName2"
+                });
+                hotelNameOptions3 = new AMap.Autocomplete({
+                    input: "restaurantName3"
+                });
+                AMap.event.addListener(hotelNameOptions1, "select", function(e){
+                    app._data.breakfastObj.locationAddrName=e.poi.district;
+                    app._data.breakfastObj.yAxis=e.poi.location.lat;
+                    app._data.breakfastObj.xAxis=e.poi.location.lng;
+                    app._data.breakfastObj.restaurantName=e.poi.name;
+                    app.$forceUpdate();
+                });
+                AMap.event.addListener(hotelNameOptions2, "select", function(e){
+                    app._data.lunchObj.locationAddrName=e.poi.district;
+                    app._data.lunchObj.yAxis=e.poi.location.lat;
+                    app._data.lunchObj.xAxis=e.poi.location.lng;
+                    app._data.lunchObj.restaurantName=e.poi.name;
+                    app.$forceUpdate();
+                });
+                AMap.event.addListener(hotelNameOptions3, "select", function(e){
+                    app._data.dinnerObj.locationAddrName=e.poi.district;
+                    app._data.dinnerObj.yAxis=e.poi.location.lat;
+                    app._data.dinnerObj.xAxis=e.poi.location.lng;
+                    app._data.dinnerObj.restaurantName=e.poi.name;
+                    app.$forceUpdate();
+                });
+
+                auto = new AMap.Autocomplete(autoOptions);
+                placeSearch = new AMap.PlaceSearch({
+                    map: map,
+                    //city:_this.cityname,
+                    autoFitView:true,
+                    citylimit:true
+                });  //构造地点查询类
+
+                AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+                function select(e) {
+                    //placeSearch.setCity(e.poi.adcode);
+                    _this.searchPoiMap(e.poi.name);
+                    _this.inputVal=e.poi.name;
+                    /*placeSearch.search(e.poi.name,function(status, result){
+
+                    });  //关键字查询查询*/
+                }
+                AMap.event.addListener(placeSearch, "markerClick", this.markPointClick);
+            },
+            searchPoiMap(name){//搜索poi
+                placeSearch.search(name,function(status, result){
+                    if(status=="no_data"){
+                        alert("搜索不到结果! 请重新输入");
+                    }else if(status=="error"){
+                        alert("查询失败!");
+                    }
+                });  //关键字查询查询
+            },
+            markPointClick(data){
+                let _this = this;
+                var point=data.data.location;
+                var addr=data.data.address;
+                if(this.searchCurButton == 1)
+                {
+                    _this.breakfastadd = addr;
+                    this.breakfastObj.locationAddrName=addr;
+                    this.breakfastObj.yAxis=point.lat;
+                    this.breakfastObj.xAxis=point.lng;
+                    this.mealarry[0].mealshow1 = true;
+
+                }
+                else if(this.searchCurButton == 2)
+                {
+                    _this.lunch = addr;
+                    this.lunchObj.locationAddrName=addr;
+                    this.lunchObj.yAxis=point.lat;
+                    this.lunchObj.xAxis=point.lng;
+                    this.mealarry[1].mealshow2 = true;
+                }
+                else if(this.searchCurButton == 3)
+                {
+                    _this.dinner = addr;
+                    this.dinnerObj.locationAddrName=addr;
+                    this.dinnerObj.yAxis=point.lat;
+                    this.dinnerObj.xAxis=point.lng;
+                    this.mealarry[2].mealshow3 = true;
+                }
+
+                //this.inputChange("locationAddrName","locationAddrName");
+            },
+            searchMap(){
+                if(!this.cityname){
+                    alert("请选择城市再搜索");
+                    return;
+                }
+                if(!this.inputVal){
+                    alert("请输入搜索内容");
+                    return;
+                }
+                this.searchPoiMap(this.inputVal);
+            },
+            handleChange() {
+                let that = this;
+                placeSearch.setCity(that.cityname[1]);
+                auto.setCity(that.cityname[1]);
+            },
+            timgShowDiog(val,txt){
+                if(val === 1)
+                {
+                    this.mealarry[0].mealshow1 = false;
+                }
+                else if(val === 2){
+                    this.mealarry[1].mealshow2 = false;
+                }
+                else if(val === 3){
+                    this.mealarry[2].mealshow3 = false;
+                }
+                this.searchCurButton = val;
+                this.inputVal=txt;
+                auto.search(txt);
+            },
+            inputChange(node,tab,obj){
+                /*if(tab=='restaurantName'){
+                    setTimeout(function(obj,tab){
+                        debugger;
+                        app.$forceUpdate();
+                        let values = app._data[obj][tab];
+                        AMap.service(["AMap.PlaceSearch"], function() {
+                            // //关键字查询
+                            placeSearch.search(values,function(status, result){
+                                debugger;
+                            })
+                        });
+                    },1000,obj,tab);
+                }*/
+
+                /*console.log(node);
+                console.log(tab);*/
+                //tbActivityScheduleEntity活动日程安排;//tbHotelRestaurantEntity活动酒店餐厅表
+                //window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[0].tbHotelRestaurantEntity[0][tab]=node;
+            },
+            breakfast(index,foodObj){//早餐
+                window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[this.scheIdx].tbHotelRestaurantEntity[index] = this[foodObj];
+                alert("保存成功");
+            }
+        }
+    })
+    if(!window.top.activityCreateList[window.top.activityIndex].tbActivityScheduleEntity[app._data.scheIdx]){
+        alert("请添加日程！");
+        lookDisabled(true);
+    }else{
+        lookDisabled();//如果是查看需要禁用表单
+    }
+    function onlocadWindow(){
+        window.top.activityCreateList[window.top.activityIndex].
+            tbActivityScheduleEntity[window.top.scheduleIndex].
+            tbHotelRestaurantEntity[0] = app._data["breakfastObj"];
+        window.top.activityCreateList[window.top.activityIndex].
+            tbActivityScheduleEntity[window.top.scheduleIndex].
+            tbHotelRestaurantEntity[1] = app._data["lunchObj"];
+        window.top.activityCreateList[window.top.activityIndex].
+            tbActivityScheduleEntity[window.top.scheduleIndex].
+            tbHotelRestaurantEntity[2] = app._data["dinnerObj"];
+    }
+
+    window.onbeforeunload= function(event) {
+        onlocadWindow();
+    }
+</script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+com\nsc\Amoski\AmoskiWebGoodsApplicationMain.class
+com\nsc\Amoski\CustomerMvcConfigurerAdapter.class
+com\nsc\Amoski\controller\UserManageController.class
+com\nsc\Amoski\filter\PreRequestLogFilter.class
+com\nsc\Amoski\filter\ServletInitializer.class
+com\nsc\Amoski\controller\IndexJspController.class

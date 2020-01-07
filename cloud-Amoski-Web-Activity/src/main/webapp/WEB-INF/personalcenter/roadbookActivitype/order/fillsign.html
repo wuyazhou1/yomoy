@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.dtpicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.picker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="fillsign" v-cloak>
+    <div class="positionBar pt10 pb10">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">填写个人信息</span>
+        <span class="fr f15 mr15" @click="orderpany()"><a href="#" class="color38">完成</a></span>
+    </div>
+    <div class="informationListWarp">
+        <ul class="informationList mt15 clearfix" v-for="(item,index) in informationList" ref="inforUl">
+            <li class="clearfix" data-txt="姓名">
+                <span class="s_1">姓名</span>
+                <i>*</i>
+                <input class="Input" type="text" placeholder="出行人姓名" v-model="item.name">
+            </li>
+            <li class="clearfix" data-txt="性别">
+                <span class="s_1">性别</span>
+                <i>*</i>
+                <span style="color:#757575 !important;" class="choiceInput Input" @click="sexChoice(index)">{{item.sex}}</span>
+            </li>
+            <li class="clearfix" data-txt="电话">
+                <span class="s_1">电话</span>
+                <i>*</i>
+                <input type="text" class="Input" placeholder="用于接收出行短信" v-model="item.tel">
+            </li>
+            <li class="clearfix" data-txt="身份证号">
+                <span class="s_1">身份证号</span>
+                <i>*</i>
+                <input class="Input" type="text" placeholder="身份证号" v-model="item.id">
+            </li>
+            <li class="clearfix" data-txt="省份">
+                <span class="s_1">省份</span>
+                <i>*</i>
+                <span class="choiceInput Input" @click="region(index)">{{item.sheFeng}}</span>
+                <!--<input type="text" class="Input" placeholder="银河，地球" v-model="" >-->
+            </li>
+            <li class="clearfix" data-txt="所属俱乐部">
+                <span class="s_1">所属俱乐部</span>
+                <i>*</i>
+                <input type="text" class="Input" placeholder="俱乐部" v-model="item.club">
+            </li>
+            <li class="clearfix" data-txt="车型">
+                <span class="s_1">车型</span>
+                <i>*</i>
+                <input type="text" class="Input" placeholder="车型" v-model="item.car">
+            </li>
+            <li class="clearfix" data-txt="排量">
+                <span class="s_1">排量 (cc)</span>
+                <i>*</i>
+                <input type="text" class="Input" placeholder="排量" v-model="item.displacement" >
+            </li>
+            <li class="clearfix" data-txt="服装码数">
+                <span class="s_1">服装码数</span>
+                <i>*</i>
+                <span class="choiceInput Input"  @click="GarmentNumber(index)">{{item.codeNumber}}</span>
+            </li>
+        </ul>
+        <ul class="informationList clearfix">
+            <li class="clearfix" style="display:block !important;">
+                <span class="s_1">备注</span>
+                <input type="text" class="Input" placeholder="请在此输入备注" v-model="informationList[0].beiZhu">
+            </li>
+        </ul>
+    </div>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/qs.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/mui.picker.js"></script>
+<script src="../js/mui.poppicker.js"></script>
+<script src="../js/mui.dtpicker.js"></script>
+<script src="../js/data.city.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#fillsign',
+        data:{
+            ticketNo1:1,//票种一
+            ticketPriceOne:1000,//票价一
+            ticketNo2:2,//票种二
+            ticketPriceTwo:2000,//票价二
+            ticketNo3:3,//票种三
+            ticketPriceThree:2000,//票价三
+            totalprice:'',//总价
+            isDisabled:false,//默认按钮启动
+            informationList:[
+                {
+                    name:'',//姓名
+                    id:'',//身份证号
+                    sex:'请选择性别',//姓别
+                    yearOfBirth:'',//生日
+                    tel:'',//电话
+                    club:'',//俱乐部
+                    sheFeng:'',//省份
+                    beiZhu:'',//备注
+                    car:'',//车型
+                    displacement:'',//排量
+                    codeNumber:'',//服装码数
+                }
+            ],
+            packageList:'',//本地保存的套餐数据
+            Indexes:'',//跳转过来的索引
+            RequestId:'',
+            RequestCode:'',
+            fromData:[],
+        },
+        created(){
+            let _this = this;
+            let packDataList = window.sessionStorage.getItem('packageData');
+            this.packageList = JSON.parse(packDataList);
+
+            let Request = new Object();
+            Request = GetRequest();
+            _this.Indexes = Request.Index;
+            _this.RequestId =Request.id;
+            _this.RequestCode = Request.code;
+            if( _this.packageList[_this.Indexes].newInfor)
+            {
+                _this.informationList[0] = _this.packageList[_this.Indexes].newInfor;
+                console.log(_this.informationList[0]);
+            }
+        }
+        ,
+        mounted(){
+            // axiosSendPost("AmoskiActivity/EnrolmentActivities/queryMandatoryField",{id:'17'},function(data){
+            //    //debugger;
+            // },function(e){
+            //   //  debugger;
+            // });
+            let _this = this;
+            this.queryMandatory();
+        },
+        methods:{
+            sexChoice(IndexNum){//姓别选择
+                let picker2 = new mui.PopPicker();
+                let _this = this;
+                picker2.setData([{
+                    value: "first",
+                    text: "男",
+                }, {
+                    value: "second",
+                    text: "女"
+                }])
+                picker2.show(function(SelectedItem){
+                    SelectedItem.forEach(function (currentValue,index,arr){
+                        console.log(IndexNum);
+                        _this.informationList[IndexNum].sex = arr[index].text;
+                    })
+                })
+            },
+            birth(IndexNum){//出生年月
+                let _this = this;
+                let dtpicker = new mui.DtPicker({
+                    "type": "date",
+                })
+                dtpicker.show(function(e) {
+                    console.log(IndexNum);
+                    _this.informationList[IndexNum].yearOfBirth = e.value;
+                })
+            },
+            region(IndexNum){//地区联动
+                let _this = this;
+                let picker = new mui.PopPicker({
+                    layer:2
+                });
+                picker.setData(init_city_picker)
+                picker.show(function(SelectedItem){
+                    //_this.city="";
+                    _this.informationList[IndexNum].sheFeng="";
+                    let arry = [];
+                    SelectedItem.forEach(function(currentValue, index, arr){
+                        arry.push(arr[index].text);
+                        _this.informationList[IndexNum].sheFeng = arry.join(" ");
+                    })
+                })
+
+            },
+            addperson(){//增加报名人员信息
+                this.informationList.push({
+                    name:'',//姓名
+                    id:'',//身份证号
+                    sex:'请选择姓别',//姓别
+                    yearOfBirth:'请选择出生年月',//生日
+                    tel:'',//电话
+                    club:'',//俱乐部
+                    sheFeng:'',//省份
+                })
+            },
+            orderpany(){
+                let _this = this;
+                _this.isDisabled = true;
+                let infortip = _this.informationList[0];
+                if (!infortip.name && _this.fromData.indexOf('姓名') != -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入姓名',true)
+                }else if( !infortip.sex && _this.fromData.indexOf('性别')!= -1){
+                    _this.sex='请选择性别';
+                    _this.isDisabled = false;
+                    errorTip('请输入性别',true)
+                }
+                else if(!infortip.tel && _this.fromData.indexOf('电话') != -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入电话',true)
+                }
+                else if(!(/^1(3|4|5|7|8)\d{9}$/.test(infortip.tel)) && _this.fromData.indexOf('电话') != -1){
+                    _this.isDisabled = false;
+                    errorTip("手机号码有误，请重新输入",true);
+                }
+                else if(!infortip.id && _this.fromData.indexOf('身份证号') != -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入身份证',true)
+                }
+                else if(!/(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/.test(infortip.id) && _this.fromData.indexOf('身份证号') != -1){
+                    _this.isDisabled = false;
+                    errorTip('您输入的身份证号有误，请重新输入',true)
+                }
+                else if(!infortip.sheFeng && _this.fromData.indexOf('省份') != -1){
+                    _this.isDisabled = false;
+                    errorTip('请选择省份',true)
+                }
+                else if(!infortip.club && _this.fromData.indexOf('所属俱乐部')!= -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入俱乐部',true)
+                }
+                else if(!infortip.car && _this.fromData.indexOf('车型')!= -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入车型',true)
+                }
+                else if(!infortip.displacement && _this.fromData.indexOf('排量') != -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入排量',true)
+                }
+                else if(!/^\d+(\.\d{2})?$/.test(infortip.displacement) && _this.fromData.indexOf('排量') != -1){
+                    _this.isDisabled = false;
+                    errorTip('排量只能为数字',true)
+                }
+                else if(!infortip.codeNumber && _this.fromData.indexOf('服装码数') != -1){
+                    _this.isDisabled = false;
+                    errorTip('请输入码数',true)
+                }
+                else
+                {
+                    _this.packageList[_this.Indexes].newInfor=_this.informationList[0];
+                    window.sessionStorage.setItem('packageData',JSON.stringify(_this.packageList));
+                    window.location.href = '../order/fillmeal.html?code='+_this.RequestCode;
+                }
+            },
+            GarmentNumber(IndexNum){//服装码数
+                let picker3 = new mui.PopPicker();
+                let _this = this;
+                picker3.setData([{
+                    value: "first",
+                    text: "S"
+                }, {
+                    value: "second",
+                    text: "M"
+                },
+                {
+                    value: "three",
+                    text: "L"
+                },
+                {
+                    value: "four",
+                    text: "XL"
+                },
+                {
+                    value: "firve",
+                    text: "XXL"
+                },
+                {
+                    value: "six",
+                    text: "XXXL"
+                }
+                ])
+                picker3.show(function(SelectedItem){
+                    SelectedItem.forEach(function (currentValue,index,arr){
+                        _this.informationList[IndexNum].codeNumber = arr[index].text;
+                    })
+                })
+            },
+            queryMandatory(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {id:_this.RequestCode}
+                    postData(data,'AmoskiActivity/EnrolmentActivities/queryMandatoryField').then(response => {
+                    if (response.code == 0){
+                    const result = response.data;
+                    if(result && result.length>0)
+                    {
+                        _this.fromData = result;
+
+                        _this.$nextTick(function(){
+                            let children = this.$refs.inforUl[0].children;
+                            var newArr = '';
+                            for(var i=0;i<children.length;i++)
+                            {
+                                newArr = children[i].getAttribute('data-txt');
+                                console.log(newArr);
+                                _this.Isshow(newArr,children[i]);
+                            }
+                        })
+
+                    }
+                    resolve(result)
+                } else {
+                    // _this.isDisabled = false;
+                    reject('error')
+                }
+            }).catch(error => {
+                    reject(error)
+                })
+
+            })
+            },
+            Isshow:function(arg,num){
+                let _this = this;
+                if(_this.fromData.indexOf(arg) != -1)
+                {
+                    num.style.display = 'block';
+                }else{
+                    num.style.display = 'none';
+                }
+            }
+        },
+    })
+</script>
+</body>
+</html>

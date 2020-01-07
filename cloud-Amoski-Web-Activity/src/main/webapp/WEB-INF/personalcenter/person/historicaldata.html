@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+</head>
+<body>
+<div id="historicaldata" class="publicHeader">
+    <div class="wbcode pb20">
+        <div class="picTxt clearfix pt20 pl22">
+            <a href="#">
+                <span class="displayinlik porImg w60 h60"><img src="../img/portrait.jpg" width="100%" height="100%"></span>
+                <p class="displayinlik veralign">
+                    <span class="displayblock porTxt ml12 f22">爱摩老斯基</span>
+                    <span class="displayblock ml12 f12 colord5">04月03日19:59</span>
+                </p>
+            </a>
+        </div>
+        <div class="wbhistorwarp">
+            <ul class="wbcodeList clearfix">
+            <li>
+                <strong class="f24 numberfont">129.5</strong>
+                <span class="f12">累计里程（KM）</span>
+            </li>
+            <li>
+                <strong class="f24 numberfont">11:34:20</strong>
+                <span class="f12">累计用时</span>
+            </li>
+            <li>
+                <strong class="f24 numberfont">12</strong>
+                <span class="f12">累计次数</span>
+            </li>
+        </ul>
+            <div class="wbapp mt20 ml20 mr20 mb19 pb20">
+            <p class="color38 pt22">长按识别二维码下载爱摩老斯基APP</p>
+            <span class="wh44 displayblock webappImg mt16">
+                    <img src="../img/wbap.png" width="100%" height="100%">
+                </span>
+        </div>
+        </div>
+    </div>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#historicaldata',
+        data: {
+            remnant:0,
+            desc:'',
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            }
+        }
+    })
+</script>
+</body>
+</html>

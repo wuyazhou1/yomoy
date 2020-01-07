@@ -1,0 +1,55 @@
+#app{background:url(../img/loginbg.jpg) no-repeat;background-size:cover;width:100%;}
+.wechatWarp{padding-top:14.666666666666666rem;margin-left:0.8rem;margin-right:0.8rem;}
+#app .wechatButton{line-height:1.3rem;background:#21C766;border-radius:5px;margin:0 auto;text-align:center;font-size:15px;cursor:pointer;}
+#app .wechatButton span{display:inline-block;width:0.64rem;height:0.64rem;margin-right:0.26666667rem;}
+.buttonwarp{margin:0.8rem auto 0;text-align:center;width:100%;}
+.buttonwarp input{width:47.5%;height:1.3333333333333333rem;line-height:1.3333333333333333rem;-webkit-border-radius: 5px; cursor:pointer;font-size:15px; -moz-border-radius: 5px;border-radius: 5px;background:rgba(0,0,0,1);border:1px solid rgba(255,255,255,0.5);opacity:0.5018;
+    filter:alpha(opacity=50);color:#fff;font-family: 思源黑体旧字形 Normal ,PingFang-SC-Medium !important; }
+.buttonwarp input:nth-of-type(2){margin-left:0.2rem;}
+.explain{padding-top:1.5rem;color:#000;opacity: 0.6;filter:alpha(opacity=60);text-align:center;color:#fff;padding-bottom:1.0933333333333333rem;font-size:12px;}
+.explain span{color:#E88F59;}
+
+/*手机登陆/短信登陆*/
+.login .goarrow{width:100%;padding-top:1.44rem;}
+.logintel .goarrow a{width:0.64rem;height:0.64rem;display: block;margin-left:0.4rem;}
+.logintel h2{font-size:0.6933333333333334rem;margin-top:0.88rem;margin-left:0.8rem;}
+.logintel .logintelconent{margin-left:0.8rem;margin-right:0.8rem;}
+.logintel .logintelconent ul{margin-top:1.3333333333333333rem;}
+.logintel .logintelconent ul li{border-bottom:1px solid rgba(255,255,255,0.5);line-height:1.6rem;color:#6B6B6F;height:1.6rem;width:100%;display: flex;}
+.logintel .logintelconent ul li input{border:none;background:none;font-size:0.5366666666666667rem;color:#6B6B6F;height:100%;flex:auto;}
+.logintel .logintelconent ul li:nth-of-type(1) span{font-size:0.48rem;color:#6B6B6F;margin-right:0.4333333333333333rem;cursor:pointer;}
+.logintel .logintelconent ul li.oldpass span{margin-right:0rem;}
+.logintel .logintelconent ul li:nth-of-type(2) span{display:inline-block;float:right; vertical-align: middle;}
+.logintel .logintelconent .quicklogin{margin-top:0.6666666666666666rem;font-size:12px;width:100%;display: flex;flex-direction: row;
+    justify-content: space-between; }
+.logintel .logintelconent .quicklogin a:nth-of-type(1){color:#FFF;text-align:left;flex:1;}
+.logintel .logintelconent .quicklogin a:nth-of-type(2){color:#6B6B6F;text-align:right;flex:auto;}
+.logintel .logintelconent .loginButton{width:100%;height:1.3333333333333333rem;background:#62B297; border:none;border-radius:5px;margin-top:0.6666666666666666rem;font-size:0.4rem;color:#fff;cursor:pointer;}
+.logintel .logintelconent ul li:nth-of-type(2) span.verification{color:#E88F59;font-size:0.48rem;width:33%;float:right;text-align:right;}
+
+/*短信登录error*/
+.logintelconent .error{color:#E44A44;font-size:0.32rem;margin-top:0.6666666666666666rem;}
+.logintel .logintelconent ul li:nth-of-type(2) span.seconds{color:#6B6B6F;font-size:0.48rem;}
+
+
+/*忘记密码*/
+.logintelconent ul li span.forgeteyes{float: right;display: inline-block;width:0.64rem;height:0.64rem;}
+.logintel .logintelconent .forgetbutton{margin-top:1.0666666666666667rem;}
+
+/*新用户注册成功*/
+
+
+
+/*公用*/
+.logintelconent .activate{background:#62B297 !important;}
+.logintelconent .notactivate{background:#D1D1D1 !important;}
+.icon64{width:0.64rem;height:0.64rem;}
+.icon64 img{cursor:pointer;}
+.textTip{color:#6B6B6F;margin-top:0.56rem;text-align:left;font-size:0.32rem;}
+.loginto{color:#E88F59}
+.infor{text-align:center;}
+.infor .tel{color:#62B297;font-size:0.6933333333333334rem;margin-top:0.8799999999999999rem;}
+.infor .message{color:#6B6B6F;font-size:0.4rem;margin-top:0.26666666666666666rem;}
+.cursordefault{cursor:pointer !important;margin-right:0 !important;}
+.progressW{width:60%;}
+.progressverification{width:33%;color:#E88F59 !important;margin-right:0 !important;text-align:right;font-size:0.48rem;}

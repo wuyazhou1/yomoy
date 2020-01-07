@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/ui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mescroll.min.css" />
+    <style>
+        .mescroll{
+            position:absolute;
+            top: 44px;
+            bottom: 0;
+            height: auto; /*如设置bottom:50px,则需height:auto才能生效*/
+        }
+        .upwarp-nodata{display:none !important;}
+    </style>
+</head>
+<body>
+
+<div class="publicHeader" id="myalbumwarp">
+    <div class="header" id="scrollDiv">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl()" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">我的相册</span>
+            <span class="ml15 fr w24 mr12" @click="portphotoshop()">
+                    <a href="javascript:void(0)" class="w24">
+                        <img src="../img/addIcon.png" width="100%" height="100%">
+                    </a>
+                </span>
+        </p>
+    </div>
+    <div id="mescroll" class="mescroll">
+        <div class="clearfix albumwarp">
+            <ul class="albumList clearfix"  v-for="tab in newalbumList" @touchstart.stop="drag">
+                <li v-text='tab.createTime' class="title color6f ml15"><h2 class="f12  ml15 mt19 mb19 color6f">3月25日 星期一</h2></li>
+                <li v-for="(item,index) in tab.data"  :key="item"  :id="item.id">
+                    <img :src="API_ROOT+'AmoskiActivity/userCenterManage/getImg?imgUrl='+item.imgUrl" width="100%" height="100%">
+                    <label :for="item.id"  @change="newcheck(index, item)" >
+                        <input v-show="butshow" type="checkbox" id="checkmodel" v-model="item.check" :class="{Icon:Iconscess,Iconcheck:item.check}"/>
+                    </label>
+                </li>
+            </ul>
+            <ul class="but" v-show="buttonshow">
+                <li @click="removePic(newalbumList)">
+                    <button type="button" class="mui-btn mui-btn-primary mui-btn-delete">删除</button></li>
+                <!--                <a href="javascript:void(0);"></a></li>-->
+                <!--            <li  @click="canelPic">-->
+                <!--                &lt;!&ndash;                <a href="javascript:void(0);" @click="canelPic()">取消</a>&ndash;&gt;-->
+                <!--                <button type="button" class="mui-btn mui-btn-danger">取消</button>-->
+                <!--            </li>-->
+            </ul>
+        </div>
+    </div>
+    <!--拍照和相册 -->
+    <div id="sheet1" class="mui-popover mui-popover-bottom mui-popover-action ">
+        <!-- 可选择菜单 -->
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">
+                <label for="imageph" >
+                    <span> 照相机</span>
+                    <input type="file"  value="照相机"  ref="photoImg" id='imageph'  @change="albumfilepz('photoImg')" capture>
+                </label>
+            </li>
+            <li class="mui-table-view-cell">
+                <form enctype="multipart/form-data">
+                    <label for="upload_image">
+                        <span>相册</span>
+                        <input id="upload_image" type="file" name="image" ref="upImg"  accept="image/*"  @change="albumfil('upImg')"/>
+                    </label>
+                </form>
+                <ul class="img-list"></ul>
+            </li>
+
+        </ul>
+        <!-- 取消菜单 -->
+        <ul class="mui-table-view">
+            <li class="mui-table-view-cell">
+                <a href="#sheet1"><b>取消</b></a>
+            </li>
+        </ul>
+    </div>
+    <div id="box"></div>
+</div>
+<script src="../js/mui.js"></script>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/mescroll.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#myalbumwarp',
+        data: {
+            remnant:0,
+            desc:'',
+            albummList:[],
+            newalbumList:[],
+            Iconscess:false,
+            Iconcheck:false,
+            idarry:[],
+            butshow:true,
+            buttonshow:false,
+            checkList:[],//选中的图片列表
+            currindex:[],
+            canvas:document.createElement("canvas"),
+            tCanvas:document.createElement("canvas"),
+        },
+        mounted(){
+            let _this = this;
+
+            //_this.albumm();//查询本地相册
+            _this.initmescroll();
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            portphotoshop(){
+                mui('#sheet1').popover('toggle');
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            albumm(page){//查询相册
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        page:page.num,
+                        limit:page.size
+                    }
+                    if (page.num === 1) _this.albummList=[];
+                    postData(data,'AmoskiActivity/userCenterManage/queryUserPicByUserId').then(response => {
+                        if (response.code == 0){
+                            mescroll.endSuccess(response.data.data.length); //无参. 注意结束下拉刷新是无参的
+                            const result = response.data;
+                            let resdataarr = result.data;
+                            // _this.newalbumList = [];
+                            //_this.albummList=[];
+                            console.log(resdataarr);
+
+                            if(resdataarr){
+                                resdataarr.forEach(function(value,index,arry){
+                                    _this.albummList.push( arry[index]);
+                                    let arr = _this.albummList;
+                                    var map = {},
+                                        dest = [];
+                                    for(var i = 0; i < arr.length; i++){
+                                        var ai = arr[i];
+                                        ai.createTime = getFmtTime(ai.createTime);//时间格式转化
+                                        if(!map[ai.createTime]){
+                                            dest.push({
+                                                createTime: ai.createTime,
+                                                data: [ai]
+                                            });
+                                            map[ai.createTime] = ai;
+                                        }else{
+                                            for(var j = 0; j < dest.length; j++){
+                                                var dj = dest[j];
+                                                if(dj.createTime == ai.createTime){
+                                                    dj.data.push(ai);
+                                                    break;
+                                                }
+                                            }
+                                        }
+                                    }
+                                    console.log(dest);
+                                    _this.newalbumList = dest;
+                                })
+                            }
+
+
+                        } else {
+                            //  reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+
+            },
+            albumfil(photoImg){
+                // mui.showLoading(); //加载文字和类型，plus环境中类型为div时强制以div方式显示
+                let that=this;
+                let imgFile = that.$refs[photoImg].files;
+                let formData= new FormData();//通过formdata上传
+                for(var i =0;i<imgFile.length;i++){
+                    var imgSize = imgFile[i].size;
+                    if(imgSize <= 1024 * 1024 * 2){
+                        formData.append('files',imgFile[i]);
+                        that.uploaddata(formData)
+                        mui('#sheet1').popover('toggle');
+                        return false;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var result = this.result;
+                        var img = new Image();
+                        img.src = result;
+                        //图片加载完毕之后进行压缩，然后上传
+                        if (img.complete){
+                            callback(img);
+                        } else {
+                            img.onload = callback;
+                        }
+                        function callback(){
+                            var data = compress(img,that);
+                            var blob =  dataURLtoBlob(data);
+                            formData.append('files', blob);
+                            that.uploaddata(formData)
+                            img = null;
+                        };
+                    };
+                    reader.readAsDataURL(imgFile[i]);
+                }
+            },
+            uploaddata(formData){
+                let that = this;
+                return new Promise((resolve, reject) => {
+                    postData(formData, 'AmoskiActivity/userCenterManage/uploadFile').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data
+                            that.initmescroll();
+                            mui.hideLoading()
+                            mui('#sheet1').popover('toggle');
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        // reject(error)
+                    })
+                })
+            },
+            albumfilepz(photoImg){//拍照
+                let that=this;
+                let imgFile = that.$refs[photoImg].files;
+                // if(!/image\/\w+/.test(imgFile[0].type)){
+                //     alert('上传的不是图片');
+                //     return false;
+                // }
+
+
+                //在此限制图片的大小
+                var imgSize = imgFile[0].size;
+                //在此处我们限制图片大小为2M
+                if(imgSize <= 1024 * 1024 * 2){
+
+                    let formData=new FormData();//通过formdata上传
+                    //保存对象 转base64码
+                    var reader=new FileReader();
+                    reader.onload=function(e){
+                        window.sessionStorage.setItem('imgurl',reader.result);//手机号
+                        window.location.href="watermark.html";
+                    }
+                }else{
+
+                    var reader = new FileReader();
+                    reader.onload = function() {
+                        var img = new Image();
+                        img.src = reader.result;
+
+                        if (img.complete){
+                            callback(img);
+                        } else {
+                            img.onload = callback;
+                        }
+                        function callback(){
+                            var data = compress(img,that);
+                            console.log(data);
+                            var blob =  dataURLtoBlob(data);
+                            console.log(blob);
+                            window.sessionStorage.setItem('imgurl',blob);//手机号
+                            window.location.href="watermark.html";
+                          //  formData.append('files', blob);
+                           // that.uploaddata(formData)
+                            img = null;
+                        };
+                    }
+                }
+                reader.readAsDataURL(imgFile[0]);
+
+
+            },
+            drag(item,index) {
+                let _this = this;
+                let timeOutEvent = '';
+                timeOutEvent = setTimeout(function(){
+                    _this.Iconscess = true;
+                },1000);
+            },
+            newcheck(index,item){
+                let _this = this;
+                _this.Iconcheck = index;
+                _this.buttonshow = true;
+                if(item.check){
+                    if(_this.idarry.indexOf(item.id) == -1)
+                    {
+                        _this.idarry.push(item.id);;
+                        _this.checkList.push(item);
+                        _this.currindex.push(index);
+                    }
+                }else{
+                    let num = _this.idarry.indexOf(item.id);
+                    _this.idarry.splice(num,1)
+                    _this.checkList.splice(num,1)
+                    _this.currindex.splice(num,1);
+                }
+            },
+            removePic(item){
+                let _this = this;
+                mui.confirm('您确定要删除此照片？','提示',['取消','删除'],function(e){
+                    if(e.index == 0)
+                    {
+                        let _this = this;
+                        item.check = false;
+                        item.forEach(function (cur,index,arry) {
+                            arry[index].data.forEach(function(c,i,a){
+                                a[i].check = false;
+                                a[i].createTime = false;
+                            })
+                        })
+                    }
+                    if(e.index == 1)
+                    {
+                        var a = _this.newalbumList[0].data;
+                        var b = _this.idarry;
+                        let idsarry = [];
+                        for(index in a){
+
+                            if(b.indexOf(a[index]["id"]) != -1)//如果a里面有b里面的id;
+                            {
+                                idsarry.push(index);
+                            }
+                        }
+                        let i=0;
+                        idsarry.forEach(function(cur,index,array){
+                            a.splice(parseInt(cur)-i,1);
+                            i++;
+                        })
+                        // _this.newalbumList = a;
+                        return new Promise((resolve, reject) => {
+                            const data = {
+                                ids: b.join(',')
+                            }
+                            postData(data,'AmoskiActivity/userCenterManage/removePic').then(response => {
+                                if (response.code == 0) {
+                                    const result = response.data
+                                    if(result == 'null' || result == 0)
+                                    {
+                                        _this.buttonshow = false;
+                                    }
+                                    resolve(result)
+                                } else {
+                                    //  reject('error')
+                                }
+                            }).catch(error => {
+                                reject(error)
+                            })
+                        })
+                    }
+                },'div')
+            },
+            canelPic(e){
+                let _this = this;
+                _this.Iconscess = false;
+                _this.Iconcheck = false;
+                _this.butshow = false;
+                console.log(e);
+                //  _this.butshow = false;
+                // _this.albumm();//查询本地相册
+            },
+            initmescroll(){//初始化下拉
+                let _this = this;
+                mescroll = new MeScroll("mescroll", { //第一个参数"mescroll"对应上面布局结构div的id (1.3.5版本支持传入dom对象)
+                    down: {
+                        use:false,
+                        callback: _this.albumm //下拉刷新的回调,别写成downCallback(),多了括号就自动执行方法了
+                    },
+                    up: {
+                        callback:  _this.albumm, //上拉加载的回调
+                        page: {
+                            num: 0, //当前页 默认0,回调之前会加1; 即callback(page)会从1开始
+                            size: 16 //每页数据条数,默认10
+                        },
+                    }
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

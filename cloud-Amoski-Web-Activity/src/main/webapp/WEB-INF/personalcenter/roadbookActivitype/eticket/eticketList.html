@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/acitvity.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/refundticket.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="etickList" v-cloak>
+    <div class="headerFixed">
+        <div class="positionBar pt10 pb10" v-show="appplate">
+            <span class="w24 arrowIcon fl ml10" onclick="backUrl('person/index.html')"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+            <span class="enrollees f18 color38">我的电子票</span>
+        </div>
+        <ul class="ActivitynavTab f15 clearfix" style="margin-top:0;">
+            <li :class="activeClass == index?'cur':''"  v-for="(item,index) in ActivityTab" @click="changeActivity(index)"><a href="#">{{item.txt}}</a></li>
+        </ul>
+    </div>
+    <div v-show="activeClass == 0" class="etickListLi">
+        <ul class="clearfix">
+            <li class="mt15 clearfix" v-for="(item,index) in effective" @click="etickDetail(item.id,item.activityStart)">
+                <div class="fl pl15 Txt pt15 pb15">
+                    <p class="f15 color38">{{item.title}}</p>
+                    <p class="f12 color97 mt4"><span>{{item.invoiceName}}   ￥{{item.primitiveMoney}}</span></p>
+                    <!--<p class="f12 color55 mt4">有效期至：{{getFmtTime(item.activityStop,'yyyy-MM-dd-HH-mm')}}</p>-->
+                    <p class="f12 color55 mt4">有效期至：{{item.activityStop}}</p>
+                </div>
+                <div class="fl Txttag f20 colorff">
+                    有效
+                </div>
+            </li>
+        </ul>
+    </div>
+    <div v-show="activeClass == 1" class="etickListLi">
+        <ul class="clearfix">
+            <li class="mt15 clearfix" v-for="(item,index) in invalid" @click="etickDetail(item.id,item.activityStart)">
+                <div class="fl pl15 Txt pt15 pb15">
+                    <p class="f15 color38">{{item.title}}</p>
+                    <p class="f12 color97 mt4"><span>{{item.invoiceName}}   ￥{{item.primitiveMoney}}</span></p>
+                    <!--<p class="f12 color55 mt4">有效期至：{{getFmtTime(item.activityStop,'yyyy-MM-dd-HH-mm')}}</p>-->
+                    <p class="f12 color55 mt4">有效期至：{{item.activityStop}}</p>
+                </div>
+                <div class="fl  Txttagno f20 colorff">
+                    失效
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#etickList',
+        data:{
+            activeClass:0,
+            ActivityTab:[
+                {
+                    txt:'有效',
+                },
+                {
+                    txt:'无效',
+                }
+            ],
+            useData:[],//最终数据存放到此变量
+            effective:[],//有效
+            invalid:[],//无效
+        },
+        created(){
+        },
+        mounted(){
+            this.etickList();
+        },
+        methods:{
+            changeActivity(index){
+                this.activeClass = index;
+            },
+            etickList(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {};
+                    postData(data,'AmoskiActivity/activityOrderManage/queryElectronicTicket').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            result.forEach(function(cur,index,arr){
+                                if(arr[index].effective){//有效电子票
+                                    _this.effective.push( arr[index]);
+                                    console.log( _this.effective);
+                                }else{//无效电子票
+                                    _this.invalid.push(arr[index]);
+                                }
+
+                            })
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+
+                })
+            },
+            etickDetail(id,activityStart){
+                //let activityStarttime = getFmtTime(activityStart,'yyyy-MM-dd-HH-mm');
+                let activityStarttime = activityStart;
+                window.location.href = '../eticket/index.html?id='+id+'&activityStart='+activityStarttime;
+            }
+        },
+    })
+</script>
+</body>
+</html>

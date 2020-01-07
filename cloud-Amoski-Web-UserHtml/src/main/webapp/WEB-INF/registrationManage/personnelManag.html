@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+</head>
+<script>
+    var personneTitle="人员管理";
+    function localhostGo() {
+        if (location.href.indexOf("/AmoskiWebHtmlUser/registrationManage/personnelManag.html?orderList=true")!=-1) {
+            window.parent.$("#tabzu [lay-id='活动管理'] .layui-tab-close").click()
+        }else{
+            window.location.href = '/AmoskiWebHtmlUser/registrationManage/index.html';
+        }
+    }
+</script>
+<body>
+<div id="regisInfor" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <!--<li><a href="#">预览和设置</a></li>-->
+            <li><a href="#" @click="save()">保存</a></li>
+            <!--<li><a href="#" @click="save()">发布</a></li>-->
+            <li><a href="#" onclick="localhostGo()">退出</a></li>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <div class="templateleft fl" style="width:15%">
+            <div class="Img"><img src="../img/listImg1.png" alt="" title=""></div>
+            <strong class="displayBlock mt5">内蒙草原重机嘉年华</strong>
+            <p class="mt5">集合地点：湖南长沙县未…</p>
+            <p class="mt5">集合时间： 2019-05-28</p>
+        </div>
+        <div class="reginfor fl" style="width:60%">
+            <div class="clearfix mt20">
+                <h2>报名信息</h2>
+                <div class="clearfix personMoudle">
+                    <el-form ref="form" :model="tbActivitySignUpEntity" label-width="80px">
+                        <div class="rowModule">
+                            <el-form-item label="头像：" class="clearfix rowModuleLeft">
+                                <img class="touXiang" :src="tbActivitySignUpEntity.headPortraitUrl" alt="" title="">
+                            </el-form-item>
+                        </div>
+                        <div class="rowModule clearfix">
+                            <el-form-item label="姓名："  class="rowModuleLeft">
+                                <el-input v-model="tbActivitySignUpEntity.name"   :disabled="pageDisabled" ></el-input>
+                            </el-form-item>
+                            <el-form-item label="性别：" class="rowModuleRight" :disabled="pageDisabled" >
+                                <el-input v-model="tbActivitySignUpEntity.sex" :disabled="pageDisabled"></el-input>
+                            </el-form-item>
+                        </div>
+                        <div class="rowModule">
+                            <el-form-item label="区域："  :disabled="pageDisabled"  class="rowModuleLeft">
+                                <el-cascader
+                                        style="margin-left: 0px;width: 100%"
+                                        :disabled="pageDisabled"
+                                        :options="options"
+                                        :placeholder="tbActivitySignUpEntity.region"
+                                        v-model="tbActivitySignUpEntity.region"
+
+                                >
+                                </el-cascader>
+                            </el-form-item>
+                            <el-form-item label="身份：" class="rowModuleRight">
+                                <el-select v-model="tbActivitySignUpEntity.identitys" :disabled="pageDisabled"  placeholder="请选择身份">
+                                    <el-option label="身份1" value="shanghai"></el-option>
+                                    <el-option label="身份2" value="beijing"></el-option>
+                                </el-select>
+                            </el-form-item>
+                        </div>
+                        <div class="rowModule clearfix">
+                            <el-form-item label="电话：" class="rowModuleLeft" :disabled="pageDisabled" >
+                                <el-input v-model="tbActivitySignUpEntity.tel" :disabled="pageDisabled"></el-input>
+                            </el-form-item>
+
+
+                            <el-form-item label="身份证：" class="rowModuleRight">
+                                <el-input v-model="tbActivitySignUpEntity.identityNumber" :disabled="pageDisabled" ></el-input>
+                            </el-form-item>
+
+
+
+
+                        </div>
+                        <div class="rowModule">
+                            <el-form-item label="车型：" :disabled="pageDisabled"  class="rowModuleLeft">
+                                <el-input v-model="tbActivitySignUpEntity.models" :disabled="pageDisabled"></el-input>
+                            </el-form-item>
+                            <el-form-item label="排量："  :disabled="pageDisabled"  class="rowModuleRight">
+                                <el-input v-model="tbActivitySignUpEntity.displacement" :disabled="pageDisabled"></el-input>
+                            </el-form-item>
+
+                        </div>
+                        <div class="rowModule">
+                            <el-form-item label="俱乐部："  :disabled="pageDisabled"  class="rowModuleLeft">
+                                <el-input v-model="tbActivitySignUpEntity.club" :disabled="pageDisabled" ></el-input>
+                            </el-form-item>
+                            <el-form-item label="排量："  :disabled="pageDisabled"  class="rowModuleRight">
+                                <el-input v-model="tbActivitySignUpEntity.clothingDigital" :disabled="pageDisabled"></el-input>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                </div>
+            </div>
+            <div class="clearfix mt20">
+                <h2>接送机</h2>
+                <div class="clearfix personMoudle">
+                    <el-form ref="form" :model="tbPeopleReceiveSendEntityStart" label-width="80px">
+                        <div class="clearfix rowModule">
+                            <el-form-item label="到达："  class="rowModuleLeft">
+                                <input type="text" id="startFlightDate" class="el-input__inner" style="width: 92%;margin-left: 3%;"
+                                       v-model="tbPeopleReceiveSendEntityStart.flightDate" placeholder="出发时间">
+                                <!--<el-date-picker id="startFlightDate" :disabled="pageDisabled"
+                                                style="width: 90%;margin-left: 4%;"
+                                        v-model="tbPeopleReceiveSendEntityStart.flightDate"
+                                        type="datetime"
+                                        placeholder="出发时间：">-->
+                                </el-date-picker>
+                            </el-form-item>
+                            <el-form-item  class="rowModuleRight">
+                                <input type="text" id="startArriveDate" class="el-input__inner" style="width: 102%;"
+                                       v-model="tbPeopleReceiveSendEntityStart.arriveDate" placeholder="到达时间">
+                                <!--<el-date-picker id="startArriveDate" style="width: 103%;" :disabled="pageDisabled"
+                                                v-model="tbPeopleReceiveSendEntityStart.arriveDate"
+                                        type="datetime"
+                                        placeholder="到达时间：">-->
+                                </el-date-picker>
+                            </el-form-item>
+                        </div>
+                        <div class="clearfix rowModule">
+                            <el-form-item label="" class="rowModuleLeft">
+                                <el-input  style="margin-left:41%;padding:0 10px" :disabled="pageDisabled"
+                                           v-model="tbPeopleReceiveSendEntityStart.placeDeparture" placeholder="出发地"></el-input>
+                            </el-form-item>
+                            <el-form-item class="rowModuleRight">
+                                <el-input v-model="tbPeopleReceiveSendEntityStart.destination" style="width: 103%;" :disabled="pageDisabled"
+                                          placeholder="目的地"></el-input>
+                            </el-form-item>
+                        </div>
+                        <div class="clearfix rowModule">
+                            <el-form-item class="rowModuleLeft">
+                                <el-input placeholder="航班号"
+                                          style="margin-left:41%;padding:0 10px" :disabled="pageDisabled"
+                                          v-model="tbPeopleReceiveSendEntityStart.flightNumber"></el-input>
+                            </el-form-item>
+                            <el-form-item class="rowModuleRight">
+                                <el-input style="width: 103%;margin-left: 0%;" :disabled="pageDisabled"
+                                          v-model="tbPeopleReceiveSendEntityStart.describe"
+                                          placeholder="机场及航站楼"></el-input>
+                            </el-form-item>
+                        </div>
+                        <div class="clearfix rowModule rowModulets">
+                            <el-form-item label="接机：">
+                                <el-radio-group v-model="tbPeopleReceiveSendEntityStart.meetGive" :disabled="pageDisabled"  class="clearfix">
+                                    <el-radio label="是" value="0"></el-radio>
+                                    <el-radio label="否" value="1"></el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+
+                    <el-form ref="form" :model="tbPeopleReceiveSendEntityEnd" label-width="80px">
+                        <div class="clearfix rowModule">
+
+                            <el-form-item label="送机：" :disabled="pageDisabled"  class="rowModuleLeft">
+                                <input type="text" id="endFlightDate" class="el-input__inner" style="width: 92%;margin-left: 3%;"
+                                       v-model="tbPeopleReceiveSendEntityEnd.arriveDate" placeholder="出发时间">
+                                <!--<el-date-picker id="endFlightDate"
+                                        style="width: 90%;margin-left: 4%;" :disabled="pageDisabled"
+                                        v-model="tbPeopleReceiveSendEntityEnd.flightDate"
+                                        type="datetime"
+                                        placeholder="出发时间：">-->
+                                </el-date-picker>
+                            </el-form-item>
+
+                            <el-form-item  class="rowModuleRight">
+                                <input type="text" id="endArriveDate" class="el-input__inner" style="width: 102%;"
+                                       v-model="tbPeopleReceiveSendEntityEnd.arriveDate" placeholder="到达时间">
+                                <!--<el-date-picker id="endArriveDate"
+                                        style="width: 103%;" :disabled="pageDisabled"
+                                                v-model="tbPeopleReceiveSendEntityEnd.arriveDate"
+                                                type="datetime"
+                                                placeholder="到达时间：">-->
+                                </el-date-picker>
+                            </el-form-item>
+                        </div>
+                        <div class="clearfix rowModule">
+                            <el-form-item label="" class="rowModuleLeft">
+                                <el-input  style="margin-left:41%;padding:0 10px" :disabled="pageDisabled"
+                                           v-model="tbPeopleReceiveSendEntityEnd.placeDeparture" placeholder="出发地"></el-input>
+                            </el-form-item>
+                            <el-form-item class="rowModuleRight">
+                                <el-input v-model="tbPeopleReceiveSendEntityEnd.destination" style="width: 103%;" :disabled="pageDisabled"
+                                          placeholder="目的地"></el-input>
+                            </el-form-item>
+                        </div>
+                        <div class="clearfix rowModule">
+                            <el-form-item class="rowModuleLeft">
+                                <el-input placeholder="航班号" :disabled="pageDisabled"
+                                          style="margin-left:41%;padding:0 10px"
+                                          v-model="tbPeopleReceiveSendEntityEnd.flightNumber"></el-input>
+                            </el-form-item>
+                            <el-form-item class="rowModuleRight">
+                                <el-input style="width: 103%;margin-left: 0%;" :disabled="pageDisabled"
+                                          v-model="tbPeopleReceiveSendEntityEnd.describe"
+                                          placeholder="机场及航站楼"></el-input>
+                            </el-form-item>
+                        </div>
+                        <div class="clearfix rowModule rowModulets">
+                            <el-form-item label="送机：">
+                                <el-radio-group v-model="tbPeopleReceiveSendEntityEnd.meetGive" :disabled="pageDisabled"  class="clearfix">
+                                    <el-radio label="是" value="0"></el-radio>
+                                    <el-radio label="否" value="1"></el-radio>
+                                </el-radio-group>
+                            </el-form-item>
+                        </div>
+                    </el-form>
+                </div>
+            </div>
+            <!--<div class="clearfix mt20">
+                <h2>住宿</h2>
+                <div class="clearfix personMoudle AccomMoudle">
+                    <div class="clearfix Sall">
+                        <span class="S_1">时间</span>
+                        <span class="S_2">房型</span>
+                        <span class="S_3">房型</span>
+                        <span class="S_4">房间号</span>
+                    </div>
+                    <ul>
+                        <li class="clearfix"  v-for="(item,index) in tbPeoplePutUpEntity" >
+                            <span class="S_1 displayInline"><i class="IconBg">{{item.daysOfTravel}}</i></span>
+                            <el-cascader v-model="item.hotelName" placeholder="请选择酒店" :disabled="pageDisabled"  @change="pageDisabled?'':HotelNameMapChange(index,item)" :options="item.hotelNameMap"  class="S_3">
+                                &lt;!&ndash;<el-option label="云南省" value="云南省"></el-option>&ndash;&gt;
+                            </el-cascader>
+
+                            <el-cascader v-model="item.roomType" placeholder="请选择房型"  :disabled="pageDisabled"  @change="pageDisabled?'':RoomTypeMapChange(index,item)" :options="item.roomTypeMap"  class="S_3">
+                                &lt;!&ndash;<el-option label="云南省" value="云南省"></el-option>&ndash;&gt;
+                            </el-cascader>
+
+
+                            <el-input placeholder="请输入房间号" class="S_3" :disabled="pageDisabled"
+                                      :disabled="item.roomType==null" style="margin-left: 1.3%;"
+                                      v-model="item.roomNumber"
+                            ></el-input>
+
+
+
+                            &lt;!&ndash;<el-cascader v-model="item.roomNumber" placeholder="请选择号" v-on:input ="inputChangeintrod('','destination')" @change="addreChange(province,'province')" :options="optionsShen"  class="optionSelect">
+                                &lt;!&ndash;<el-option label="云南省" value="云南省"></el-option>&ndash;&gt;
+                            </el-cascader>
+                            <el-select v-model="item.roomType" placeholder="标间" class="S_3">
+                                <el-option
+                                        v-for="items in options2"
+                                        :key="items.value"
+                                        :label="items.label"
+                                        :value="items.value"
+                                >
+                                </el-option>
+                            </el-select>
+                            &ndash;&gt;
+                        </li>
+                    </ul>
+                </div>
+            </div>-->
+            <order-detail :option="tbActivityOrderDetailsEntity"></order-detail>
+        </div>
+        <div class="navright personealnavright fr" style="width:20%">
+            <ul>
+                <li v-for="(item,index) in tbActivitySignUpEntityList" :class="{active:index==indexPrev}" @click="personActive(index)">
+                   <div class="clearfix">
+                       <span class="S_1">{{index+1}}</span>
+                       <span>{{item.name}}</span>
+                   </div>
+                    <p class="clearfix">
+                        <a href="#">信息</a>
+                        <a href="#">接送机</a>
+                        <a href="#">住宿</a>
+                        <a href="#">订单</a>
+                    </p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/citys.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script type="text/javascript" src="../js/topmenu_order.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/orderDetail.js"></script>
+<script type="text/javascript" src="../laydate/laydate.js"></script> <!-- 改成你的路径 -->
+
+<script type="text/javascript" src="../js/jquery-1.11.0.min.js"></script>
+<script>
+    var startFlightDate,startArriveDate,endFlightDate,endArriveDate;
+    function layDatesetTimeout(){
+        startFlightDate = laydate.render({//活动开始时间
+            elem: '#startFlightDate',
+            max:$("#startArriveDate").val()==null||$("#startArriveDate").val()==""?"2222-10-10":$("#startArriveDate").val()
+            ,type: 'datetime'
+            ,done: function(value, date){
+                app._data.tbPeopleReceiveSendEntityStart.flightDate=value;
+                let data = date;
+                data.month=data.month-1;
+                startArriveDate.config.min = data; //开始日选好后，重置结束日的最小日期
+                startArriveDate.config.start = data //将结束日的初始值设定为开始日
+            },
+        });
+        startArriveDate = laydate.render({//活动结束时间
+            elem: '#startArriveDate',
+            min:$("#startFlightDate").val()==null||$("#startFlightDate").val()==""?"1991-10-10":$("#startFlightDate").val()
+            ,type: 'datetime'
+            ,done: function(value, date){
+                app._data.tbPeopleReceiveSendEntityStart.arriveDate=value;
+                let data = date;
+                data.month=data.month-1;
+                startFlightDate.config.max = data; //结束日选好后，重置开始日的最大日期
+            },
+        });
+
+        endFlightDate = laydate.render({//活动开始时间
+            elem: '#endFlightDate',
+            max:$("#endArriveDate").val()==null||$("#endArriveDate").val()==""?"2222-10-10":$("#endArriveDate").val()
+            ,type: 'datetime'
+            ,done: function(value, date){
+                app._data.tbPeopleReceiveSendEntityEnd.flightDate=value;
+                let data = date;
+                data.month=data.month-1;
+                endArriveDate.config.min = data; //开始日选好后，重置结束日的最小日期
+                endArriveDate.config.start = data //将结束日的初始值设定为开始日
+            },
+        });
+        endArriveDate = laydate.render({//活动结束时间
+            elem: '#endArriveDate',
+            min:$("#endFlightDate").val()==null||$("#endFlightDate").val()==""?"1991-10-10":$("#endFlightDate").val()
+            ,type: 'datetime'
+            ,done: function(value, date){
+                app._data.tbPeopleReceiveSendEntityEnd.arriveDate=value;
+                let data = date;
+                data.month=data.month-1;
+                endFlightDate.config.max = data; //结束日选好后，重置开始日的最大日期
+            },
+        });
+    }
+    var app = new Vue({
+        el: '#regisInfor',
+        data: {
+            ordermanage:{
+                orderCode:'11051134137172',
+                time:'2019-05-28 17:52',
+                statue:'待付款',
+            },
+            tbActivitySignUpEntityList:[new TbActivitySignUpEntity()],
+            tbActivitySignUpEntity:new TbActivitySignUpEntity(),//活动报名人员表
+            tbPeopleReceiveSendEntityStart:null,//接送机
+            tbPeopleReceiveSendEntityEnd:null,//接送机
+            tbPeoplePutUpEntity:[new TbPeoplePutUpEntity()],//住宿
+            tbActivityOrderDetailsEntity:new TbActivityOrderDetailsEntity(),//订单
+            pageDisabled:window.top.ActivitySignUpQuery,
+            indexPrev:1,
+            input:'',
+            input1:'',
+            input2:'',
+            input3:'',
+            imageUrl: '',
+            isCollapse: true,
+            value: '',
+            value1:'',
+            value2: '',
+            value3: '',
+            cityname:'',
+            flight:'航班号',//航班号
+            resource:'',
+            personeaList:[
+            ],
+            form:{
+                tel: '',
+                idcode:'',
+                plate:'',
+                car:'',
+                option:wuOptions,
+            },
+            options1: [],
+        },mounted(){
+            this.indexPrev = 0;
+            let tbActivitySignUp=window.top.ActivitySignUpDatil;
+            //赋值报名人员列表
+            for(let i=0;i<tbActivitySignUp.length;i++){
+                this.tbActivitySignUpEntityList[i]=tbActivitySignUp[i].tbActivitySignUpEntity;//人员列表
+            }
+            //赋值当前人员数据
+            this.tbActivitySignUpEntity=tbActivitySignUp[0].tbActivitySignUpEntity;//人员
+            if(this.tbActivitySignUpEntity.region!=null && this.tbActivitySignUpEntity.region!=""){
+                try {
+                    this.tbActivitySignUpEntity.region = JSON.parse(this.tbActivitySignUpEntity.region);
+                }catch (ex) {
+                    this.tbActivitySignUpEntity.region = this.tbActivitySignUpEntity.region;
+                }
+            }
+            //赋值接送机
+            let peopleReceiveSend = tbActivitySignUp[0].tbPeopleReceiveSendEntity;
+            for(let i=0;i<peopleReceiveSend.length;i++){
+                if(peopleReceiveSend[i].type=="1"){//接机
+                    this.tbPeopleReceiveSendEntityStart=peopleReceiveSend[i];
+                }else{//送机
+                    this.tbPeopleReceiveSendEntityEnd=peopleReceiveSend[i];
+                }
+            }
+            if(this.tbPeopleReceiveSendEntityStart==null){//接机
+                this.tbPeopleReceiveSendEntityStart=new TbPeopleReceiveSendEntity();
+                this.tbPeopleReceiveSendEntityStart.type="1";
+            }
+            if(this.tbPeopleReceiveSendEntityEnd==null){//送机
+                this.tbPeopleReceiveSendEntityEnd=new TbPeopleReceiveSendEntity();
+                this.tbPeopleReceiveSendEntityEnd.type="2";
+            }
+            //住房
+            this.tbPeoplePutUpEntity=window.top.ActivitySignUpDatil[0].tbPeoplePutUpEntity
+            for(let i=0;i<this.tbPeoplePutUpEntity.length;i++){
+                if(this.tbPeoplePutUpEntity[i].hotelName!=null){
+                    this.tbPeoplePutUpEntity[i].roomTypeMap=this.tbPeoplePutUpEntity[i].option[this.tbPeoplePutUpEntity[i].hotelName];
+                }
+            }
+            //订单
+            this.tbActivityOrderDetailsEntity=window.top.ActivitySignUpDatil[0].tbActivityOrderDetailsEntity;
+            this.tbActivityOrderDetailsEntity.state = this.tbActivityOrderDetailsEntity.state=="1"?"已提交":
+                this.tbActivityOrderDetailsEntity.state=="2"?"未付款":
+                    this.tbActivityOrderDetailsEntity.state=="3"?"已付款":
+                        this.tbActivityOrderDetailsEntity.state=="4"?"审核退款":
+                            this.tbActivityOrderDetailsEntity.state=="5"?"已提交":"";
+            this.tbActivityOrderDetailsEntity.createDate = new Date(this.tbActivityOrderDetailsEntity.createDate).toLocaleString();
+            this.indexPrev=0;
+            setTimeout(function(){
+                window.parent["adjustmentIframe2"](
+                    (($(".reginfor").height()*2)+$($(".mt20")[2]).height()+ 500)+"px"
+                    ,"100%");
+
+                layDatesetTimeout();
+            },500);
+        },
+        methods: {
+            HotelNameMapChange(index,nodes){
+                nodes.roomTypeMap=nodes.option[nodes.hotelName[0]];
+                nodes.hotelName=nodes.hotelName[0];
+                nodes.roomType=null;
+                nodes.roomNumber=null;
+            },
+            RoomTypeMapChange(index,nodes){
+                nodes.roomType=nodes.roomType[0];
+            },
+            handleClick(tab, event) {
+                //console.log(tab, event);
+            },
+            handleAvatarSuccess(res, file) {
+                this.imageUrl = URL.createObjectURL(file.raw);
+            },
+            handleChange(value) {
+                let that = this;
+                tbActivitySignUpEntity.region = value[1];
+               // placeSearch.setCity(that.cityname);
+            },
+            personActive(index){
+                window.top.ActivitySignUpDatil[this.indexPrev].tbActivitySignUpEntity=this.tbActivitySignUpEntity;//人员
+                window.top.ActivitySignUpDatil[this.indexPrev].tbPeopleReceiveSendEntity=[this.tbPeopleReceiveSendEntityStart,this.tbPeopleReceiveSendEntityEnd];//接送机
+                window.top.ActivitySignUpDatil[this.indexPrev].tbPeoplePutUpEntity=this.tbPeoplePutUpEntity;//住宿
+
+                this.indexPrev = index;
+                let tbActivitySignUp=window.top.ActivitySignUpDatil;
+                //赋值当前人员数据
+                this.tbActivitySignUpEntity=tbActivitySignUp[index].tbActivitySignUpEntity;//人员
+                if(this.tbActivitySignUpEntity.region!=null && this.tbActivitySignUpEntity.region!=""){
+                    this.tbActivitySignUpEntity.region = JSON.parse(this.tbActivitySignUpEntity.region);
+                }
+                //赋值接送机
+                let peopleReceiveSend = tbActivitySignUp[index].tbPeopleReceiveSendEntity;
+                this.tbPeopleReceiveSendEntityStart=null;
+                this.tbPeopleReceiveSendEntityEnd=null;
+                for(let i=0;i<peopleReceiveSend.length;i++){
+                    if(peopleReceiveSend[i].type=="1"){//接机
+                        this.tbPeopleReceiveSendEntityStart=peopleReceiveSend[i];
+                    }else{//送机
+                        this.tbPeopleReceiveSendEntityEnd=peopleReceiveSend[i];
+                    }
+                }
+                if(this.tbPeopleReceiveSendEntityStart==null){//接机
+                    this.tbPeopleReceiveSendEntityStart=new TbPeopleReceiveSendEntity();
+                    this.tbPeopleReceiveSendEntityStart.type="1";
+                }
+                if(this.tbPeopleReceiveSendEntityEnd==null){//送机
+                    this.tbPeopleReceiveSendEntityEnd=new TbPeopleReceiveSendEntity();
+                    this.tbPeopleReceiveSendEntityEnd.type="2";
+                }
+                //住房
+                this.tbPeoplePutUpEntity=window.top.ActivitySignUpDatil[index].tbPeoplePutUpEntity
+                //订单
+                this.tbActivityOrderDetailsEntity=window.top.ActivitySignUpDatil[index].tbActivityOrderDetailsEntity;
+                //this.tbActivityOrderDetailsEntity=window.top.ActivitySignUpDatil[index].tbActivityOrderDetailsEntity;
+
+                if(!isNaN(this.tbActivityOrderDetailsEntity.state)){
+                    this.tbActivityOrderDetailsEntity.state = this.tbActivityOrderDetailsEntity.state=="1"?"已提交":
+                        this.tbActivityOrderDetailsEntity.state=="2"?"未付款":
+                            this.tbActivityOrderDetailsEntity.state=="3"?"已付款":
+                                this.tbActivityOrderDetailsEntity.state=="4"?"审核退款":
+                                    this.tbActivityOrderDetailsEntity.state=="5"?"已提交":"";
+                    this.tbActivityOrderDetailsEntity.createDate = new Date(this.tbActivityOrderDetailsEntity.createDate).toLocaleString();
+                }
+            },save(){
+                window.top.ActivitySignUpDatil[this.indexPrev].tbActivitySignUpEntity=this.tbActivitySignUpEntity;//人员
+                try {
+                    this.tbPeopleReceiveSendEntityStart.arriveDate=this.tbPeopleReceiveSendEntityStart.arriveDate.getTime();
+                    this.tbPeopleReceiveSendEntityStart.flightDate=this.tbPeopleReceiveSendEntityStart.flightDate.getTime();
+                    this.tbPeopleReceiveSendEntityEnd.arriveDate=this.tbPeopleReceiveSendEntityEnd.arriveDate.getTime();
+                    this.tbPeopleReceiveSendEntityEnd.flightDate=this.tbPeopleReceiveSendEntityEnd.flightDate.getTime();
+                }catch (ex) {
+                    console.log(ex);
+                }
+                window.top.ActivitySignUpDatil[this.indexPrev].tbPeopleReceiveSendEntity=[this.tbPeopleReceiveSendEntityStart,this.tbPeopleReceiveSendEntityEnd];//接送机
+                window.top.ActivitySignUpDatil[this.indexPrev].tbPeoplePutUpEntity=this.tbPeoplePutUpEntity;//住宿
+                var requestUrl="/AmoskiUser/RegistrationPersonnel/SaveActivitySignUp";
+                var param = window.top.ActivitySignUpDatil;
+                axiosSendPost(requestUrl,{SignUp:JSON.stringify(param)},function(res){
+                    //window.location.href="../activityManage/index.html"
+                },function(res){
+
+                });
+            }
+        }
+    })
+</script>
+</body>
+</html>

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link  rel="stylesheet" type="text/css" href="../css/element-ui.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/activity.css" />
+    <script type="text/javascript" src="/AmoskiWebHtmlUser/js/errorLogin.js"></script>
+</head>
+<body>
+<div id="activity" class="couenter fl">
+    <div class="header clearfix">
+        <menu-top></menu-top>
+        <ul class="stage">
+            <script type="text/javascript" src="../js/activityBtn.js"></script>
+        </ul>
+    </div>
+    <div class="center clearfix">
+        <my-aisde></my-aisde>
+        <div class="information fl">
+            <h2>活动报名</h2>
+            <el-form ref="form" :model="createObjbaom" label-width="80px" size="mini" class="baomingcount" >
+                <el-form-item label="报名必填">
+                    <el-checkbox-group v-model="type" v-on:change="inputChangebaom($event,'mandatoryField')">
+                        <el-checkbox-button name="type" v-for="(item,index) in typeListbaom" :label="item.text" :value="item.value" ></el-checkbox-button>
+                    </el-checkbox-group>
+                </el-form-item>
+                <el-form-item label="报名范围：">
+                    <el-radio-group v-model="createObjbaom.scopeRegistration" v-on:change="inputChangebaom($event,'scopeRegistration')">
+                        <el-radio label="团体"></el-radio>
+                        <el-radio label="个人"></el-radio>
+                    </el-radio-group>
+                </el-form-item>
+                <el-form-item label="集合地点：" >
+                    <el-input v-model="createObjbaom.collectionPlace" v-on:input="inputChangebaom($event,'collectionPlace')"></el-input>
+                </el-form-item>
+                <el-form-item label="集合时间：">
+                    <el-date-picker
+                            v-model="createObjbaom.collectionTime"
+                            type="datetime"
+                            placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:change="inputChangebaom($event,'collectionTime')">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="活动开始时间：">
+                    <el-date-picker
+                            v-model="createObjbaom.activityStart"
+                            type="datetime"
+                            placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:change="inputChangebaom($event,'activityStart')">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="活动结束时间：">
+                    <el-date-picker
+                            v-model="createObjbaom.activityStop"
+                            type="datetime"
+                            placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:change="inputChangebaom($event,'activityStop')">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="报名截止时间：">
+                    <el-date-picker
+                            v-model="createObjbaom.activityEnd"
+                            type="datetime"
+                            placeholder="选择日期时间" format="yyyy-MM-dd-hh-mm" v-on:input="inputChangebaom($event,'activityEnd')">
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="报名人数限制：">
+                    <el-input v-model="createObjbaom.numberLimitation" placeholder="不填为不限制" style="width:80%;" v-on:input="inputChangebaom($event,'numberLimitation')"></el-input>
+                </el-form-item>
+                <el-form-item label="人数显示">
+                    <el-radio-group v-model="createObjbaom.showNumber" v-on:change="inputChangebaom($event,'showNumber')">
+                        <el-radio label="显示"></el-radio>
+                        <el-radio label="不显示"></el-radio>
+                    </el-radio-group>
+                    <span class="activenote"><i>*</i>在活动详情页显示已报名人数列表</span>
+                </el-form-item>
+            </el-form>
+        </div>
+        <menu-right></menu-right>
+    </div>
+</div>
+<script type="text/javascript" src="../js/vue2.min.js"></script>
+<script type="text/javascript" src="../js/qs.js"></script>
+<script type="text/javascript" src="../js/axios.min.js"></script>
+<script type="text/javascript" src="../js/utils.js"></script>
+<script type="text/javascript" src="../js/element-ui.js"></script>
+<script type="text/javascript" src="../js/aisde.js"></script>
+<script type="text/javascript" src="../js/menuright.js"></script>
+<script type="text/javascript" src="../js/topmenu.js"></script>
+<script type="text/javascript" src="../js/country-level2-data.js"></script>
+<script type="text/javascript" src="../js/CreateActivityEntity.js"></script>
+<script>
+    var app = new Vue({
+        el: '#activity',
+        data: {
+            type: [],
+            typeListbaom:[
+                {text:'真实姓名',value:'真实姓名'},
+                {text:'性别',value:'性别'},
+                {text:'电话',value:'电话'},
+                {text:'身份证号',value:'身份证号'},
+                {text:'驾照',value:'驾照'},
+                {text:'紧急联系人',value:'紧急联系人'},
+                {text:'骑行经验',value:'骑行经验'},
+            ],
+            imageUrlbaom: '',
+            createObjbaom:{},
+        },
+        mounted(){
+            //queryDict("",this.typeList);//查询字典数据
+            this.createObjbaom=window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity;
+            this.type=this.createObjbaom.mandatoryField?this.createObjbaom.mandatoryField.split(","):[];//转换玩法数据
+        },
+        methods: {
+            inputChangebaom(node,tab){
+                if(tab == 'mandatoryField')//报名必填
+                {
+                    node=this.type.join(",");
+                    //console.log(this.destinationOp.join(','));//转一个字符
+                }else if(tab == 'type'){//玩法
+                    node=this.type.join(",");
+                    //console.log(this.destinationOp.join(',')); //转一个字符
+                }
+                window.top.activityCreateList[window.top.activityIndex].tbActivityOrdinationEntity[tab]=node;
+            },
+        }
+    })
+    lookDisabled();//如果是查看需要禁用表单
+</script>
+</body>
+</html>

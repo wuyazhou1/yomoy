@@ -1,0 +1,146 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link rel="stylesheet" type="text/css" href="../css/down.css" />
+</head>
+<div class="weixinImg" id="weixinImg" onclick="weixinClick()">
+    <div class="wxImg" style="position:relative;width:320px;height:136px;top:5%;right:0;padding:5%;margin-left:30px;"><img src="../img/tip.png" width="100%" height="100%" ></div>
+</div>
+<section class="sectionWarp h60" id="yomoy" >
+    <header class="clearfix pb10">
+        <span class="fl mt10 ml15"><img src="../img/logo.png" alt="" title="" class=""></span>
+        <span class="fr bgcolor59 w100 h39 lh39 textAlign DownApp mt10 mr15"><a href="javascript:void(0);" @click="Downapp()">下载APP</a></span>
+    </header>
+    <section class="partition"></section>
+    <section class="clearfix content mt30 textAlign">
+        <img src="../img/Group.png" alt="" title="">
+        <div class="mt15 f18 color38">查看及下载更多高清大图<br/>请下载 YOMOY-APP</div>
+        <a href="javascript:void(0)" class="appOpen w110 h39 f15" @click="is_weixn()">APP内打开</a>
+    </section>
+</section>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/clipboard.min.js"></script>
+<script type="text/javascript">
+    var os = function (){
+        var ua = navigator.userAgent,
+            isWindowsPhone = /(?:Windows Phone)/.test(ua),
+            isSymbian = /(?:SymbianOS)/.test(ua) || isWindowsPhone,
+            isAndroid = /(?:Android)/.test(ua),
+            isFireFox = /(?:Firefox)/.test(ua),
+            isChrome = /(?:Chrome|CriOS)/.test(ua),
+            isTablet = /(?:iPad|PlayBook)/.test(ua) || (isAndroid && !/(?:Mobile)/.test(ua)) || (isFireFox && /(?:Tablet)/.test(ua)),
+            isPhone = /(?:iPhone)/.test(ua) && !isTablet,
+            isPc = !isPhone && !isAndroid && !isSymbian;
+        return {
+            isTablet: isTablet,
+            isPhone: isPhone,
+            isAndroid: isAndroid,
+            isPc: isPc
+        };
+    }();
+    function GetRequest(){
+        var url = location.search; //获取url中"?"符后的字串
+        var theRequest = new Object();
+        if (url.indexOf("?") != -1) {
+            var str = url.substr(1);
+            strs = str.split("&");
+            for(var i = 0; i < strs.length; i ++) {
+                theRequest[strs[i].split("=")[0]]=decodeURI((strs[i].split("=")[1]));
+            }
+        }
+        return theRequest;
+    }
+
+    function weixinClick(){
+        document.getElementById('weixinImg').style.display = 'none';
+    }
+</script>
+<script>
+    new Vue({
+        el: '#yomoy',
+        data: {
+            clipboardTxt:'',
+            bindvale:'',
+            platformValue:'',
+        },
+        mounted(){
+            let _this = this;
+            let Request = new Object();
+            Request = GetRequest();
+            console.log(Request.platform);
+            _this.clipboardTxt = Request.teamCode;
+            _this.platformValue = Request.platform;//判断是ios还是安桌
+        },
+        methods: {
+            CopyStart(){
+                var btn = document.getElementById('btn');
+                var clipboard = new ClipboardJS(btn);
+                clipboard.on('success', function(e) {
+                    // alert(e);
+                });
+                clipboard.on('error', function(e) {
+                    //console.log(e);
+                });
+            },
+            CopyEnd(){
+                // alert('已复制到剪贴板');
+            },
+            testApp(url,hrefUrl,type){
+                //var timeout, t = 200, hasApp = true;
+                if(type==1){
+                    window.location.href = hrefUrl; /***下载app的地址***/
+                }else{
+                    window.location.href = url; /***下载app的地址***/
+                    setTimeout(function () {
+                        window.location.href = hrefUrl;
+                    }, 2000);
+                }
+            },
+            is_weixn(){
+                var ua = navigator.userAgent.toLowerCase();
+                if(ua.match(/MicroMessenger/i)=="micromessenger"){
+                    //  alert('在微信中打开的');
+                    document.getElementById('weixinImg').style.display = 'block';
+                } else {
+                    // alert('在浏览器中打开的');
+                    var u = navigator.userAgent;
+                    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                    if(isAndroid){
+                        this.testApp('android://com.elder.amoski',"https://android.myapp.com/myapp/detail.htm?apkName=com.elder.amoski&ADTAG=mobile");
+                    }
+                    if(isiOS){
+                        this.testApp('Amoski://',"https://apps.apple.com/cn/app/id1465682517",1);
+                    }
+                }
+            },
+            Downapp(){//下载app
+                var u = navigator.userAgent;
+                var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+                var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+                if(isAndroid){
+                    android();
+                    function android(){
+                        // window.location.href = "http://amoski.net/motor/index.html";
+                        window.location.href = "https://android.myapp.com/myapp/detail.htm?apkName=com.elder.amoski&ADTAG=mobile";
+                        /***打开app的协议，有安卓同事提供***/
+                    };
+                }
+                if(isiOS){
+                    ios();
+                    function ios(){
+                        window.location.href= 'https://apps.apple.com/cn/app/id1465682517';
+                    };
+                }
+
+            },
+        }
+    })
+</script>
+</body>
+</html>

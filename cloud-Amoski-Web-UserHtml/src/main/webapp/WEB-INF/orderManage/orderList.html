@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>订单管理</title>
+    <link rel="shortcut icon" href="/AmoskiWebUser/images/logo.ico">
+    <link rel="stylesheet" type="text/css" href="/AmoskiWebUser/css/h-ui/css/H-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="/AmoskiWebUser/css/h-ui.admin/css/H-ui.admin.css" />
+    <link rel="stylesheet" type="text/css" href="/AmoskiWebUser/css/Hui-iconfont/1.0.8/iconfont.css" />
+
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery/1.9.1/jquery.min.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery/1.9.1/ajaxhook.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/layer/3.0/layer.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/public.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/common.js"></script>
+
+
+    <script type="text/javascript" src="/AmoskiWebUser/js/datatables/1.10.15/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/laydate/laydate.js"></script>
+    <script type="text/javascript" src="/AmoskiWebUser/js/jquery.form.js"></script>
+
+    <style>
+        .stateClass{
+            display: -webkit-inline-box;
+            padding-left: 0px;
+            list-style-type: none;
+        }
+        .stateClass li {
+            margin-left: 18px;
+        }
+        .active{
+            color: orange;
+            border: 1px;
+        }
+        .centerTd{
+            text-align: center!important;
+        }
+    </style>
+</head>
+<body>
+<div class="page-container" style="padding: 0px;">
+
+    <div class="cl pd-5 bg-1 bk-gray mt-10" >
+        订单编号：
+        <input type="text" class="input-text" style="width: 180px"  id="orderId" name="orderId" maxlength="50">&nbsp;&nbsp;&nbsp;
+        活动名称：
+        <input type="text" class="input-text" style="width: 180px"  id="basicsTile" name="basicsTile" maxlength="50">&nbsp;&nbsp;&nbsp;
+        付款人：
+        <input type="text" class="input-text" style="width: 180px"  id="memberId" name="memberId" maxlength="50">&nbsp;&nbsp;&nbsp;
+        <!--票种：
+        <input type="text" class="input-text" style="width: 180px"  id="invoiceId" name="invoiceId" maxlength="50">&nbsp;&nbsp;&nbsp;-->
+        <a class="btn btn-success radius" id="btnSearch">
+            <i class="Hui-iconfont">&#xe665;</i>
+            查询
+        </a>
+    </div>
+    <div class="cl pd-5 bg-1 bk-gray mt-10" >
+        订单状态：
+        <ul  class="stateClass"><li class="active" onclick="stateClassClick(this)" data-id="">全部</li><!--<li onclick="stateClassClick(this)"  data-id="1">已取消</li>--><li data-id="2" onclick="stateClassClick(this)" >待付款</li><li data-id="3" onclick="stateClassClick(this)" >已付款</li><li data-id="6" onclick="stateClassClick(this)" >已完成</li><li data-id="4" onclick="stateClassClick(this)" >申请退款</li><li data-id="5" onclick="stateClassClick(this)" >已退款</li></ul>
+    </div>
+
+    <div class="mt-10"  >
+        <table id="example" class="table table-border table-bordered table-bg table-hover table-sort" >
+            <thead>
+            <tr class="text-c">
+                <th width="">付款人111</th>
+                <th width="">订单编号</th>
+                <th width="">活动名称</th>
+                <th width="">订单状态</th>
+                <th width="100px">票种名称</th>
+                <th width="">支付金额</th>
+                <th width="">实际数/报名数</th>
+                <th width="">已退款金额</th>
+                <th width="">实付金额</th>
+                <th width="210px;">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+</div>
+</body>
+<script>
+    var table;
+    $(document).ready(function() {
+
+        initTable();
+        $("#btnSearch").on('click',function(){
+            table.draw();
+        });
+        selected();
+    });
+    function stateClassClick(nodes){
+        $(".stateClass li").removeClass('active');
+        $(nodes).addClass('active')
+        table.draw();
+    }
+
+    function handleClick(id){
+        $.ajax({
+            type: 'POST',
+            dateType: 'JSON',
+            data : {
+                "id":id,
+            },
+            url: "/AmoskiUser/RegistrationPersonnel/RegistrationPersonneldetails",
+            beforeSend:function(){
+                layer_wait();
+            },
+            success: function(res){
+                var data=res;
+                window.top.ActivitySignUpQuery=false;
+                window.top.ActivitySignUpDatil=data;
+                layer_close();
+                try{
+                    window.parent.$("#tabzu [lay-id='活动管理'] .layui-tab-close").click();
+                }catch(err){
+                    alert(err);
+                }
+                window.parent["addTab"]("活动管理","/AmoskiWebHtmlUser/registrationManage/personnelManag.html?orderList=true")
+
+            },
+            error: function(e){
+                layer_close();
+                layer.msg(JSON.parse(e.responseText).message,{icon:6,time:2000},function(){
+                    layer_close();
+                });
+            }
+        });
+    }
+
+
+
+    function initTable() {
+        var columns = [
+            {
+                data : "A2",
+                sClass:"centerTd"
+            }, {
+                data : "A1",
+                sClass:"centerTd"
+            }, {
+                data : "A3",
+                sClass:"centerTd"
+            },{
+                data : "A9",
+                sClass:"centerTd",
+                render : function(data, type, full, meta) {
+                    if(data=="1"){
+                        return "已取消"
+                    }else if(data=="2"){
+                        return "未付款"
+                    }else if(data=="3"){
+                        return "已付款"
+                    }else if(data=="4"){
+                        return "申请退款"
+                    }else if(data=="5"){
+                        return "已退款"
+                    }else if(data=="6"){
+                        return "已完成"
+                    }
+                },
+            },{
+                data : "A4",
+                sClass:"centerTd",
+                render : function(data, type, full, meta) {
+                    if(data==null)
+                        return "";
+                    for(;data.indexOf("^")!=-1;){
+                        data=data.replace("^","<br/>");
+                    }
+                    return data
+                }
+            },{
+                data : "A5",
+                sClass:"centerTd"
+            },{
+                data : "A6",
+                sClass:"centerTd"
+            },{
+                data : "A7",
+                sClass:"centerTd"
+            },{
+                data : "A8",
+                sClass:"centerTd"
+            },{
+                data : "A1",
+                sClass:"centerTd",
+                render : function(data, type, full, meta) {
+                    return '<a class="btn btn-primary radius" style="margin-right: 10px;" onclick="handleClick(\''+full.SIGN_UP_ID+'\')"><i class="Hui-iconfont"></i>查看信息</a>' +
+                        '<a class="btn btn-primary radius" onclick="showOrderDatail(\''+data+'\')"><i class="Hui-iconfont"></i>编辑订单</a>';
+                },
+            }
+        ];
+        table = $('#example').DataTable({
+            ajax : {
+                url : "/AmoskiUser/ActivityOrder/activityOrderlist",
+                type : "POST",
+                data : function(d) {
+                    d.orderId = $("#orderId").val();
+                    d.basicsTile = $("#basicsTile").val();
+                    d.memberId = $("#memberId").val();
+                    d.state = $(".stateClass li[class='active']").data().id;
+                }
+            },fnDrawCallback: function (oSettings) {
+                let json=jQuery.parseJSON(oSettings.jqXHR.responseText);
+                // console.log(resultMap.);
+                let height = 300 + (55 * json.data.length);
+                window.parent["adjustmentIframe2"](height+"px","100%");
+                return oSettings;
+            },
+            columns : columns,
+            serverSide : true,// 服务器查询数据分页
+            searching : false,
+            bAutoWidth : false, //宽度自适应
+            dom : 'rt<"bottom"ilp><"clear">',
+            filter : false,// 去掉搜索框
+            //scrollX : "100%",
+            scrollCollapse : "true",
+            paginationType : 'full_numbers',
+            sorting : [ [ 1, "desc" ] ],
+            // 默认第几个排序
+        });
+    }
+
+    function showOrderDatail(data){
+        location.href="orderDatail.html?id="+data;
+    }
+
+    function selected() {
+        $('#example tbody').on('click', 'tr', function() {
+            $(this).children().first().children().attr("checked", true);
+            if ($(this).hasClass('selected')) {
+                $(this).removeClass('selected');
+            } else {
+                table.$('tr.selected').removeClass('selected');
+                $(this).addClass('selected');
+            }
+        });
+    }
+</script>
+</html>

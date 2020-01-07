@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="orderIndex" v-cloak>
+    <div class="positionBar pt10 pb10 clearfix" v-show="appplate">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">订单确认</span>
+        <span class="close wh16 fr mr20"><img src="../img/close.jpg" width="100%" height="100%"></span>
+    </div>
+    <div class="clearfix mt15 surePictxt">
+        <div class="fl pt10 pl10 pb10 txt">
+            <strong>英国一地8天轻奢深度游,经典线路，小团出行…</strong>
+            <p>时间：2019-07-11 08:00 开始</p>
+            <p>地点：长沙县未来漫城</p>
+            <p>数量：票种1×2  票种2×1</p>
+        </div>
+        <div class="fr orderImg1 mt15 mr15"><img src="../img/IntroduceImg1.jpg" width="100%" height="100%" alt="" title=""></div>
+    </div>
+    <div class="TicketList mt15">
+        <ul>
+            <li v-for="(item,index) in TicketList">
+                <span class="s_1">{{item.Ticketspecies}}</span>
+                <span class="s_2">X{{item.Number}}</span>
+                <span class="s_3">￥{{item.price}}</span>
+            </li>
+            <li v-for="(item,index) in TicketList">
+                <span class="s_1">{{item.Ticketspecies}}</span>
+                <span class="s_2">X{{item.Number}}</span>
+                <span class="s_3">￥{{item.price}}</span>
+            </li>
+        </ul>
+    </div>
+    <footer class="orderFooter pt10 pb10 mt22 clearfix">
+        <span class="f15 color38 ml15 mt10 displayinlik">合计</span>
+        <strong class="ml15 color59 f18 mt10 displayinlik"><i class="f12 dollar">￥</i>{{totalprice}}</strong>
+        <input class="fr mr15 nextButton" type="button" id="J_btn" value="马上支付" :disabled="isDisabled" @click="Goeticket">
+    </footer>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/utils.js"></script>
+<!--<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.inc.min.js"></script>-->
+<script src="https://gw.alipayobjects.com/as/g/h5-lib/alipayjsapi/3.1.1/alipayjsapi.min.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#orderIndex',
+        data:{
+            ticketNo1:1,//票种一
+            ticketPriceOne:1000,//票价一
+            ticketNo2:2,//票种二
+            ticketPriceTwo:2000,//票价二
+            ticketNo3:3,//票种三
+            ticketPriceThree:2000,//票价三
+            totalprice:'',//总价
+            TicketList:[
+                {
+                    Ticketspecies:'票种1',
+                    Number:'1',
+                    price:'3000'
+                }
+            ],
+            isDisabled:false,
+        },
+        mounted(){
+            let _this = this;
+            _this.totalprice = parseInt(_this.ticketPriceOne) + parseInt(_this.ticketPriceTwo) + parseInt(_this.ticketPriceThree);//总价
+        },
+        methods:{
+            Goeticket(){
+                let _this = this;
+                _this.isDisabled = true;
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'fffffffffff').then(response => {
+                        if (response.code == 0){
+                            const result = response.data;
+                            if(result && result.length>0)
+                            {
+                                console.log('ffffffffffffff');
+                                _this.isDisabled = false;
+                            }
+                            resolve(result)
+                        } else {
+                            _this.isDisabled = false;
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+                window.location.href = '../order/eticket.html';
+            }
+        },
+    })
+
+    // 触发事件
+    var btn = document.querySelector('#J_btn');
+    btn.addEventListener('click', function(){
+        ap.tradePay({
+            tradeNO: '201802282100100427058809844'
+        }, function(res){
+            ap.alert(res.resultCode);
+            // 你支付成功后要处理的逻辑
+        });
+
+        var oDiv = document.createElement('<div>');
+        oDiv.id = 'newDivWarp';
+        oDiv.innerHTML = "<p>111111</p><p>22222222</p><p>33333333</p>"
+        document.body.appendChild(oDiv);
+
+    });
+
+</script>
+</body>
+</html>

@@ -1,0 +1,138 @@
+@charset "UTF-8";
+*{ margin:0px; padding:0px;box-sizing: border-box;;}
+html,body{font-size:14px ; color:#fff;height: 100%;background:#fff;}
+a{ color:#222; text-decoration:none;cursor:pointer;}
+a:hover{text-decoration:none!important}
+a:focus,input:focus,textarea:focus{ outline: none;}
+input{ color: #222;}
+input,button,textarea{-webkit-appearance: none; border-radius: 0px;}
+img,a img{ border:0px;vertical-align: middle;}
+ul{ list-style:none; margin:0px; padding:0px;}
+ul li{ list-style:none;margin:0px; padding:0px;}
+h1{margin:0;padding:0;font-weight: normal;}
+form{ margin:0; padding:0; list-style:none}
+table{ border-collapse: collapse;
+  border-spacing: 0;
+  margin: 0;
+  padding: 0;}
+.clearfix{clear: both;}
+.clearfix:after { clear: both; content: "."; display: block; height: 0; visibility: hidden;}
+.clearfix{*zoom:1;}
+
+.fl{float:left;display:inline-block;}
+.fr{float:right;display:inline-block}
+.dinline{display:inline-block;}
+.dblock{display:block;}
+
+.f12{font-size:0.32rem;}
+.f15{font-size:0.4rem;}
+.f18{font-size:0.48rem;}
+
+.pl10{padding-left:0.26666666666666666rem;}
+.pl15{padding-left:0.4rem;}
+.pl20{padding-left:0.5333333333333333rem;}
+.pl22{padding-left:0.5866666666666667rem;}
+.pr20{padding-right:0.5333333333333333rem;}
+.pr15{padding-right:0.4rem;}
+
+.pt10{padding-top:0.26666666666666666rem;}
+.pt13{padding-top:0.3466666666666667rem;}
+.pt15{padding-top:0.4rem;}
+.pt17{padding-top:0.45333333333333337rem;}
+.pt18{padding-top:0.48rem;}
+.pt20{padding-top:0.5333333333333333rem;}
+.pt22{padding-top:0.5866666666666667rem;}
+.pt24{padding-top:0.64rem;}
+.pt54{padding-top:1.44rem;}
+
+.pb10{padding-bottom:0.26666666666666666rem;}
+.pb15{padding-bottom:0.4rem;}
+.pb18{padding-bottom:0.48rem;}
+.pb19{padding-bottom:0.5066666666666666rem;}
+.pb20{padding-bottom:0.5333333333333333rem;}
+.pb24{padding-bottom:0.64rem;}
+.pb30{padding-bottom:0.8rem;}
+
+.ml10{margin-left:0.26666666666666666rem;}
+.ml12{margin-left:0.32rem;}
+.ml15{margin-left:0.4rem;}
+.ml16{margin-left:0.42666666666666664rem;}
+.ml20{margin-left:0.5333333333333333rem;}
+.ml24{margin-left:0.64rem;}
+.ml25{margin-left:0.6666666666666666rem;}
+.ml26{margin-left:0.6933333333333334rem;}
+.ml35{margin-left:0.9333333333333333rem;}
+.ml52{margin-left:1.3866666666666667rem;}
+
+.mr10{margin-right:0.26666666666666666rem;}
+.mr12{margin-right:0.32rem;}
+.mr14{margin-right:0.37333333333333335rem;}
+.mr15{margin-right: 0.4rem;}
+.mr20{margin-right:0.5333333333333333rem;}
+.mr25{margin-right:0.6666666666666666rem;}
+.mr35{margin-right:0.9333333333333333rem;}
+
+.mt4{margin-top:0.10666666666666666rem;}
+.mt5{margin-top:0.13333333333333333rem;}
+.mt6{margin-top:0.16rem;}
+.mt8{margin-top: 0.21333333333333332rem;}
+.mt10{margin-top:0.26666666666666666rem;}
+.mt12{margin-top:0.32rem;}
+.mt13{margin-top:0.3466666666666667rem;}
+.mt15{margin-top:0.4rem;}
+.mt16{margin-top:0.42666666666666664rem;}
+.mt17{margin-top:0.45333333333333337rem;}
+.mt19{margin-top:0.5066666666666666rem;}
+.mt20{margin-top:0.5333333333333333rem;}
+.mt21{margin-top:0.56rem;}
+.mt22{margin-top:0.5866666666666667rem;}
+.mt30{margin-top:0.8rem;}
+.mt36{margin-top:0.96rem;}
+.mt40{margin-top:1.0666666666666667rem;}
+.mt88{margin-top:2.3466666666666667rem;}
+
+.mb30{margin-bottom:0.8rem;}
+.mb40{margin-bottom:1.0666666666666667rem;}
+
+.w24{width:0.64rem;}
+.w40{width:1.0666666666666667rem;}
+
+.h24{height:0.64rem;}
+.h40{height:1.0666666666666667rem;}
+
+.lh24{line-height:0.64rem;}
+
+.color38{color:#2D3138;}
+.colorbc{color:#A5A5BC;}
+
+.textAlign{text-align:center;}
+.positionBar{background:#fff;}
+.roadBookTxt{background:#fff;}
+#routeIntroduction{height:100%;background:#F7F7FF;}
+#routeIntroduction p,#routeIntroduction h2{color:#2D3138;font-size:0.4rem;line-height:0.64rem;}
+#routeIntroduction h2 strong{display:block;}
+#routeIntroduction .Img{width:100%;height:6.666666666666666rem;overflow:hidden;display:block;}
+.pathCount{color:#67676F;}
+.pathCount .ImgTxt{background:#F2F2F2;padding:0.32rem 0.54rem;width:7.8rem;position:relative;}
+.pathCount .ImgTxt:after{
+  position: absolute;
+  content: '';
+  width: 0;
+  height: 0;
+  left:0;
+  margin-left: -9px;
+  margin-top:10px;
+  border-top:10px solid transparent;
+  border-bottom:10px solid transparent;
+  border-right:10px solid #f2f2f2;
+}
+.pathCount .ImgTxt .Img img{border-radius:5px;}
+
+/*线路详情*/
+#lineroadDetail{background:#F7F7FF;color:#67676F;}
+#lineroadDetail .pathCount{background:#fff;}
+
+.roadDetailBg{background:#F2F2F2;padding-top:8px;padding-bottom:8px;margin-bottom:10px;}
+.roadDetailBg strong{margin-left:24px;}
+
+#routeIntroduction img{width:100%;}

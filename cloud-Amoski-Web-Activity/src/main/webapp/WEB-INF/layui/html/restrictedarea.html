@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no, width=device-width">
+    <link rel="stylesheet" href="font/element-icons.woff" />
+    <style>
+        #container {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <!--<link rel="stylesheet" href="css/demo-center.css" /><!--https://a.amap.com/jsapi_demos/static/demo-center/css/demo-center.css-->
+    <!--<link rel="stylesheet" href="css/main1119.css"/><!--https://cache.amap.com/lbs/static/main1119.css-->
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css"><!--https://unpkg.com/element-ui/lib/theme-chalk/index.css-->
+</head>
+<body>
+<section class="warpper clearfix" id="administration">
+    <div class="sidebar fl">
+        <el-row class="tac">
+            <el-col :span="24">
+                <h5>自定义颜色</h5>
+                <el-menu
+                        default-active="2"
+                        class="el-menu-vertical-demo"
+                        @open="handleOpen"
+                        @close="handleClose"
+                        background-color="#545c64"
+                        text-color="#fff"
+                        active-text-color="#ffd04b">
+                    <el-submenu index="1">
+                        <template slot="title">
+                            <i class="el-icon-location"></i>
+                            <span>系统管理</span>
+                        </template>
+                        <el-menu-item-group>
+                            <el-menu-item index="1-1">部门管理</el-menu-item>
+                            <el-menu-item index="1-2">用户管理</el-menu-item>
+                            <el-menu-item index="1-3">会员管理</el-menu-item>
+                            <el-menu-item index="1-4">角色管理</el-menu-item>
+                            <el-menu-item index="1-5">菜单管理</el-menu-item>
+                            <el-menu-item index="1-6">字典类型管理</el-menu-item>
+                            <el-menu-item index="1-7">字典管理</el-menu-item>
+                            <el-menu-item index="1-8">禁限管理</el-menu-item>
+                        </el-menu-item-group>
+                    </el-submenu>
+                    <el-menu-item index="2" disabled>
+                        <i class="el-icon-document"></i>
+                        <span slot="title">活动管理</span>
+                    </el-menu-item>
+                    <el-menu-item index="3">
+                        <i class="el-icon-setting"></i>
+                        <span slot="title">商城管理</span>
+                    </el-menu-item>
+                </el-menu>
+            </el-col>
+        </el-row>
+    </div>
+    <div class="counRight fr">
+        <div class="title"><h2>禁限管理</h2></div>
+        <div class="explain clearfix">
+            <span class="limit borderN">添加禁限区</span>
+            <span @click="addRoute('添加线路','起点','地点','1')">添加线路</span>
+            <span class="ml10" @click="addRoute('添加区域','起点','地点','2')">添加区域</span>
+            <el-button type="primary" class="fr" icon="el-icon-search" size="mini" @click.stop="addforbid()" :disabled="disabled">完成</el-button>
+        </div>
+        <div class="clearfix mt10 restricewarper">
+            <div class="restricLeft fl">
+                <el-select v-model="value" placeholder="请选择" class="elselect" @change="queryforbid(value)">
+                    <el-option
+                            v-for="item in options"
+                            :key="item.CITYNAME"
+                            :label="item.CITYNAME"
+                            :value="item.CITYNAME">
+                    </el-option>
+                </el-select>
+                <ul class="List">
+                    <li v-for="(item,index) in tableData " @click="Listtab(item,index)" :class="{active:numactive === index}">{{item.forbidName}}</li>
+                </ul>
+            </div>
+            <div class="restriccenter fl ml10">
+                <h2>
+                    <span class="prohibittxt">禁摩区3</span>
+                    <a href="#" class="empty">清空</a>
+                </h2>
+
+                <el-table
+                        :data="routeList"
+                        style="width: 100%"
+                        highlight-current-row = "true"
+                        @row-click="openDetails"
+                        ref="DetailTable"
+                        style="height:auto;"
+                >
+                    <el-table-column
+                            prop="text1"
+                            label="起点"
+                            width="80">
+                    </el-table-column>
+                    <el-table-column
+                            prop="text2"
+                            label="终点"
+                            width="80">
+                    </el-table-column>
+                    <el-table-column
+                            label="操作"
+                            width="120">
+
+                        <template slot-scope="scope">
+                            <a href="#"><img src="img/addicon.png" class="ImgIcon" @click.stop="addRow(scope.$index, routeList)"></a>
+                            <a href="javascript:void(0)" @click.stop="sortDown(scope.$index, scope.row)"><img src="img/bottomIcon.png" class="ImgIcon"></a>
+                            <a href="#"><img src="img/topIcon.png" class="ImgIcon"  @click.stop="sortUp(scope.$index, scope.row)"></a>
+                            <a href="#"><img src="img/jianicon.png" class="ImgIcon"  @click.stop="deleteRow(scope.$index, routeList)"></a>
+                        </template>
+                    </el-table-column>
+                </el-table>
+
+            </div>
+            <!--<div class="" style="width:200px;height:500px;">-->
+            <!--<img src="img/map.jpg" alt="" title="" width="100%" height="100%">-->.
+            <div id="container" style="float:left;display: inline-block;margin-left: 10px;border: 1px solid #ccc;width:54%;height:100%;" class=""></div>
+            <div id="myPageTop" style="position: absolute;top:3%;right:24%;">
+                <table>
+                    <tr>
+                        <td>
+                            <el-input
+                                    id="tipinput"
+                                    placeholder="请输入内容"
+                                    v-model="inputVal"
+                                    clearable style="float:left;width:55%;margin-left:13%;" size="small">
+
+                            </el-input>
+                            <el-button type="primary" icon="el-icon-search" class="fl" size="small" @click="selectAddr()">确定</el-button>
+                            <!--								<input id="tipinput" placeholder="请输入途径点" v-model="inputVal" style="width:150px;height:30px;"/>-->
+                            <!--								<input type="button" value="确定" @click="selectAddr()" style="width:50px;"/>-->
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="input-card">
+                <el-button type="primary" class="btn" @click="editBtn()">开始编辑</el-button>
+                <el-button type="success" class="btn" @click="cancelBtn()" style="margin-left:0;">结束编辑</el-button>
+
+                <!--                <div>-->
+                <!--                    <button class="btn" onclick="polyEditor.open()" style="margin-bottom: 5px">开始编辑</button>-->
+                <!--                </div>-->
+                <!--                <div>-->
+                <!--                    <button class="btn" onclick="polyEditor.close()">结束编辑</button>-->
+                <!--                </div>-->
+            </div>
+            <!--</div>-->
+
+
+
+            <!--<div id="container" class=""></div>
+            <div id="myPageTop">
+                <table>
+                    <tr>
+                        <td>
+                            <label>请输入关键字：</label>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="tipinput"/>
+                            <input type="button" value="搜索" style="width:50px;"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="input-card" style="width: 120px">
+                <button class="btn" onclick="polyEditor.open()" style="margin-bottom: 5px">开始编辑</button>
+                <button class="btn" onclick="polyEditor.close()">结束编辑</button>
+            </div>-->
+        </div>
+    </div>
+</section>
+<script src="https://webapi.amap.com/maps?v=1.4.14&key=76e7b372802c8e7526fa37f79717c502"></script>
+<script src="js/demoutils.js"></script><!--https://a.amap.com/jsapi_demos/static/demo-center/js/demoutils.js-->
+<script src="js/addToolbar.js"></script><!--https://cache.amap.com/lbs/static/addToolbar.js-->
+<script src="js/vue2.min.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/index.js"></script><!--https://unpkg.com/element-ui/lib/index.js-->
+<script src="js/flexible.js"></script>
+<script>
+    //var cityName="北京市";
+    var map,placeSearch,geocoder,auto,polyEditor,bezierCurveEditor,polygon,bezierCurve;//地图需要的参数
+
+    var app = new Vue({
+        el: '#administration',
+        data: {
+            select2:'',
+            isCollapse: true,
+            tableData: [],
+            routeLists:[],
+            routeList:[],
+            options: [],
+            value: '',
+            LocalcityName:'',
+            LocalcityCode:'',
+            LocalcityCode:'',
+            forbidType:'',//路线类型
+            forbidName:'',
+            forbidName2:'',
+            currArrIdx:0,//当前第几个数组
+            forbidType:1,//当前选中路线类型
+            cityCode:'',//城市代码
+            forbidId:'',//禁摩信息id
+            forbidRoadName:[],
+            numactive:0,
+            inputVal:'',
+            disabled:false,
+        },
+        mounted(){
+            let _this = this;
+            _this.LocalcityName = window.sessionStorage.getItem('LocalcityName')
+            _this.LocalcityCode = window.sessionStorage.getItem('LocalcityCode')
+            _this.Localid = window.sessionStorage.getItem('Localid')
+            _this.cityCode = window.sessionStorage.getItem('LocalcityCode')
+            _this.forbidId = window.sessionStorage.getItem('Localid')
+            _this.queryallcity();//下拉列表
+            _this.queryforbid( _this.LocalcityCode);//数据列表
+            _this.value = _this.LocalcityCode;
+            _this.initMap();
+        },
+        methods:{
+            editBtn(){
+                if(this.forbidType=="1"){
+                    bezierCurveEditor.open();
+                }else{
+                    polyEditor.open();
+                }
+            },
+            cancelBtn(){
+                if(this.forbidType=="1"){
+                    bezierCurveEditor.close();
+                }else{
+                    polyEditor.close();
+                }
+            },
+            initMap(){
+                let maTthis = this;
+                var cityName=maTthis.LocalcityName;
+                map = new AMap.Map("container", {
+                    //center: [],
+                    zoom: 14,
+                    resizeEnable: true
+                });
+
+                AMap.plugin('AMap.Geocoder',function(){
+                    geocoder = new AMap.Geocoder({
+                        // city 指定进行编码查询的城市，支持传入城市名、adcode 和 citycode
+                        city: cityName
+                    })
+                    maTthis.resetCityCenter();
+                })
+
+
+                AMap.plugin('AMap.Autocomplete',function(){
+                    //输入提示
+                    var autoOptions = {
+                        input: "tipinput",
+                        citylimit:true,
+                        city:cityName
+                    };
+                    auto = new AMap.Autocomplete(autoOptions);
+
+                    AMap.event.addListener(auto, "select", select);//注册监听，当选中某条记录时会触发
+
+                    function select(e) {
+                        /*var point=new AMap.LngLat(116.39, 39.9);
+                        map.setCenter(point);*/
+                        //placeSearch.setCity(e.poi.adcode);
+                        /*placeSearch.search(e.poi.name,function(status, result) {
+                            // 搜索成功时，result即是对应的匹配数据
+
+                        });*/  //关键字查询查询
+                        maTthis.inputVal=e.poi.name;
+                        placeSearch.clear();
+                        geocoder.getLocation(e.poi.name, function(status, result) {
+                            if (status === 'complete' && result.info === 'OK') {
+                                // result中对应详细地理坐标信息
+                                var rowData=maTthis.routeList[maTthis.currTableRow];
+                                if(rowData){
+                                    var geocodes=result.geocodes[0].location;//经纬度   addressComponent 详细信息
+                                    rowData.text2=e.poi.name;
+                                    rowData.text3=geocodes.lng+","+geocodes.lat;
+                                    if(maTthis.forbidType=="1"){
+                                        rowData.text3=rowData.text3+","+geocodes.Q+","+geocodes.P;
+                                    }
+                                    maTthis.resetCire();
+                                }
+                            }else{
+                                alert("获取经纬度失败!");
+                            }
+                        })
+
+                    }
+                    //AMap.event.addListener(auto, "complete", searchComp);//注册监听，查询成功触发 //用户改变地图
+                    function searchComp(e) {
+                        console.log(e);
+                        /*placeSearch.setCity(e.poi.adcode);
+                        placeSearch.search(e.poi.name);*/  //关键字查询查询
+                    }
+                })
+
+
+                AMap.plugin('AMap.PlaceSearch',function(){
+                    placeSearch = new AMap.PlaceSearch({
+                        map: map,
+                        citylimit:false,//强制设置chengs
+                        city:cityName
+                    });  //构造地点查询类
+                })
+
+
+                AMap.plugin(['AMap.PolyEditor','AMap.BezierCurveEditor'],function(){
+                    polygon = new AMap.Polygon({
+                        //path: path,
+                        strokeColor: "#FF33FF",
+                        strokeWeight: 6,
+                        strokeOpacity: 0.2,
+                        fillOpacity: 0.4,
+                        fillColor: '#1791fc',
+                        zIndex: 50,
+                    })
+
+                    //setCity(city:String);//动态设置城市
+                    //search(keyword:String,callback:function(status:String,result:info/AutocompleteResult));//调用查询
+                    map.add(polygon);
+                    // 缩放地图到合适的视野级别
+
+
+                    polyEditor = new AMap.PolyEditor(map, polygon)
+
+                    polyEditor.on('addnode', function(event) {
+
+                        //maTthis.autoAddAddr(event);
+                        log.info('触发事件：addnode')
+                    })
+
+                    polyEditor.on('adjust', function(event) {
+                        maTthis.autoAddAddr(event);
+                        log.info('触发事件：adjust')
+                    })
+
+                    polyEditor.on('removenode', function(event) {
+                        maTthis.autoAddAddr(event);
+                        log.info('触发事件：removenode')
+                    })
+
+                    polyEditor.on('end', function(event,target) {
+                        maTthis.autoAddAddr(event);
+                        log.info('触发事件： end')
+                        // event.target 即为编辑后的多边形对象
+                    })
+
+                    bezierCurve = new AMap.BezierCurve({
+                        path: [[116.39, 39.91]],
+                        isOutline: true,
+                        outlineColor: '#ffeeff',
+                        borderWeight: 3,
+                        strokeColor: "#3366FF",
+                        strokeOpacity: 1,
+                        strokeWeight: 6,
+                        // 线样式还支持 'dashed'
+                        strokeStyle: "solid",
+                        // strokeStyle是dashed时有效
+                        strokeDasharray: [10, 10],
+                        lineJoin: 'round',
+                        lineCap: 'round',
+                        zIndex: 50,
+                    });
+
+                    bezierCurve.setMap(map)
+
+                    bezierCurveEditor = new AMap.BezierCurveEditor(map, bezierCurve)
+
+                    bezierCurveEditor.on('addnode', function(event) {
+                        maTthis.autoBCAddAddr(event);
+                        log.info('触发事件：addnode'+event)
+                    })
+
+                    bezierCurveEditor.on('adjust', function(event) {
+                        maTthis.autoBCAddAddr(event);
+                        log.info('触发事件：adjust')
+                    })
+
+                    bezierCurveEditor.on('removenode', function(event) {
+                        maTthis.autoBCAddAddr(event);
+                        log.info('触发事件：removenode')
+                    })
+
+                    bezierCurveEditor.on('end', function(event) {
+                        maTthis.autoBCAddAddr(event);
+                        log.info('触发事件： end')
+                        // event.target 即编辑后的曲线对象
+                    })
+                })
+
+            },
+            autoBCAddAddr(event){//曲线自动添加点 删除点
+                var _this=this;
+                _this.routeList=[];
+                var paths=event.target.Ge.path;
+
+                paths.forEach(function(cur,index,arr){
+                    var tempPoint=cur.lng+","+cur.lat;
+                    var controllPoints=cur.controlPoints;//所有控制点
+                    for(var i=0;i<controllPoints.length;i++){
+                        tempPoint+=","+controllPoints[i].lng+","+controllPoints[i].lat;
+                    }
+
+                    var lnglat = [cur.lng, cur.lat];
+                    geocoder.getAddress(lnglat, function(status, result) {
+                        if (status === 'complete' && result.info === 'OK'&&result.regeocode) {
+                            var addrObj=result.regeocode.addressComponent;
+                            // result为对应的地理位置详细信息
+                            var addObj={//添加的obj
+                                text1:'途径点',
+                                text2:addrObj.township+addrObj.street+addrObj.streetNumber,//位置名称  result.regeocode.formattedAddress; 全名
+                                text3:tempPoint,
+                                index:index
+                            };
+                            _this.routeList.splice(index,0,addObj);
+                        }
+                    })
+                });
+            },
+            autoAddAddr(event){//自动添加点 删除点
+                var _this=this;
+                var type=event.type;
+                var point=event.lnglat;
+                var paths=event.target.Ge.path;
+                var addPoint=point.lng+","+point.lat;//point.Q+","+point.P;
+                var list=_this.routeList;//总条数
+                if(type=="removenode"){//删除点
+                    list.forEach(function(cur,index,arr){
+                        if(addPoint==cur.text3) {//如果相等 添加到对应数组里面
+                            _this.deleteRow(index,_this.routeList);
+                        }
+                    })
+                }else{
+                    paths.forEach(function(cur,index,arr){
+                        var tempPoint=cur.lng+","+cur.lat;
+                        if(addPoint==tempPoint){//如果相等 添加到对应数组里面
+                            var lnglat = [point.lng, point.lat];
+                            geocoder.getAddress(lnglat, function(status, result) {
+                                if (status === 'complete' && result.info === 'OK'&&result.regeocode) {
+                                    var addrObj=result.regeocode.addressComponent;
+                                    // result为对应的地理位置详细信息
+                                    var addObj={//添加的obj
+                                        text1:'途径点',
+                                        text2:addrObj.township+addrObj.street+addrObj.streetNumber,//位置名称  result.regeocode.formattedAddress; 全名
+                                        text3:addPoint,
+                                        index:index
+                                    };
+                                    if(type=="adjust"){//修改点
+                                        if(list.length<paths.length){//新增点
+                                            _this.addRow(index-1,_this.routeList,addObj);
+                                        }else{//修改点
+                                            var currPoint=_this.routeList[index];
+                                            currPoint.index=addObj.index;
+                                            currPoint.text1=addObj.text1;
+                                            currPoint.text2=addObj.text2;
+                                            currPoint.text3=addObj.text3;
+                                        }
+                                    }else if(type=="end"){//完成 可以做数据比对处理
+                                        if(list.length!=paths.length){//数据有误
+                                            alert("数据处理有误!!!!list:"+list+">>>>>>>>>>>>paths:"+paths);
+                                        }
+                                    }
+
+                                }
+                            })
+
+                        }
+                    });
+                }
+            },
+            resetCityCenter(addr){//重置地图中心点
+                if(!addr){
+                    addr=this.LocalcityName;
+                }
+                if(geocoder){
+                    geocoder.getLocation(addr, function(status, result) {
+                        if (status === 'complete' && result.info === 'OK') {
+                            var geocodes=result.geocodes[0].location;//经纬度   addressComponent 详细信息
+                            var point=new AMap.LngLat(geocodes.lng,geocodes.lat);
+                            map.setCenter(point);
+                        }
+                    })
+                }
+            },
+            handleOpen(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            handleClose(key, keyPath) {
+                console.log(key, keyPath);
+            },
+            deleteRow(index, rows) {
+                console.log(index);
+                rows.splice(index, 1);
+                this.sortTabelData();//重新排序行号
+                this.resetCire();
+            },
+            addRow(index,rows,addObj){
+                var _this=this;
+                var list = addObj?addObj:{
+                    text1: '途径点',
+                    text2: '',
+                }
+                this.routeList.splice(index+1,0,list)
+                _this.sortTabelData();//重新排序行号
+            },
+            sortTabelData(){
+                var _this=this;
+                this.routeList.forEach(function(cur,index,arry){
+                    let arrdata = arry[index];
+                    arrdata['index'] = index;
+                })
+            },
+            sortUp (index, row) {
+                if (index === 0) {
+                    this.$message({
+                        message: '已经是列表中第一个素材！',
+                        type: 'warning'
+                    })
+                } else {
+                    let temp = this.routeList[index - 1]
+                    Vue.set(this.routeList, index - 1, this.routeList[index])
+                    Vue.set(this.routeList, index, temp)
+                }
+            },
+            // 下移按钮
+            sortDown (index, row) {
+                if (index === (this.routeList.length - 1)) {
+                    this.$message({
+                        message: '已经是列表中最后一个素材！',
+                        type: 'warning'
+                    })
+                } else {
+                    let i = this.routeList[index + 1]
+                    Vue.set(this.routeList, index + 1, this.routeList[index])
+                    Vue.set(this.routeList, index, i)
+                }
+            },
+            handleNodeClick(data) {
+                console.log(data);
+            },
+            Listtab(item,index){
+                let _this = this;
+                _this.numactive = index;
+                _this.forbidName2 = item.forbidName;
+                _this.routeList = _this.routeLists[index]
+                _this.forbidType=item.forbidType;
+                _this.currArrIdx=index;
+                _this.resetCire(true);//重新绘制
+            },
+            addRoute(rote,text1,text2,typeid){
+                let newarr = {};
+                let _this = this;
+                newarr.forbidName= rote+(this.tableData.length+1);
+                newarr.forbidType= typeid;
+                newarr.cityCode=_this.cityCode;
+                newarr.forbidId=_this.forbidId;
+                this.tableData.push(newarr);
+                let newarrs = [];
+                let newrightarr = {};
+                newrightarr.text1 = text1;
+                newrightarr.text2 = text2; //具体地址名称  newrightarr.text3 = text3; 具体地址经纬度
+                newarrs.push(newrightarr);
+                this.routeLists.push(newarrs);
+                let lennum = this.routeLists.length;
+                _this.routeList = _this.routeLists[lennum-1]
+                _this.forbidType=typeid;
+                _this.currArrIdx=lennum-1;
+                //_this.forbidType = typeid;
+                _this.sortTabelData();
+            },
+            queryallcity(value){
+                let _this = this;
+                const data = { };
+                postData(data,'AmoskiRiding/forbidRidingManage/queryAllCityForbid').then(response => {
+                    if (response.code == 0){
+                        _this.options = response.data;
+                        // _this.LocalcityCode = value;
+                        //_this.queryforbid()//城市切换，更新数据
+                        //resolve(result)
+                    } else {
+                        console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                    // reject(error)
+                })
+            },
+            addforbid(){//完成提交
+                //调接口;
+                let _this = this;
+                //console.log(_this.forbidName2);
+                _this.disabled = true;
+                _this.routeLists.forEach(function(cur,index,array){
+                    var forbidRoadNameArr=[],forbidRoadPointArr=[];
+                    var rlist=array[index];
+                    rlist.forEach(function(cur1,index1,array1){
+                        forbidRoadNameArr.push(array1[index1].text1+":"+array1[index1].text2);
+                        forbidRoadPointArr.push(array1[index1].text3);
+                    })
+                    let forbidRoadNameStr =  forbidRoadNameArr.join(',');
+                    let forbidRoadPointStr = forbidRoadPointArr.join('@');
+                    _this.tableData[index].forbidRoadName=forbidRoadNameStr;
+                    _this.tableData[index].forbidRoadPoint=forbidRoadPointStr;
+                })
+                /*const data = {
+                    id:'',
+                    forbidRoadName: forbidRoadNamearr,//禁摩路线名称(多个用,隔开)
+                    forbidRoadPoint:'0',//禁摩路线经纬度(多个用,隔开)
+                    status:'1',//状态(0:消禁 1:禁止)
+                    forbidName:_this.forbidName2,//路线名称
+                    forbidType:_this.forbidType,//路线类型
+                    forbidId:_this.Localid,//禁摩信息id
+                    cityCode:_this.LocalcityCode,//城市代码
+                };
+                const dataarr = [];
+                dataarr.push(data);*/
+                postData(_this.tableData,'AmoskiRiding/forbidRidingManage/addForbidEreaInfo').then(response => {
+                    _this.disabled = false;
+                    if (response.code == 0){
+                        _this.options = response.data;
+                        alert('成功!')
+                        _this.queryforbid();//刷新
+                        //resolve(result)
+                    } else {
+                        console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                    _this.disabled = false;
+                    // reject(error)
+                })
+            },
+            resetCire(bl){//重新绘制图形
+                var path=[[116.39, 39.91]];
+                if(bl){//是否清空图像
+                    polygon.setPath(path);
+                    bezierCurve.setPath(path);
+                    //return;
+                }
+                var _this=this;
+                var routeList=_this.routeList;
+                path=[];
+                routeList.forEach(function(cur,index,arr){
+                    var text3=cur.text3;
+                    var split=text3?text3.split(","):[];
+                    if(split.length>1){
+                        split[0]=parseFloat(split[0]);
+                        split[1]=parseFloat(split[1]);
+                        if(_this.forbidType=="2"){//区域
+                            path.push(split);
+                        }else{
+                            if(split.length>2){
+                                split[2]=parseFloat(split[2]);
+                                split[3]=parseFloat(split[3]);
+                                path.push(split);
+                            }
+                        }
+                    }
+                });
+                if(path.length>1){
+                    if(_this.forbidType=="2"){
+                        polygon.setPath(path);//绘制图形
+                        map.setFitView([ polygon ])
+                    }else{
+                        bezierCurve.setPath(path);
+                        map.setFitView([ bezierCurve ])
+                    }
+                }
+            },
+            initData(){
+                this.tableData= [];
+                this.routeLists=[];
+                this.routeList=[];
+                this.forbidType='';//路线类型
+                this.currArrIdx=0;//当前第几个数组
+                this.forbidType=1;//当前选中路线类型
+                this.cityCode=this.LocalcityCode;//城市代码
+                this.forbidRoadName=[];
+            },
+            selectAddr(obj){//选择地址
+                var _this=this;
+                var rowData=_this.routeList[_this.currTableRow];
+                if(rowData){
+                    placeSearch.search(_this.inputVal,function(status, result) {
+                        if("complete"==status){
+                            // 搜索成功时，result即是对应的匹配数据
+                            var dataList=result.poiList;
+                            if(dataList){
+                                placeSearch.clear();
+                                geocoder.getLocation(_this.inputVal, function(status, result) {
+                                    if (status === 'complete' && result.info === 'OK') {
+                                        // result中对应详细地理坐标信息
+                                        var geocodes=result.geocodes[0].location;//经纬度   addressComponent 详细信息
+                                        rowData.text2=_this.inputVal;
+                                        rowData.text3=geocodes.lng+","+geocodes.lat;
+                                        if(_this.forbidType=="1"){
+                                            rowData.text3=rowData.text3+","+geocodes.Q+","+geocodes.P;
+                                        }
+                                        _this.resetCire();
+                                    }else{
+                                        alert("获取经纬度失败!");
+                                    }
+                                })
+                            }else{
+                                alert("没有结果!!");
+                            }
+                            //rowData.text2=_this.inputVal;
+                        }
+
+                    });
+                }
+            },
+            queryforbid(value){
+                let _this = this;
+                _this.initData();
+                //_this.LocalcityCode = value;//切换城市更新数据
+                const data = {
+                    cityCode:value,
+                };
+                _this.LocalcityName=value;
+                if(placeSearch){
+                    //placeSearch.setCity(value);
+                }
+                if(auto){
+                    auto.setCity(value);
+                }
+                if(geocoder){
+                    geocoder.setCity(value);
+                }
+                _this.resetCityCenter(value);
+                postData(data,'AmoskiRiding/forbidRidingManage/queryForbidEreaByCityCode').then(response => {
+                    if (response.code == 0){
+                        _this.tableData = response.data;
+                        response.data.forEach(function(cur,index,arr){
+                            console.log('xxxxxxxxxxxxxxxxx');
+                            console.log(arr[index].forbidRoadName);
+                            if(index==0){
+                                _this.cityCode=arr[index].cityCode;//城市代码
+                                _this.forbidId=arr[index].forbidId;//当前禁摩信息id
+                                _this.currArrIdx=index;
+                                _this.forbidType=arr[index].forbidType;
+                            }
+                            let forname = arr[index].forbidRoadName
+                            let fornamedata = forname.split(',');
+                            let forPointdata = arr[index].forbidRoadPoint.split('@');
+                            let arrwarp = [];
+                            fornamedata.forEach(function(cur1,index1,arry1){
+                                let arrdata = arry1[index1].split(':');
+                                let arrybox = {};
+                                arrybox['text1'] = arrdata[0];
+                                arrybox['text2'] = arrdata[1];
+                                arrybox['index'] = index1;
+                                var lagLng=forPointdata[index1];
+                                if(lagLng){
+                                    arrybox['text3'] = lagLng;
+                                }
+                                arrwarp.push(arrybox);
+                            })
+                            _this.routeLists.push(arrwarp);
+                            _this.routeList = _this.routeLists[0];
+                            _this.resetCire();//绘制图形
+                        })
+                        //resolve(result)
+                    } else {
+                        //console.log('fffffffffffffff');
+                        // reject('error')
+                    }
+                }).catch(error => {
+                    // reject(error)
+                })
+            },
+            openDetails(row, event, column){
+                this.currTableRow=row.index;
+                console.log(row);
+                console.log(event);
+                console.log(column);
+            }
+        }
+    })
+</script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

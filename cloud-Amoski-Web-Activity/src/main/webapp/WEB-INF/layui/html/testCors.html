@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../jquery.min.js"></script>
+    <script src="../commFun.js"></script>
+</head>
+<body>
+  test  Core!!!!!!!
+
+
+<script>
+    jsonAjax("http://17n97122k7.imwork.net/AmoskiActivity/memberUser/getMobileCode",{mobile:17688834299,type:1},function(res){
+        if(res.code=="0"){
+            console.log(res.data);
+        }
+    },function(res){
+        console.log("request error!!!!");
+    },false,false,false,false)
+</script>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="css/login.css" />
+</head>
+<body>
+<div id="logintel" class="logintel login">
+    <div class="goarrow" @click="backUrl"><a href="javascript:void(0)"><img src="img/arrow.png" width="100%"  height="100%"></a></div>
+    <h2>新用户注册</h2>
+    <div class="logintelconent">
+        <ul>
+            <li v-if="eye" class="numberfont"><span>+86</span><input type="text" placeholder="请输入手机号"  v-model="tel" @keyup="getInputValue"></li>
+            <li v-else class="numberfont"><span>+86</span><input type="password" placeholder="请输入手机号"  v-model="tel" @keyup="getInputValue"></li>
+        </ul>
+        <p class="error">{{errortip}}</p>
+        <input v-if="btnshow2" type="button" value="下一步" class="loginButton forgetbutton activate" @click="verifcode">
+        <input v-else type="button" value="下一步" class="loginButton forgetbutton notactivate" @click="verifcode">
+        <p class="textTip">已经注册过了？<a href="logintel2.html" class="loginto">点此登录</a></p>
+    </div>
+</div>
+<script src="js/vue2.min.js"></script>
+<script src="js/flexible.js"></script>
+<script src="js/axios.min.js"></script>
+<script src="js/utils.js"></script>
+<script>
+    var app = new Vue({
+        el: '#logintel',
+        data: {
+            btnshow:false,    //v-show="false" 隐藏
+            newpsd:'',		  //v-model input 数据双向绑定
+            eye:true,         //
+            inputType:'',	  //
+            btnshow2:'',
+            errortip:'',    //错误提示
+            tel:'',
+            yzcode:'',//验证码
+            alertTipscuess:false,//成功提示框
+            alertTiperror:false,//失败提示框
+            scuesstext:'验证码获取成功',
+            errortext:'验证码获取失败',
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            showPassword:function(){ /*密码显示 */
+                let _this = this;
+                if (_this.eye) {
+                    _this.eye = false
+                    _this.inputType = 'password'
+                } else {
+                    _this.eye = true
+                    _this.inputType = 'text'
+                }
+            },
+            getInputValue() {
+                let _this = this
+                if (_this.tel.length >= 1) {
+                    _this.btnshow2 = true;
+                } else {
+                    _this.btnshow2 = false;
+                }
+            },
+            verifcode:function(){
+                var _this=this;
+                //手机号验证
+                var myreg = /^[1][3,4,5,7,8][0-9]{9}$/;
+                if (!_this.tel) {
+                    _this.errortip = "请输入手机号";
+                }else if(!myreg.test(_this.tel)){
+                    _this.errortip = '请输入正确手机号';
+                }
+                else{
+                    _this.errortip ="";
+
+                    // axiosSendPost('AmoskiActivity/memberUser/getMobileCode',{
+                    //     mobile:_this.tel,
+                    //     type:1,
+                    // },function (res) {
+                    //         //成功获取数据
+                    //         let resdata = res.data;
+                    //         if (resdata.code == "0") {
+                    //             window.sessionStorage.setItem('tel', _this.tel);//手机号
+                    //             window.sessionStorage.setItem('yzcode', resdata.data);//验证码
+                    //             window.location.href="registerverifcode.html";
+                    //         } else {
+                    //             _this.errortip = resdata.msg;
+                    //         }
+                    //     },
+                    //     function (err) {
+                    //         //请求失败
+                    //         _this.errortip = err;
+                    //         console.log(err);
+                    //     })
+
+
+                    return new Promise((resolve, reject) => {
+                        const data = {
+                            mobile:_this.tel,
+                            type:1,
+                        }
+                        postData(data,'AmoskiActivity/memberUser/getMobileCode').then(response => {
+                            if (response.code == 0) {
+                                const result = response.data
+                                window.sessionStorage.setItem('tel', _this.tel);//手机号
+                                window.sessionStorage.setItem('yzcode', response.data);//验证码
+                                _this.alertTipscuess = true;
+                                scuessTip(_this.scuesstext,_this.alertTipscuess);
+                                window.location.href="registerverifcode.html";
+                                resolve(result)
+                            }else if(response.code == '20005')
+                            {
+                                _this.alertTiperror = true;//绑定失败
+                                errorTip(response.msg,_this.alertTiperror);
+                                window.location.href="registerverifcode.html";
+                            }
+                            else {
+                               // reject('error')
+                            }
+                        }).catch(error => {
+                            reject(error)
+                        })
+                    })
+                }
+            }
+        }
+
+    })
+</script>
+</body>
+</html>

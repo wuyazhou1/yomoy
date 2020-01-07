@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+	  <link rel="stylesheet" href="../../ztree/css/zTreeStyle.css" type="text/css">
+	  <link rel="stylesheet" href="../css/layui.css?t=1551352891258" media="all">
+	  <script type="text/javascript" src="../jquery.min.js"></script>
+	  <style>
+		  .backColor {
+			  background-color: rgb(242,242,242);
+		  }
+	  </style>
+  </head>
+  <body>
+  <div class="" style="float:left;width:13%;height:900px;overflow: auto;font-size:24px;">
+	  <ul id="deptTree" class="ztree">
+	  </ul>
+  </div>
+  <div style="float:right;margin-top:15px;width:86%;">
+	  <div style="float:left;">
+		  <label class="layui-form-label">创建用户:</label>
+		  <div class="layui-input-block">
+			  <input type="text" id="createUserQuery" name="title" required autocomplete="off" class="layui-input">
+		  </div>
+	  </div>
+	  <!--<div style="float:left;">
+		  <label class="layui-form-label">创建时间:</label>
+		  <div class="layui-input-block">
+			  <input type="text" id="createTimeQuery" name="title" required autocomplete="off" class="layui-input">
+		  </div>
+	  </div>-->
+	  <div style="float:left;">
+		  <label class="layui-form-label">状态:</label>
+		  <div class="layui-input-block">
+			  <select id="statusQuery" lay-verify="" style="height: 35px;width: 100px;font-size: 15px;">
+				  <option value="">所有</option>
+				  <option value="1">启用</option>
+				  <option value="0">禁用</option>
+			  </select>
+		  </div>
+  		</div>
+	  <div style="float:left;margin-left:65px;">
+		  <button class="layui-btn layui-btn-normal" id="seachBtn">搜索</button>
+	  </div>
+  </div>
+  <div class="" style="float:right;margin-top:10px;width:87%;">
+	  <table class="layui-hide" id="demo" lay-filter="test" lay-skin="line"></table>
+  </div>
+    <!--<table class="layui-hide" id="demo" lay-filter="test"></table>-->
+  <!--<script  type="text/html" id="statusOnOff">
+	  <div class="layui-input-block">
+		  <input type="checkbox" name="switch" lay-skin="switch" value="{{d.status}}" title="锁定" lay-filter="checkOnOff" {{ d.status ==1?"checked":"" }} >
+	  </div>
+  </script>-->
+  <!--供上传图片后查看-->
+<script  type="text/html" id="waterMakerImg" style="display: none;">
+	<div id="waterMakerImgPDiv{{d.id}}" class="layer-photos-demo">
+		<img layer-pid="{{d.id}}" layer-src="/AmoskiActivity/watermarkManage/getImg?imgUrl={{d.imgUrl}}" src="/AmoskiActivity/watermarkManage/getImg?imgUrl={{d.smallImgUrl}}" alt="图片名" height="80px",width="150px">
+	</div>
+</script>
+
+
+<script type="text/html" id="toolbarDemo" style="display: none">
+	<div class="layui-btn-container">
+	  <button class="layui-btn layui-btn-normal" lay-event="add">
+		<i class="layui-icon">&#xe654;</i>新增
+	  </button>
+	  <button class="layui-btn layui-btn-warm" lay-event="update">
+		<i class="layui-icon">&#xe642;</i>修改
+	  </button>
+	  <button class="layui-btn layui-btn-danger" lay-event="delete">
+		<i class="layui-icon">&#xe640;</i>删除
+	  </button>
+	</div>
+  </script>
+
+	<div class="clear box layer-main" >
+	<form class="layui-form layer_notice" action="" id="addForm" style="display:none" lay-filter="waterMakerWin">
+		<div class="layui-form-item">
+			<label class="layui-form-label">上传水印</label>
+			<div class="layui-input-block" id="waterMakerImgPDivUpd">
+				<img class="uploadImgContent" height="80px",width="150px" style="display: none">
+				<div style="margin-top:10px;">
+					<button type="button" class="layui-btn" id="uploadImgBtn">
+						<i class="layui-icon">&#xe67c;</i>上传水印
+					</button>
+				</div>
+				<input type="hidden" name="imgUrl">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">上传水印背景</label>
+			<div class="layui-input-block" id="waterMakerImgPDivUpdBg">
+				<img class="uploadBackGroudImgContent" height="80px",width="150px" style="display: none">
+				<div style="margin-top:10px;">
+					<button type="button" class="layui-btn" id="uploadBackGroundImgBtn">
+						<i class="layui-icon">&#xe67c;</i>上传水印背景
+					</button>
+				</div>
+				<input type="hidden" name="smallImgUrl">
+			</div>
+		</div>
+	  <div class="layui-form-item layui-form-text">
+		<label class="layui-form-label">水印备注</label>
+		<div class="layui-input-block">
+		  <textarea name="remake" placeholder="请输入内容" rows="10" cols="50" class="layui-textarea"></textarea>
+		</div>
+	  </div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">状态</label>
+			<div class="layui-input-block">
+				<input type="checkbox" value="1" name="status" lay-skin="switch" lay-filter="switchTest" lay-text="启用|禁用">
+			</div>
+		</div>
+		<div class="layui-form-item">
+			<label class="layui-form-label">是否加其他元素</label>
+			<div class="layui-input-block">
+				<!--<input type="checkbox" value="1" name="type" lay-skin="switch" lay-filter="switchTest" lay-text="是|否">-->
+				<select name="type" lay-verify="" style="height: 35px;width: 100px;font-size: 15px;">
+					<option value="0">不显示</option>
+					<option value="1">显示天气</option>
+					<option value="2">显示地址</option>
+					<option value="3">都显示</option>
+				</select>
+			</div>
+		</div>
+	  <div class="layui-form-item">
+		<div class="layui-input-block">
+		  <button class="layui-btn" id="formSubmit" lay-submit lay-filter="soonSub">立即提交</button>
+		  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+		</div>
+	  </div>
+	</form>
+</div>
+
+
+  <script src="../layui.js?t=1551352891258"></script>
+  <script type="text/javascript" src="../../ztree/js/jquery.ztree.core.js"></script>
+  <script src="../commVar.js?t=1551352891258"></script>
+  <script src="../commFun.js?t=1551352891258"></script>
+  </body>
+  
+<script>
+	$(function(){
+		layui.use(['table', 'layer','form','upload'], function(){
+			var table = layui.table;
+			var layer=layui.layer;
+			var form = layui.form;
+			var upload = layui.upload;
+			var currDeptId;//当前部门id
+
+			var baseUrl="/AmoskiActivity/";
+			var allRequest={
+				queryUserDeptInfoUrl:baseUrl+"watermarkManage/queryUserDeptInfo",//查询部门信息
+				queryWaterMakeByDeptUrl:baseUrl+"watermarkManage/queryWaterMakeByDept",//查询部门下所有水印信息
+				uploadFileUrl:baseUrl+"watermarkManage/uploadFile",//上传图片
+				addWaterMarkInfoUrl:baseUrl+"watermarkManage/addWaterMarkInfo",//新增水印
+				updateWaterMarkInfoUrl:baseUrl+"watermarkManage/updateWaterMarkInfo",//修改水印
+				getImgUrl:baseUrl+"watermarkManage/getImg",//获取图片
+			}
+			//上传图片
+			var uploadFile = upload.render({
+				elem: '#uploadImgBtn' //绑定元素
+				,url: allRequest.uploadFileUrl //上传接口
+				,done: function(res){
+					var data=res.data;
+					var oriUrl=data.originaImgPath;
+					var smallUrl=data.smallImgPath;
+					$("input[name='imgUrl']").val(oriUrl);
+					$(".uploadImgContent").attr("src",allRequest.getImgUrl+"?imgUrl="+smallUrl);//缩略图
+					$(".uploadImgContent").attr("layer-src",allRequest.getImgUrl+"?imgUrl="+oriUrl);//原图
+					$(".uploadImgContent").show();
+					//开启相册
+					showOriginImg("Upd");
+					//上传完毕回调
+					console.log(data);
+				}
+				,error: function(){
+					//请求异常回调
+				}
+			});
+			//上传图片
+			var uploadBackFile = upload.render({
+				elem: '#uploadBackGroundImgBtn' //绑定元素
+				,url: allRequest.uploadFileUrl //上传接口
+				,done: function(res){
+					var data=res.data;
+					var oriUrl=data.originaImgPath;
+					var smallUrl=data.smallImgPath;
+					$("input[name='smallImgUrl']").val(oriUrl);
+					$(".uploadBackGroudImgContent").attr("src",allRequest.getImgUrl+"?imgUrl="+smallUrl);//缩略图
+					$(".uploadBackGroudImgContent").attr("layer-src",allRequest.getImgUrl+"?imgUrl="+oriUrl);//原图
+					$(".uploadBackGroudImgContent").show();
+					//开启相册
+					showOriginImg("UpdBg");
+					//上传完毕回调
+					console.log(data);
+				}
+				,error: function(){
+					//请求异常回调
+				}
+			});
+
+
+
+			//事件监听
+			function elementEvt(){
+				$("#seachBtn").on("click",function(){
+					var createTime=$("#createTimeQuery").val();
+					var createUser=$("#createUserQuery").val();
+					var status=$("#statusQuery").val();
+					var obj={};
+					obj.createUser=createUser;
+					obj.createTime=null;
+					obj.status=status;
+
+					table.reload("demo", {
+						where: obj
+						,page: {
+							curr: 1 //重新从第 1 页开始
+						}
+					});
+				});
+			}
+			elementEvt();
+			function showOriginImg(idx){
+				layer.photos({
+					photos: '#waterMakerImgPDiv'+idx
+					,anim: 0 //0-6的选择，指定弹出图片动画类型，默认随机（请注意，3.0之前的版本用shift参数）
+				});
+			}
+			var setting = {
+				async: {
+					enable: true,
+					url: allRequest.queryUserDeptInfoUrl,
+					autoParam: ["id", "name"],
+					dataType : "json",
+				},
+				data: {
+					simpleData: {
+						enable: true
+					}
+				},
+				callback: {
+					onClick: treeNodeClick,
+					onAsyncSuccess:loadLayerUi
+				}
+			};
+			function treeNodeClick(event, treeId, treeNode){
+				var obj={deptId:treeNode.id};
+				currDeptId=treeNode.id;
+				table.reload("demo", {
+					where: obj
+					,page: {
+						curr: 1 //重新从第 1 页开始
+					}
+				})
+			}
+
+			function loadLayerUi(event, treeId, treeNode,msg){
+				currDeptId=msg[0].id;//当前部门id
+				//树节点点击事件
+				table.render({
+					elem: '#demo'
+					//,height: auto
+					,url: allRequest.queryWaterMakeByDeptUrl //数据接口
+					,where:{}
+					,parseData:function(res){
+						return {
+							"code": res.code=="10000"?0:res.code, //解析接口状态
+							"msg": res.msg, //解析提示文本
+							"count": res.data.recordsTotal, //解析数据长度
+							"data": res.data.data //解析数据列表
+						};
+					}
+					,page: true //开启分页
+					,limit:10//每页条数
+					,cols: [[ //表头
+						{field: 'id', title: 'ID',  sort: true, align:'center'}
+						,{field: 'imgUrl', title: '水印真实图',align:'center',hide:true}
+						,{field: 'createTime', title: '创建时间', sort: true,align:'center',
+							templet:function(dt){
+								return dt.createTime?new Date(dt.createTime).format(DATE_FORMAT_YTDHMS):""
+							}
+						}
+						,{field: 'createUser', title: '创建人',align:'center'}
+						,{field: 'deptId', title: '所属部门名称', sort: true,align:'center',
+							templet:function(dt){
+								var treeObj=$.fn.zTree.getZTreeObj("deptTree");
+								var currNode=treeObj.getNodeByParam("id",dt.deptId);
+								return currNode.name;
+							}}
+						,{field: 'status', title: '是否启用',align:'left',
+							templet:function(dt){
+								return dt.status==1?"启用":"禁用";
+							}}
+						,{field: 'type', title: '其他元素',align:'left',
+							templet:function(dt){
+								if(!dt.type||dt.type==0){
+									return "不显示";
+								}else if(dt.type==1){
+									return "显示天气";
+								}else if(dt.type==2){
+									return "显示地址";
+								}else if(dt.type==3){
+									return "都显示";
+								}
+							}}
+						,{field: 'smallImgUrl', title: '水印',align:'center', templet:'#waterMakerImg',event:"showOrginImg",height:100}
+						,{field: 'remake', title: '备注',align:'center',height:100}
+					]]
+					,toolbar:'#toolbarDemo'
+					,defaultToolbar:[]
+					,done:function(res, curr, count){
+						console.log(res);
+						var data=res.data;
+						for(var i=0;i<data.length;i++){
+							showOriginImg(data[i].id);//显示相册图层
+						}
+					}
+				})
+
+				//监听锁定操作
+				form.on('checkbox(checkOnOff)', function(obj){
+					alert(this.value + ' ' + this.name + '：'+ obj.elem.checked);
+				});
+				form.on('submit(soonSub)', function(data){
+					var formData=data.field;
+					var deptId=$("#formSubmit").attr("data-deptId");
+					var id=$("#formSubmit").attr("data-id");
+					var obj={
+						id:id,
+						imgUrl:formData.imgUrl,
+						smallImgUrl:formData.smallImgUrl,
+						remake:formData.remake,
+						status:formData.status?1:0,
+						type:formData.type,
+						deptId:deptId,
+					};
+					var url=allRequest.addWaterMarkInfoUrl;
+					if(obj.id){//修改
+						url=allRequest.updateWaterMarkInfoUrl;
+					}
+					jsonAjax(url,obj,function(res){
+						if(res.code=="0"){
+							console.log(res.data);
+							//关闭页面
+							layer.closeAll();
+							treeNodeClick(null,null,deptId);//刷新
+							$("#addForm").hide();
+						}
+					},function(res){
+						console.log("request error!!!!");
+					})
+					return false;
+				});
+				//tabel  toolbar 事件监听
+				/*table.on('tool(test)',function(obj){
+					var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+					var data=obj.data;
+					if(layEvent === 'showOrginImg') { //显示原图
+						console.log(data) //得到当前行数据
+						showOriginImg(data.id);//显示相册图层
+					}
+				});*/
+				var trData;
+				//监听行单击事件
+				table.on('row(test)', function(obj){
+					console.log(obj.tr) //得到当前行元素对象
+					console.log(obj.data) //得到当前行数据
+					$(".backColor").removeClass("backColor");
+					$(obj.tr).addClass("backColor");
+					trData=obj.data;//行数据
+					//obj.del(); //删除当前行
+					//obj.update(fields) //修改当前行数据
+				});
+				//tabel  toolbar 事件监听
+				table.on('toolbar(test)',function(obj){
+					var data = obj.data; //获得当前行数据
+					var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+					var tr = obj.tr; //获得当前行 tr 的DOM对象
+
+					if(layEvent === 'add'){ //添加
+						//do somehing
+						layer.open({
+							type:1,
+							title:'新增',
+							content: $('#addForm'),//内容 可以是引用dom
+							area:['800px','500px'],//弹出框大小
+							offset:'',//容器位置
+							success: function(obj, index){//成功回调
+								$(".uploadImgContent").hide();//隐藏图片
+								$("#addForm").show();
+								$("#formSubmit").attr("data-deptId",currDeptId);
+								$("#formSubmit").attr("data-id","");
+								form.val("waterMakerWin", {
+									"smallImgUrl": "" // "name": "value"
+									,"imgUrl": ""
+									,"remake":""
+									,"status":1
+								})
+								/*form.val("waterMakerWin", {
+									"deptId":currDeptId
+								})*/
+							},
+							cancel: function(){
+								$("#addForm").hide();
+							}
+							//btn:['确定','取消'],//按钮
+							//btnAlign:'c',//按钮排练顺序
+
+							//yes:function(idx,lay){
+
+							//},
+							//btn2:function(idx,lay){
+
+							//}
+						});
+					} else if(layEvent === 'update'){ //修改
+						//do somehing
+						if(trData){
+							layer.open({
+								type:1,
+								title:'修改',
+								content: $('#addForm'),//内容 可以是引用dom
+								area:['800px','500px'],//弹出框大小
+								offset:'',//容器位置
+								success: function(obj, index){//成功回调
+									$(".uploadImgContent").show();//显示图片
+									$("#addForm").show();
+									$("#formSubmit").attr("data-deptId",trData.deptId);
+									$("#formSubmit").attr("data-id",trData.id);
+									$(".uploadImgContent").attr("src",allRequest.getImgUrl+"?imgUrl="+trData.imgUrl);//缩略图
+									$(".uploadImgContent").attr("layer-src",allRequest.getImgUrl+"?imgUrl="+trData.imgUrl);//原图
+									$(".uploadBackGroudImgContent").attr("src",allRequest.getImgUrl+"?imgUrl="+trData.smallImgUrl);//背景缩略图
+									$(".uploadBackGroudImgContent").attr("layer-src",allRequest.getImgUrl+"?imgUrl="+trData.smallImgUrl);//背景原图
+									form.val("waterMakerWin", {
+										"smallImgUrl": trData.smallImgUrl // "name": "value"
+										,"imgUrl": trData.imgUrl
+										,"remake":trData.remake
+										,"status":trData.status=="1"?1:0
+										,"type":trData.type
+									})
+								},
+								cancel: function(){
+									$("#addForm").hide();
+								}
+
+								//btn:['确定','取消'],//按钮
+								//btnAlign:'c',//按钮排练顺序
+
+								//yes:function(idx,lay){
+
+								//},
+								//btn2:function(idx,lay){
+
+								//}
+							});
+						}else{
+
+						}
+						//同步更新缓存对应的值
+						/*obj.update({
+							username: '123'
+							, title: 'xxx'
+						});*/
+					} else if(layEvent === 'delete') { //删除
+						alert("删除");
+						//do something
+						layer.confirm('真的删除行么', function (index) {
+							obj.del(); //删除对应行（tr）的DOM结构，并更新缓存
+							layer.close(index);
+							//向服务端发送删除指令
+						});
+					}
+				})
+			}
+			$.fn.zTree.init($("#deptTree"), setting);
+		});
+	})
+</script>
+</html>

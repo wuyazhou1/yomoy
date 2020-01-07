@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/mui.dtpicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.picker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/mui.poppicker.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<section id="orderPayment" v-cloak>
+    <div class="positionBar pt10 pb10" v-show="appplate">
+        <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeft.png" alt="" title=""></a></span>
+        <span class="enrollees f18 color38">订单支付</span>
+    </div>
+    <div class="RemainingTime pb30">
+        <h3 class="f16 pt37 textAlign">支付剩余时间</h3>
+        <div class="textAlign mt15 countDown" id="countdown">
+            <span>{{time}}</span>
+            :
+            <span>{{timesecond}}</span>
+        </div>
+        <div class="clearfix f15 mt56">
+            <span class="fl ml15">订单号：</span>
+            <span class="fr mr15">{{payData.code}}</span>
+        </div>
+        <div class="clearfix f15 mt13">
+            <span class="fl ml15">应付金额：</span>
+            <span class="fr mr15 color59 f18"><i class="f12 moneySymbol">￥</i>{{payData.primitiveMoneySum}}</span>
+        </div>
+    </div>
+    <ul class="pany mt15">
+        <li class="pt15 pb15 clearfix" v-for="(item,index) in panyList" @click="cur=index">
+            <img :src="item.Imgurl" alt="" title="" class="fl ml15">
+            <div class="fl ml10">
+                <strong>{{item.title}}</strong>
+                <p>{{item.subtitle}}</p>
+            </div>
+            <input type="radio" name="input1" class="fr mr15 Inputsingoval mt10" :value="index+1" :class="{inputCur:cur==index}"  ref="alipany">
+<!--            <input type="radio" name="input1" class="fr mr15 Inputsingoval mt10" value="2" :class="{inputCur:cur==index}"  ref="alipany">-->
+        </li>
+    </ul>
+    <footer class="orderFooter pt10 pb10 clearfix">
+        <span class="f15 color38 ml15 mt10 displayinlik">合计</span>
+        <strong class="ml15 color59 f18 mt10 displayinlik"><i class="f12 dollar">￥</i>{{payData.primitiveMoneySum}}</strong>
+        <input class="fr mr15 nextButton " type="button" value="确认支付" @click="Nextpayment()">
+    </footer>
+</section>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/mui.picker.js"></script>
+<script src="../js/mui.poppicker.js"></script>
+<script src="../js/mui.dtpicker.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/jquery.min.js"></script>
+
+<script type="text/javascript">
+    var app = new Vue({
+        el:'#orderPayment',
+        data:{
+            totalprice:'',//总价
+            cur:1,
+            panyList:[
+                {
+                    Imgurl:'../img/weixinIcon.jpg',
+                    title:'微信支付',
+                    subtitle:'安全快捷',
+                },
+                {
+                    Imgurl:'../img/alipayIcon1.jpg',
+                    title:'支付宝支付',
+                    subtitle:'支付宝付款更快更安全',
+                },
+            ],
+            payData:{},
+            day: 0, hr: 0, min: 0, sec: 0,
+            time:'',
+            timesecond:'',
+            paymentTime:'',//倒计时
+            htmlData:'',
+            appplate:true,//判断是否为app打开
+        },
+        created() {
+            var Obj = window.sessionStorage.getItem('orderPayObj');
+            //var Obj = {"id":"838","code":"111105038104650167","payType":null,"state":"2","primitiveMoneySum":268,"sumCount":1,"createName":"13762170967","createData":1573003810000,"updateName":null,"updateDate":null,"contactTel":"18107470228","contactName":"wusiyao","memberId":167,"receivingCode":null,"isRemind":null,"basicsId":"293","headPortraitUrl":null,"name":null,"sex":null,"invoiceId":null,"invoiceName":null,"region":null,"identityNumber":null,"tel":null,"club":null,"orderCode":null,"identitys":null,"models":null,"displacement":null,"clothingDigital":null,"remake":null,"motorcycleLicense":null,"vehicleLicense":null,"verificationCode":null,"verificationDate":null,"emergencyContact":null,"emergencyTel":null,"drivingExperience":null,"list":[{"id":"559","code":null,"payType":null,"state":"2","primitiveMoneySum":null,"sumCount":null,"createName":null,"createData":1573003810000,"updateName":null,"updateDate":null,"contactTel":null,"contactName":null,"memberId":null,"receivingCode":null,"isRemind":null,"basicsId":"293","headPortraitUrl":null,"name":"wusiyao","sex":null,"invoiceId":"513","invoiceName":"两天普票","region":null,"identityNumber":"430406******32","tel":"18107470228","club":null,"orderCode":"111105038104650167","identitys":null,"models":null,"displacement":null,"clothingDigital":null,"remake":"aaaa","motorcycleLicense":null,"vehicleLicense":null,"verificationCode":"18936715","verificationDate":null,"emergencyContact":null,"emergencyTel":null,"drivingExperience":null,"list":null,"tbActivityBillImageEntity":null,"detailState":null,"primitiveMoney":268,"applyDate":null,"refundTicketDate":null,"agreeDate":null,"createOrderJsonStr":null,"title":null,"collectionPlace":null,"collectionTime":null,"activityStart":null,"activityStop":null,"activityEnd":null,"pathPoint":null,"refundMoney":null,"restate":null,"recreateName":null,"recreateData":null,"reupdateName":null,"reupdateDate":null,"fileNameUrl":null,"effective":null}],"tbActivityBillImageEntity":null,"detailState":null,"primitiveMoney":null,"applyDate":null,"refundTicketDate":null,"agreeDate":null,"createOrderJsonStr":null,"title":"麓营·2019复古机车音乐嘉年华","collectionPlace":"爱摩老斯基重机生活馆","collectionTime":1573914600000,"activityStart":1573920000000,"activityStop":1574053140000,"activityEnd":1573858800000,"pathPoint":null,"refundMoney":null,"restate":null,"recreateName":null,"recreateData":null,"reupdateName":null,"reupdateDate":null,"fileNameUrl":"/home/uploadFile/images/createActivity/2019/11/01/22/fileNameUrl99e42a0177b14e18adc5e9b23d055b45.jpg","effective":null};
+            this.payData = JSON.parse(Obj);
+            if(GetRequest().isWeiXin=='true'){
+                const data = {
+                    code:this.payData.code,
+                }
+                postData(data,'AmoskiActivity/activityOrderManage/isPayOrderByPay').then(response => {
+                    if (response.state==3){
+                        window.location.href='../order/payment.html'
+                    }
+                }).catch(error => {
+                    //  reject(error)
+                })
+            }
+        },
+        mounted(){
+            this.countDown();
+            let Request = new Object();
+            Request = GetRequest();
+            this.appplate = Request.platform;
+            if(this.appplate == 'app')
+            {
+                this.appplate = false;
+
+            }else{
+                this.appplate = true
+            }
+        },
+        methods:{
+            Nextpayment(){
+                let _this = this;
+                return new Promise((resolve, reject) => {
+                    const data = {
+                        payType:$(".inputCur").val(),//1.微信 2.支付宝
+                        code:_this.payData.code,
+                    }
+                    postData(data,'AmoskiActivity/activityOrderManage/payOrder').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            // _this.htmlData = result;
+                          document.write(response.data);
+                          //return false;
+                          //  window.location.href = '../order/payment.html';
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            },
+            countDown(){
+                let _this = this;
+                var countdown=document.getElementById("countdown");
+                var time=1800;//30分钟换算成1800秒
+                setInterval(function(){
+                    if(time>=1) {
+                        time = time - 1;
+                        var minute = parseInt(time / 60);
+                        var second = parseInt(time % 60);
+                        // countdown.innerHTML='还剩'+minute+'分'+second+'秒';
+                        _this.time = minute;
+                        _this.timesecond = second;
+                    }
+                    else{
+                        window.location.href='../order/orderList.html?Indexes=1';
+                    }
+                },1000);
+            },
+        },
+    })
+</script>
+
+</body>
+</html>

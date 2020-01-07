@@ -1,0 +1,69 @@
+spring:
+  http:
+    encoding:
+      force: true
+      charset: UTF-8
+      enabled: true
+    multipart:
+      max-file-size: 8388608
+  profiles:
+    active: dev
+  application:
+    name: AmoskiJG
+  boot:
+    admin:
+      context-path: /admin
+  datasource:
+    user:
+      url: jdbc:oracle:thin:@192.168.5.163:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: amoski_user
+      password: amoski_user
+      max-active: 50
+      max-idle: 50
+      min-idle: 60000
+      initial-size: 12
+      validation-query: select 1 from dual
+      test-on-borrow: true
+      test-on-return: true
+      test-while-idle: true
+    activity:
+      url: jdbc:oracle:thin:@192.168.5.163:1521:orcl
+      driver-class-name: oracle.jdbc.driver.OracleDriver
+      username: amoski_activity
+      password: amoski_activity
+      max-active: 50
+      max-idle: 50
+      min-idle: 60000
+      initial-size: 10
+      validation-query: select 1 from dual
+      test-on-borrow: true
+      test-on-return: true
+      test-while-idle: true
+server:
+  port: 1024 #指定该Eureke实例的端口
+eureka:
+  instance:
+    preferIpAddress: true
+    instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+    leaseRenewalInseconds: 1
+    leaseExpirationDurationInseconds: 2
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:8761/eureka/
+feign:
+  hystrix:
+    enabled: false
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 1000
+        timeout:
+          enabled: false
+ribbon:
+  ReadTimeout: 60000
+  ConnectTimeout: 60000
+  maxAutoRetries: 0

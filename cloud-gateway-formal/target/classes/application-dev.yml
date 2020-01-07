@@ -1,0 +1,106 @@
+spring:
+ profiles:
+  active: uat
+ application:
+  name: gateway-formal
+ http:
+  encoding:
+   force: true
+   charset: UTF-8
+   enabled: true
+  multipart:
+   max-file-size: 100Mb
+   max-request-size: 100Mb
+ boot:
+  admin:
+   url: http://localhost:8761/admin
+server:
+ port: 8000 #指定该Eureke实例的端口
+ tomcat:
+  uri-encoding: UTF-8
+zuul:
+ routes:
+  AmoskiUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiUser/**
+   service-id: AmoskiUser
+   # url: http://localhost:7061
+  AmoskiWebUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebUser/**
+   service-id: AmoskiWebUser
+   # url: http://localhost:7061
+  AmoskiActivity:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiActivity/**
+   service-id: AmoskiActivity
+   # url: http://localhost:7061
+  AmoskiWebActivity:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebActivity/**
+   service-id: AmoskiWebActivity
+  AmoskiLocalUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiLocalUser/**
+   service-id: AmoskiLocalUser
+   # url: http://localhost:7061
+  AmoskiGoods:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiGoods/**
+   service-id: AmoskiGoods
+   # url: http://localhost:7061
+  AmoskiRiding:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiRiding/**
+   service-id: AmoskiRiding
+   # url: http://localhost:7061
+  AmoskiWebRiding:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebRiding/**
+   service-id: AmoskiWebRiding
+   # url: http://localhost:7061
+  AmoskiWebHtmlUser:
+   sensitive-headers: ture
+   stripPrefix: true
+   path: /AmoskiWebHtmlUser/**
+   service-id: AmoskiWebHtmlUser
+   # url: http://localhost:7061
+ host:
+  socket-timeout-millis: 3600000
+  connect-timeout-millis: 3600000
+eureka:
+ client:
+  serviceUrl:
+#   defaultZone: http://localhost:8761/eureka/
+   defaultZone: http://192.168.5.178:8760/eureka/
+ instance:
+  preferIpAddress: true
+  instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+  leaseRenewalInseconds: 1
+  leaseExpirationDurationInseconds: 3
+feign:
+ hystrix:
+  enabled: false
+hystrix:
+ command:
+  default:
+   execution:
+    isolation:
+     thread:
+      timeoutInMilliseconds: 600000
+ribbon:
+ ReadTimeout: 3600000
+ ConnectTimeout: 360000
+#logging:
+# level: info
+# config: classpath:logback-boot.xml
+url:
+ no-token: /login,/logOut/*

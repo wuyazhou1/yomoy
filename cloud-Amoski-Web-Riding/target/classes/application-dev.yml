@@ -1,0 +1,55 @@
+spring:
+# thymeleaf:
+#  cache: false
+#  encoding: UTF-8
+#  content-type: text/html
+#  mode: LEGACYHTML5
+ mvc:
+  view:
+   prefix: /WEB-INF/jsp/
+   suffix: .jsp
+   static-path-pattern: /webapp/WEB-INF/jsp/**
+#   prefix: /static/jsp/
+#   suffix: .jsp
+#   static-path-pattern: /resources/static/**
+ http:
+  encoding:
+   force: true
+   charset: UTF-8
+   enabled: true
+ profiles:
+  active: dev
+ dsuser:
+  url: jdbc:oracle:thin:@192.168.0.39:1521:orcl
+  username: amoski_user
+  password: YW1vc2tpX3VzZXI=
+  driver-class-name: oracle.jdbc.OracleDriver
+  max-active: 50
+  max-idle: 50
+  min-idle: 60000
+  initial-size: 10
+  validation-query: select 1 from dual
+  test-on-borrow: true
+  test-on-return: true
+  test-while-idle: true
+ application:
+  name: AmoskiWebRiding
+ boot:
+  admin:
+   context-path: /admin
+server:
+ port: 8666 #指定该Eureke实例的端口
+eureka:
+ instance:
+  preferIpAddress: true
+  instanceId: ${spring.cloud.client.ipAddress}:${server.port}
+  leaseRenewalInseconds: 1
+  leaseExpirationDurationInseconds: 3
+ client:
+  serviceUrl:
+   defaultZone: http://localhost:8761/eureka/
+  server:
+   enableSelfPreservation: false
+   evictionIntervalTimerInMs: 30000
+#  logging:
+#   config: classpath:logback-boot.xml

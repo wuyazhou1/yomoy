@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/mui.min.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/refundticket.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/swiper.css"/>
+    <link  rel="stylesheet" type="text/css" href="../css/common.css"/>
+    <style type="text/css">
+        html, body {
+            position: relative;
+            height: 100%;
+        }
+        body {
+            background: #eee;
+            font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+            font-size: 14px;
+            color:#000;
+            margin: 0;
+            padding: 0;
+        }
+        .swiper-container {
+            width: 100%;
+            height: 100%;
+        }
+        .swiper-slide {
+            text-align: center;
+            font-size: 18px;
+            background: #fff;
+
+            /* Center slide text vertically */
+            display: -webkit-box;
+            display: -ms-flexbox;
+            display: -webkit-flex;
+            display: flex;
+            -webkit-box-pack: center;
+            -ms-flex-pack: center;
+            -webkit-justify-content: center;
+            justify-content: center;
+            -webkit-box-align: center;
+            -ms-flex-align: center;
+            -webkit-align-items: center;
+            align-items: center;
+            transition: 300ms;
+            transform: scale(0.8);
+        }
+        .swiper-slide-active,.swiper-slide-duplicate-active{
+        transform: scale(1);
+    }
+    </style>
+    <script src="../js/loading.js"></script>
+    <script src="../js/vue2.min.js"></script>
+</head>
+<body>
+<div id="refundticket" v-cloak>
+    <div class="orderHeader refundPickerHeader clearfix colorff">
+        <div class="pt10 pb10 clearfix refundPicker" v-show="appplate">
+            <span class="w24 arrowIcon fl ml10" onclick="backUrl()"><a href="javascript:void(0);"><img src="../img/arrowLeftf.png" alt="" title=""></a></span>
+            <span class="enrollees f18 colorff textAlign displayinlik">退票详情</span>
+        </div>
+        <!-- Swiper -->
+        <refund-tick :option="reundData"></refund-tick>
+    </div>
+    <div class="refundInCount">
+        <div class="clearfix refundTxt mt30">
+            <strong class="tui f18 color59">{{refundMoney[reundList.restate]}}<span class="circleIcon ml10" @click="alerTcircle()"><img src="../img/alertCircle.png" alt=""></span></strong>
+            <p class="arrival color9797 mt6">审核通过后2小时到账</p>
+        </div>
+        <h2 class="mt20 mb19 f15 color38"><strong>退款流程</strong></h2>
+        <ul>
+            <li :class="{cur:reundList.restate == 1 || reundList.restate == 2 || reundList.restate == 3}">
+                <span><i></i>提交退票申请</span>
+                <p>{{getFmtTime(reundList.recreateData,'yyyy-MM-dd HH:mm:ss')}}</p>
+            </li>
+            <li :class="{cur:reundList.restate == 2 || reundList.restate == 3}">
+                <span><i></i>已退票待退款</span>
+                <p v-show="{cur:reundList.restate == 2}">{{getFmtTime(reundList.reupdateDate,'yyyy-MM-dd HH:mm:ss')}}</p>
+            </li>
+            <li :class="{cur:reundList.restate == 3}">
+                <span><i></i>退款已离开我司,原路退回支付渠道</span>
+                <p v-show="{cur:reundList.restate == 3}">预计退款到账时间:审核通过后2小时到账</p>
+            </li>
+        </ul>
+    </div>
+    <div class="alertServiceBox" v-show="chargeShow" @click="closeAlert()">
+        <div class="ServiceBg"></div>
+        <div class="Servicecharge">
+            <h3 class="f18 color38 mt20 mb19">{{RefundDetails}}</h3>
+            <div class="clearfix baomEnd">
+                <p class="title pt10 pb10">
+                    <span>活动截止时间</span>
+                    <span>退还金额</span>
+                </p>
+                <ul>
+                    <li v-for="(item,index) in resultList">
+                        <span>报名截止前{{item.CLOSING_DAY}}天</span>
+                        <span>退还{{item.SERVICE_CHARGE}}%</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../js/axios.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/mui.js"></script>
+<script src="../js/qs.js"></script>
+<script src="../js/utils.js"></script>
+<script src="../js/swiper.min.js"></script>
+<script src="../js/refundtick.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#refundticket',
+        data: {
+            chargeShow:false,
+            ID:'',
+            refundMoney:['0','退款中','退款驳回','已退款'],//1提交退款，2审核驳回退款，3审核通过退款
+            tabIndex:1,
+            reundData:{},
+            reundList:{},
+            reundLiList:[
+                // {
+                //     txt:'提交退票申请',
+                //     time:'2019-08-13 09:03:30',
+                // },
+                // {
+                //     txt:'已退票待退款',
+                //     time:'2019-08-13 09:03:30',
+                // },
+                // {
+                //     txt:'退款已离开我司,原路退回支付渠道',
+                //     time:'预计退款到账时间2019-08-13 09:03:30',
+                // }
+            ],
+            resultList:[],
+            RefundDetails:'',
+        },
+        mounted(){
+        },
+        created(){
+            let Request = new Object();
+            Request = GetRequest();
+            this.ID = Request.orderId;
+            this.retundInfor();
+          //  this.tabIndex = window.sessionStorage.getItem('tabIndexCur');
+            if(this.refundMoney[this.reundList.restate] = '退款中')
+            {
+                this.RefundDetails = '退款手续费';
+
+            }else if(this.refundMoney[this.reundList.restate] = '已退款'){
+
+                this.RefundDetails = '退款明细';
+            }
+
+        },
+        methods: {
+            alerTcircle(){
+                let _this = this;
+                this.chargeShow = !this.chargeShow;
+                axiosSendPost1('AmoskiActivity/ActivitySupplementManage/queryRefundRules',
+                    {basicsId:'194'},function(res){
+                        if(res.code == 0){
+                            _this.resultList = res.data;
+                        }
+                },function(err){
+                })
+            },
+            closeAlert(){
+                this.chargeShow = false;
+            },
+            retundInfor(){
+                let _this = this;
+                return new Promise((resolve, reject) =>{
+                    const data = {id:_this.ID};
+                    postData(data,'AmoskiActivity/activityOrderManage/queryRefundMoneyInfo').then(response => {
+                        if (response.code == 0){
+                            let result = response.data;
+                            if(result){
+                                _this.reundData = result;
+                                if(result)
+                                {
+                                    _this.reundList=result.list[0];
+                                    _this.$nextTick(() => {
+                                        swperLoop();
+                                    })
+                                }
+                            }
+                            resolve(result)
+                        } else {
+                            //reject('error')
+                        }
+                    }).catch(error => {
+                        //  reject(error)
+                    })
+                })
+            }
+        }
+    })
+
+</script>
+</body>
+</html>

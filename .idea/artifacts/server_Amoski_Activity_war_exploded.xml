@@ -1,0 +1,13 @@
+<component name="ArtifactManager">
+  <artifact type="exploded-war" name="server-Amoski-Activity:war exploded">
+    <output-path>$PROJECT_DIR$/out/artifacts/server_Amoski_Activity_war_exploded</output-path>
+    <root id="root">
+      <element id="javaee-facet-resources" facet="server-Amoski-Activity/web/Web" />
+      <element id="directory" name="WEB-INF">
+        <element id="directory" name="classes">
+          <element id="module-output" name="server-Amoski-Activity" />
+        </element>
+      </element>
+    </root>
+  </artifact>
+</component>

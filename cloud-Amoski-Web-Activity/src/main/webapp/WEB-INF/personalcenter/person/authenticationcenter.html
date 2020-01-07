@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0,user-scalable=no" name="viewport"/>
+    <meta name="description" content="">
+    <meta name="keywords" content="">
+    <link  rel="stylesheet" type="text/css" href="../css/common.css" />
+    <link  rel="stylesheet" type="text/css" href="../css/person.css" />
+</head>
+<body>
+<div id="changename" class="publicHeader">
+    <div class="header">
+        <p class="lh44 clearfix">
+            <span class="arrow ml15 w24"><a href="javascript:void(0)" @click="backUrl" class="w24"><img src="../img/arrow2.png" width="100%" height="100%"></a></span>
+            <span class="datatxt f18">认证中心</span>
+        </p>
+    </div>
+    <ul class="portraitList changename mt15">
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="#" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">实名认证</span>
+                </span>
+                <p class="fr" v-if="isatteshow" >
+                    <span class="wh16 displayinlik ml15 veralign"><img src="../img/authIconsucess.png" width="100%" height="100%"></span>
+                    <span class="f15 displayinlik veralign">已认证</span>
+                    <span class="w24 displayinlik ml15 veralign"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                </p>
+                <p class="fr" v-else @click="attestation">
+                    <span class="wh16 displayinlik ml15 veralign"><img src="../img/authIcon.png" width="100%" height="100%"></span>
+                    <span class="f15 displayinlik veralign">未认证</span>
+                    <span class="w24 displayinlik ml15 veralign"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                </p>
+            </a>
+        </li>
+        <li class="clearfix pl15 pr15 pb15 pt15">
+            <a href="myvehicle.html" class="clearfix">
+                <span class="fl f15 mt8">
+                    <span class="namenc">车辆绑定</span>
+                </span>
+                <p class="fr">
+                    <span class="wh16 displayinlik ml15 veralign"></span>
+                    <span class="f15 displayinlik veralign">{{bindtxt}}</span>
+                    <span class="w24 displayinlik ml15 veralign"><img src="../img/personarrow.png" width="100%" height="100%"></span>
+                </p>
+            </a>
+        </li>
+    </ul>
+    <p class="changeNButton mt16 ml15">点击此处<a href="../person/vehiclebinding2.html">添加车辆</a></p>
+    <p class="error">{{errortip}}</p>
+</div>
+<script src="../js/vue2.min.js"></script>
+<script src="../js/flexible.js"></script>
+<script src="../js/axios.min.js"></script>
+<script src="../js/utils.js"></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el: '#changename',
+        data: {
+            remnant:0,
+            desc:'',
+            isatteshow:'',//认证
+            bindtxt:'',//车辆绑定
+            errortip:'',//错误提示
+        },
+        mounted(){
+            this.authentication();//实名认证和车辆绑定
+        },
+        methods:{
+            backUrl(){
+                window.history.go(-1)
+            },
+            descInput(){
+                let _this = this;
+                let textVal = _this.desc.length;
+                _this.remnant = textVal;
+            },
+            authentication(){
+                let _this = this;
+                // axiosSendPost('AmoskiActivity/userCenterManage/queryUserAutonymAndBindCar',{},function (res) {
+                //     //成功获取数据
+                //
+                //     if (resdata.code == "0"){
+                //
+                //         //window.location.href="person/index.html";
+                //     } else {
+                //         _this.errortip = resdata.msg;
+                //     }
+                // },function (err) {
+                //     //请求失败
+                //     _this.errortip = err;
+                //     console.log(err);
+                // })
+
+                return new Promise((resolve, reject) => {
+                    const data = {}
+                    postData(data,'AmoskiActivity/userCenterManage/queryUserAutonymAndBindCar').then(response => {
+                        if (response.code == 0) {
+                            const result = response.data;
+                            if(result)
+                            {
+                                _this.isatteshow = result.isattestation==1?true:false;
+                                if(result.bindVehicle)
+                                {
+                                    _this.bindVehicle = result.bindVehicle;
+                                }else{
+                                    _this.bindtxt = "未绑定";
+                                }
+                            }
+                            resolve(result)
+                        } else {
+                            reject('error')
+                        }
+                    }).catch(error => {
+                        reject(error)
+                    })
+
+                })
+
+
+
+            },
+            attestation(){//实名认证
+                window.location.href = 'realname.html';
+            }
+        }
+    })
+</script>
+</body>
+</html>
